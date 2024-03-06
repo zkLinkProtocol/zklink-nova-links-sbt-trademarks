@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Contract, Wallet } from "zksync-ethers";
 import { getWallet, deployContract, LOCAL_RICH_WALLETS } from '../../deploy/utils';
 
-describe("MyNFT", function () {
+describe("NovaNFT", function () {
   let nftContract: Contract;
   let ownerWallet: Wallet;
   let recipientWallet: Wallet;
@@ -14,7 +14,7 @@ describe("MyNFT", function () {
     otherWallet = getWallet(LOCAL_RICH_WALLETS[3].privateKey);
 
     nftContract = await deployContract(
-      "MyNFT",
+      "NovaNFT",
       [],
       // ["MyNFTName", "MNFT", "https://mybaseuri.com/token/"],
       { wallet: ownerWallet, silent: true }
@@ -22,7 +22,7 @@ describe("MyNFT", function () {
   });
 
   it("Should mint a new NFT to the recipient", async function () {
-    const tx = await nftContract.safeMint(recipientWallet.address, 0);
+    const tx = await nftContract.safeMint(recipientWallet.address, "ESFJ");
     await tx.wait();
     const balance = await nftContract.balanceOf(recipientWallet.address);
     expect(balance).to.equal(BigInt("1"));
@@ -45,7 +45,7 @@ describe("MyNFT", function () {
 
   it("Should not allow non-owner to mint NFTs", async function () {
     try {
-      const tx3 = await (nftContract.connect(recipientWallet) as Contract).safeMint(recipientWallet.address, 0);
+      const tx3 = await (nftContract.connect(recipientWallet) as Contract).safeMint(recipientWallet.address, "ISTP");
       await tx3.wait();
       expect.fail("Expected mint to revert, but it didn't");
     } catch (error) {
@@ -53,7 +53,7 @@ describe("MyNFT", function () {
     }
   });
 
-  it("Should able to burn", async function () {
+  it("Should be able to burn", async function () {
     const tx = await (nftContract.connect(recipientWallet) as Contract).burn(0);
     await tx.wait();
 
@@ -63,7 +63,7 @@ describe("MyNFT", function () {
 
   it("Should not be able to transfer NFT", async function () {
     try {
-      const tx = await nftContract.safeMint(recipientWallet.address, 0);
+      const tx = await nftContract.safeMint(recipientWallet.address, "INFJ");
       await tx.wait();
 
 

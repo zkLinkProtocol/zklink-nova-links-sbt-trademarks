@@ -19,10 +19,10 @@ contract NovaNFT is ERC721, ERC721Burnable, Ownable {
 
     constructor() ERC721("Nova", "NOVA") {
         // TODO: Remove this part
-        safeMint(msg.sender, "ISTP");
-        safeMint(msg.sender, "ESFJ");
-        safeMint(msg.sender, "INFJ");
-        safeMint(msg.sender, "ENTP");
+        // safeMint(msg.sender, "ISTP");
+        // safeMint(msg.sender, "ESFJ");
+        // safeMint(msg.sender, "INFJ");
+        // safeMint(msg.sender, "ENTP");
     }
 
     function safeMint(
