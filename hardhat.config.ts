@@ -5,6 +5,8 @@ import "@matterlabs/hardhat-zksync-deploy";
 import "@matterlabs/hardhat-zksync-solc";
 import "@matterlabs/hardhat-zksync-verify";
 
+import "@nomicfoundation/hardhat-toolbox";
+
 const config: HardhatUserConfig = {
   defaultNetwork: "zkSyncGoerliTestnet",
   networks: {
@@ -39,6 +41,10 @@ const config: HardhatUserConfig = {
     hardhat: {
       zksync: true,
     },
+    polygonMumbai: {
+      url: "https://rpc.ankr.com/polygon_mumbai	",
+      ethNetwork: "polygonMumbai"
+    }
   },
   zksolc: {
     version: "latest",

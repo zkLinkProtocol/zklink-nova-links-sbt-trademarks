@@ -22,7 +22,7 @@ describe("MyNFT", function () {
   });
 
   it("Should mint a new NFT to the recipient", async function () {
-    const tx = await nftContract.mint(recipientWallet.address);
+    const tx = await nftContract.safeMint(recipientWallet.address, 0);
     await tx.wait();
     const balance = await nftContract.balanceOf(recipientWallet.address);
     expect(balance).to.equal(BigInt("1"));
@@ -35,9 +35,9 @@ describe("MyNFT", function () {
   // });
 
   // it("Should allow owner to mint multiple NFTs", async function () {
-  //   const tx1 = await nftContract.mint(recipientWallet.address);
+  //   const tx1 = await nftContract.safeMint(recipientWallet.address);
   //   await tx1.wait();
-  //   const tx2 = await nftContract.mint(recipientWallet.address);
+  //   const tx2 = await nftContract.safeMint(recipientWallet.address);
   //   await tx2.wait();
   //   const balance = await nftContract.balanceOf(recipientWallet.address);
   //   expect(balance).to.equal(BigInt("3")); // 1 initial nft + 2 minted
@@ -45,7 +45,7 @@ describe("MyNFT", function () {
 
   it("Should not allow non-owner to mint NFTs", async function () {
     try {
-      const tx3 = await (nftContract.connect(recipientWallet) as Contract).mint(recipientWallet.address);
+      const tx3 = await (nftContract.connect(recipientWallet) as Contract).safeMint(recipientWallet.address, 0);
       await tx3.wait();
       expect.fail("Expected mint to revert, but it didn't");
     } catch (error) {
@@ -53,12 +53,19 @@ describe("MyNFT", function () {
     }
   });
 
+  it("Should able to burn", async function () {
+    const tx = await (nftContract.connect(recipientWallet) as Contract).burn(0);
+    await tx.wait();
+
+    const balance = await nftContract.balanceOf(recipientWallet.address);
+    expect(balance).to.equal(BigInt("0"));
+  });
+
   it("Should not be able to transfer NFT", async function () {
     try {
-      const tx = await nftContract.mint(recipientWallet.address);
+      const tx = await nftContract.safeMint(recipientWallet.address, 0);
       await tx.wait();
-      // const balance = await nftContract.balanceOf(recipientWallet.address);
-      // expect(balance).to.equal(BigInt("2"));
+
 
       const tx2 = await (nftContract.connect(recipientWallet) as Contract).transferFrom(recipientWallet.address, otherWallet.address, 1);
       await tx2.wait();
@@ -66,4 +73,6 @@ describe("MyNFT", function () {
       expect(error.message).to.include("Token not transferable");
     }
   });
+
+
 });
