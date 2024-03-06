@@ -8,6 +8,7 @@
   "scripts": {
     "deploy": "npx hardhat deploy-zksync --script nft/deploy.ts",
     "interact": "hardhat deploy-zksync --script interact.ts",
+    "checkBalance": "npx hardhat run scripts/getBalanceOfNFT.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "test": "hardhat test --network hardhat"

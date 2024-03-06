@@ -1,7 +1,7 @@
 import { ethers } from 'hardhat';
 import { Provider } from 'zksync-ethers';
 
-const contractAddress = "0x91e33DE81D1DD991847911aB74afADc84560A781";
+const contractAddress = "0xdd9Ee06ff902A02B1E2809d7Aa90277b4953e2C0";
 const accountAddress = "0x2B0cbA2DEa9e77141C9101241AFd888d950b962A";
 
 async function main() {

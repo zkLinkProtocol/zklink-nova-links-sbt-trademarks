@@ -6,24 +6,12 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-// import "@openzeppelin/contracts/utils/Strings.sol";
-// import "@openzeppelin/contracts/utils/Base64.sol";
-
 contract NovaNFT is ERC721, ERC721Burnable, Ownable {
-    // using Strings for uint256;
-    // using Base64 for bytes;
-
     uint256 private _nextTokenId;
 
     mapping(uint256 => string) public charactersMapping;
 
-    constructor() ERC721("Nova", "NOVA") {
-        // TODO: Remove this part
-        // safeMint(msg.sender, "ISTP");
-        // safeMint(msg.sender, "ESFJ");
-        // safeMint(msg.sender, "INFJ");
-        // safeMint(msg.sender, "ENTP");
-    }
+    constructor() ERC721("Nova", "NOVA") {}
 
     function safeMint(
         address to,
