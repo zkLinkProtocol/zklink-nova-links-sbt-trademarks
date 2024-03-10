@@ -46,6 +46,7 @@ contract NovaNFT is
         string memory type_of_character,
         bytes calldata signature
     ) public {
+        require(balanceOf(to) == 0, "You already have a character");
         address witnessAddress = ECDSA.recover(
             keccak256(abi.encodePacked(to, "NOVA-SBT-1")),
             signature
@@ -70,10 +71,16 @@ contract NovaNFT is
         address to,
         uint256 firstTokenId,
         uint256 batchSize
-    ) internal pure override(ERC721, ERC721Enumerable) {
+    ) internal override(ERC721, ERC721Enumerable) {
         require(
             from == address(0) || to == address(0),
             "Token not transferable"
+        );
+        ERC721Enumerable._beforeTokenTransfer(
+            from,
+            to,
+            firstTokenId,
+            batchSize
         );
     }
 
