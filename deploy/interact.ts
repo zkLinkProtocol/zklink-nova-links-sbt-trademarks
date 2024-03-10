@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { getSignature } from "./witness";
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = "0xd0f1a1EF1de64DFc061164395cF2d69D009dcb8e";
+const CONTRACT_ADDRESS = "0xF2fe005206cF81C149EbB2D40A294F5Ac59D9E6D";
 if (!CONTRACT_ADDRESS)
   throw "⛔️ Provide address of the contract to interact with!";
 
@@ -14,7 +14,7 @@ const accountAddress = "0xe269B18099A71599994312757fEf8DEBE7518C31";
 export default async function () {
   console.log(`Running script to interact with contract ${CONTRACT_ADDRESS}`);
 
-  if(!process.env.WITNESS_SINGER_PRIVATE_KEY) {
+  if (!process.env.WITNESS_SINGER_PRIVATE_KEY) {
     throw "⛔️ Provide WITNESS_SINGER_PRIVATE_KEY";
   }
   // Load compiled contract info
@@ -31,28 +31,27 @@ export default async function () {
   const response = await contract.balanceOf(accountAddress);
   console.log(`Current Balance is: ${response}`);
 
-  const characters = ["ISTP", "ESFJ", "INFJ", "ENTP"];
-  for (let i = 0; i < characters.length; i++) {
-    console.log(`Minting: ${characters[i]}`);
+  const character = ["ISTP", "ESFJ", "INFJ", "ENTP"][(Math.random() * 4) | 0];
 
-    // Run contract write function
-    const transaction = await contract["safeMint(address,string,bytes)"](
+  console.log(`Minting: ${character}`);
+
+  // Run contract write function
+  const transaction = await contract["safeMint(address,string,bytes)"](
+    accountAddress,
+    character,
+    getSignature(
       accountAddress,
-      characters[i],
-      getSignature(
-        accountAddress,
-        "NOVA-SBT-1",
-        process.env.WITNESS_SINGER_PRIVATE_KEY || ""
-      )
-    );
-    console.log(`Transaction hash of setting new message: ${transaction.hash}`);
+      "NOVA-SBT-1",
+      process.env.WITNESS_SINGER_PRIVATE_KEY || ""
+    )
+  );
+  console.log(`Transaction hash of setting new message: ${transaction.hash}`);
 
-    // Wait until transaction is processed
-    await transaction.wait();
+  // Wait until transaction is processed
+  await transaction.wait();
 
-    // Read message after transaction
-    console.log(
-      `The balance now is: ${await contract.balanceOf(accountAddress)}`
-    );
-  }
+  // Read message after transaction
+  console.log(
+    `The balance now is: ${await contract.balanceOf(accountAddress)}`
+  );
 }
