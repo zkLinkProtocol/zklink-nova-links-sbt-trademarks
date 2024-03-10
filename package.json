@@ -21,11 +21,11 @@
     "@matterlabs/zksync-contracts": "^0.6.1",
     "@nomicfoundation/hardhat-ethers": "^3.0.5",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
-    "@openzeppelin/contracts": "^4.6.0",
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "chai": "^4.3.7",
     "dotenv": "^16.0.3",
+    "elliptic": "^6.5.4",
     "ethers": "^6.9.2",
     "hardhat": "^2.12.4",
     "mocha": "^10.2.0",
@@ -34,6 +34,8 @@
     "zksync-ethers": "^6.0.0"
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0"
+    "@ethersproject/bytes": "^5.7.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^4.9.2"
   }
 }

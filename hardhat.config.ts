@@ -8,53 +8,30 @@ import "@matterlabs/hardhat-zksync-verify";
 import "@nomicfoundation/hardhat-toolbox";
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "zkSyncGoerliTestnet",
+  defaultNetwork: "zklinkNovaGoerliTestnet",
   networks: {
-    zkSyncSepoliaTestnet: {
-      url: "https://sepolia.era.zksync.dev",
-      ethNetwork: "sepolia",
-      zksync: true,
-      verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification",
-    },
-    zkSyncMainnet: {
-      url: "https://mainnet.era.zksync.io",
-      ethNetwork: "mainnet",
-      zksync: true,
-      verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
-    },
-    zkSyncGoerliTestnet: { // deprecated network
+    zklinkNovaGoerliTestnet: {
       url: "https://goerli.rpc.zklink.io",
       ethNetwork: "goerli",
       zksync: true,
-      verifyURL: "https://zksync2-testnet-explorer.zksync.dev/contract_verification",
+      verifyURL: "https://goerli.explorer.zklink.io/contract_verification",
     },
-    dockerizedNode: {
-      url: "http://localhost:3050",
-      ethNetwork: "http://localhost:8545",
+    zkLinkNovaMainnet: {
+      url: "https://rpc.zklink.io",
+      ethNetwork: "mainnet",
       zksync: true,
+      verifyURL: "https://explorer.zklink.io/contract_verification",
     },
-    inMemoryNode: {
-      url: "http://127.0.0.1:8011",
-      ethNetwork: "localhost", // in-memory node doesn't support eth node; removing this line will cause an error
-      zksync: true,
-    },
-    hardhat: {
-      zksync: true,
-    },
-    polygonMumbai: {
-      url: "https://rpc.ankr.com/polygon_mumbai	",
-      ethNetwork: "polygonMumbai"
-    }
   },
   zksolc: {
-    version: "latest",
+    version: "1.3.22",
     settings: {
       // find all available options in the official documentation
       // https://era.zksync.io/docs/tools/hardhat/hardhat-zksync-solc.html#configuration
     },
   },
   solidity: {
-    version: "0.8.17",
+    version: "0.8.20",
   },
 };
 
