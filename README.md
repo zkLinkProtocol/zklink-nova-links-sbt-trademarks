@@ -26,7 +26,7 @@ cd zklink-nova-links-sbt-trademarks
 3. Install dependencies:
 
 ```bash
-npm install
+npm install --force
 ```
 
 ## Usage
