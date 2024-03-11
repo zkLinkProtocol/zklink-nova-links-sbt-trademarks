@@ -43,7 +43,7 @@ export default async function () {
   console.log("Approve Box Done");
 
   // NOTE: Change this
-  const tokenId = 4;
+  const tokenId = 5;
 
   const nonce = 1;
   const expiry = 1711155895;
@@ -56,7 +56,7 @@ export default async function () {
     expiry,
     getSignature(
       ACCOUNT_ADDRESS,
-      "NOVA-BOOSTER-SBT-1",
+      "NOVA-BOOSTER-SBT-500",
       process.env.WITNESS_SINGER_PRIVATE_KEY || ""
     )
   );

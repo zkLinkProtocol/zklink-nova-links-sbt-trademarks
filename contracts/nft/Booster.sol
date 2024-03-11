@@ -64,7 +64,14 @@ contract BoosterNFT is
         require(nonce == nonces[to] + 1, "Invalid nonce");
 
         address witnessAddress = ECDSA.recover(
-            keccak256(abi.encodePacked(to, "NOVA-BOOSTER-SBT-1")),
+            keccak256(
+                abi.encodePacked(
+                    to,
+                    string(
+                        abi.encodePacked("NOVA-BOOSTER-SBT-", type_of_booster)
+                    )
+                )
+            ),
             signature
         );
         _checkRole(WITNESS_ROLE, witnessAddress);
