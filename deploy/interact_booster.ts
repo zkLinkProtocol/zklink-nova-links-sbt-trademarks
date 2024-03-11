@@ -43,12 +43,17 @@ export default async function () {
   console.log("Approve Box Done");
 
   // NOTE: Change this
-  const tokenId = 3;
+  const tokenId = 4;
+
+  const nonce = 1;
+  const expiry = 1711155895;
 
   // 2. Burn the above NFT and mint the booster (Backend)
-  const safe_mint_transaction = await boosterContract['safeMint(uint256, string, bytes)'](
+  const safe_mint_transaction = await boosterContract['safeMint(uint256, string, uint256, uint256, bytes)'](
     tokenId,
     '500',
+    nonce,
+    expiry,
     getSignature(
       ACCOUNT_ADDRESS,
       "NOVA-BOOSTER-SBT-1",

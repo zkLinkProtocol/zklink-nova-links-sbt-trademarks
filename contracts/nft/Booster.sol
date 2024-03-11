@@ -22,6 +22,8 @@ contract BoosterNFT is
     uint256 private _nextTokenId;
     bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
+    mapping(address => uint256) nonces;
+
     mapping(uint256 => string) public boosterMapping;
 
     constructor(
@@ -54,14 +56,21 @@ contract BoosterNFT is
         address to,
         uint256 original_nft_id,
         string memory type_of_booster,
+        uint256 nonce,
+        uint256 expiry,
         bytes calldata signature
     ) public {
+        require(block.timestamp <= expiry, "Signature has expired");
+        require(nonce == nonces[to] + 1, "Invalid nonce");
+
         address witnessAddress = ECDSA.recover(
             keccak256(abi.encodePacked(to, "NOVA-BOOSTER-SBT-1")),
             signature
         );
         _checkRole(WITNESS_ROLE, witnessAddress);
         mysteryBoxNFT.burn(original_nft_id);
+
+        nonces[to] = nonce;
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -71,9 +80,18 @@ contract BoosterNFT is
     function safeMint(
         uint256 original_nft_id,
         string memory type_of_booster,
+        uint256 nonce,
+        uint256 expiry,
         bytes calldata signature
     ) external {
-        safeMint(msg.sender, original_nft_id, type_of_booster, signature);
+        safeMint(
+            msg.sender,
+            original_nft_id,
+            type_of_booster,
+            nonce,
+            expiry,
+            signature
+        );
     }
 
     // Soul Bound Token
