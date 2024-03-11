@@ -6,7 +6,7 @@ export default async function () {
   // const name = "My new NFT";
   // const symbol = "MYNFT";
   // const baseTokenURI = "https://mybaseuri.com/token/";
-  await deployContract("NovaNFT", ["0xe269B18099A71599994312757fEf8DEBE7518C31"], {
+  await deployContract("NovaNFT", [process.env.WITNESS_ADDRESS], {
     noVerify: false
   });
 }
