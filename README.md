@@ -1,17 +1,19 @@
 # zkLink Nova SBT NFT 2024
 
-This project allows you to deploy Non-Fungible Tokens (NFTs) using zkSync with Hardhat.
+This guide provides step-by-step instructions for deploying Non-Fungible Tokens (NFTs) through zkSync with Hardhat using the zkLink Nova SBT NFT project.
 
 ## Prerequisites
 
-Make sure you have the following installed:
+Ensure the following prerequisites are met:
 
 - Node.js
 - npm (Node Package Manager)
 
 ## Installation
 
-1. Clone this repository to your local machine:
+Follow these installation steps:
+
+1. Clone the repository to your local machine:
 
 ```bash
 git clone git@github.com:zkLinkProtocol/zklink-nova-links-sbt-trademarks.git
@@ -29,16 +31,42 @@ cd zklink-nova-links-sbt-trademarks
 npm install --force
 ```
 
-## Usage
-
-To deploy the NFT using zkSync, run the following command:
+4. Create an `.env` file by copying `.env.example`:
 
 ```bash
-npm run deploy
+cp .env.example .env
 ```
 
-This command will trigger the deployment script located at `nft/deploy.ts`. It will deploy your NFT contract using zkSync.
+## Deployment
 
-## Customization
+### Configuration
 
-If you need to customize the deployment script or any other configurations, feel free to modify the files under the `nft` directory according to your requirements. The main NFT contract is located at `contracts/nft/NovaNFT.sol`.
+Before deployment, configure the `.env` file:
+
+- Obtain the wallet private key from Metamask and insert it into `WALLET_PRIVATE_KEY` and `WITNESS_SINGER_PRIVATE_KEY` in the `.env` file.
+
+### Deployments
+
+#### Deploy Nova SBT NFT
+
+1. Run `npm run deploy`.
+2. Paste the Smart Contract Address into `NOVA_NFT_CONTRACT_ADDRESS` in the `.env` file.
+
+#### Deploy Trademark NFT
+
+1. Execute `deploy:trademark`.
+2. Paste the Smart Contract Address into `TRADEMARK_CONTRACT_ADDRESS` in the `.env` file.
+
+#### Deploy Mystery Box NFT
+
+1. Execute `deploy:box`.
+2. Paste the Smart Contract Address into `BOX_CONTRACT_ADDRESS` in the `.env` file.
+
+## Interaction Scripts
+
+Use the following scripts for interactions:
+
+1. Run `npm run interact` to receive one Nova SBT NFT to your wallet.
+2. Execute `npm run interact:trademark` to mint 4 trademarks to your wallet.
+3. Execute `npm run interact:box` to mint 12 mystery boxes to your wallet.
+4. Run `npm run interact:full` to burn SBT and 4 trademarks to obtain the Full Version NFT.

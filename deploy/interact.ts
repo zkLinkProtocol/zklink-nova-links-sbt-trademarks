@@ -3,15 +3,12 @@ import { getWallet } from "./utils";
 import { ethers } from "ethers";
 import { getSignature } from "./witness";
 
-// Address of the contract to interact with
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-if (!CONTRACT_ADDRESS)
-  throw "⛔️ Provide address of the contract to interact with!";
-
-const accountAddress = process.env.ACCOUNT_ADDRESS;
-
-// An example of a script to interact with the contract
 export default async function () {
+  const CONTRACT_ADDRESS = process.env.NOVA_NFT_CONTRACT_ADDRESS;
+  if (!CONTRACT_ADDRESS)
+    throw "⛔️ Provide address of the contract to interact with!";
+
+  const accountAddress = process.env.ACCOUNT_ADDRESS;
   console.log(`Running script to interact with contract ${CONTRACT_ADDRESS}`);
 
   if (!process.env.WITNESS_SINGER_PRIVATE_KEY) {
@@ -54,4 +51,8 @@ export default async function () {
   console.log(
     `The balance now is: ${await contract.balanceOf(accountAddress)}`
   );
+
+  return {
+    character,
+  }
 }
