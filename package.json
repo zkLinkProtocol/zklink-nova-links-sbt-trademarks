@@ -1,13 +1,15 @@
 {
-  "name": "zksync-hardhat-template",
-  "description": "A template for zkSync smart contracts development with Hardhat",
+  "name": "zklink-nova-links-sbt-trademark",
+  "description": "",
   "private": true,
   "author": "Matter Labs",
   "license": "MIT",
   "repository": "https://github.com/matter-labs/zksync-hardhat-template.git",
   "scripts": {
     "deploy": "npx hardhat deploy-zksync --script nft/deploy.ts",
+    "deploy:trademark": "npx hardhat deploy-zksync --script nft/deployTrademark.ts",
     "interact": "hardhat deploy-zksync --script interact.ts",
+    "interact:trademark": "hardhat deploy-zksync --script interact_trademark.ts",
     "checkBalance": "npx hardhat run scripts/getBalanceOfNFT.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
