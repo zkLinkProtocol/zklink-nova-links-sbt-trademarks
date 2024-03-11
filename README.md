@@ -54,13 +54,18 @@ Before deployment, configure the `.env` file:
 
 #### Deploy Trademark NFT
 
-1. Execute `deploy:trademark`.
+1. Execute `npm run deploy:trademark`.
 2. Paste the Smart Contract Address into `TRADEMARK_CONTRACT_ADDRESS` in the `.env` file.
 
 #### Deploy Mystery Box NFT
 
-1. Execute `deploy:box`.
+1. Execute `npm run deploy:box`.
 2. Paste the Smart Contract Address into `BOX_CONTRACT_ADDRESS` in the `.env` file.
+
+#### Deploy Booster NFT
+
+1. Execute `npm run deploy:booster`
+2. Paste the Smart Contract Address into `BOOSTER_CONTRACT_ADDRESS` in the `.env` file.
 
 ## Interaction Scripts
 
@@ -70,3 +75,4 @@ Use the following scripts for interactions:
 2. Execute `npm run interact:trademark` to mint 4 trademarks to your wallet.
 3. Execute `npm run interact:box` to mint 12 mystery boxes to your wallet.
 4. Run `npm run interact:full` to burn SBT and 4 trademarks to obtain the Full Version NFT.
+5. Run `npm run interact:booster` to burn Box to obtain the Booster NFT.
