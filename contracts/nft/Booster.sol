@@ -62,23 +62,7 @@ contract BoosterNFT is
         uint256 expiry,
         bytes calldata signature
     ) public {
-        // require(block.timestamp <= expiry, "Signature has expired");
         check(to, signature, nonce, expiry, "NOVA-BOOSTER-SBT-");
-        // require(nonce == nonces[to] + 1, "Invalid nonce");
-
-        // address witnessAddress = ECDSA.recover(
-        //     keccak256(
-        //         abi.encodePacked(
-        //             to,
-        //             string(
-        //                 abi.encodePacked("NOVA-BOOSTER-SBT-", type_of_booster)
-        //             )
-        //         )
-        //     ),
-        //     signature
-        // );
-        // _checkRole(WITNESS_ROLE, witnessAddress);
-        // nonces[to] = nonce;
 
         mysteryBoxNFT.burn(original_nft_id);
 

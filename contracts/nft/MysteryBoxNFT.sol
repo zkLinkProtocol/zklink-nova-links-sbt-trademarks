@@ -49,17 +49,7 @@ contract MysteryBoxNFT is
         string memory nonce,
         uint256 expiry
     ) public {
-        check(to, signature, nonce, expiry, "NOVA-MYSTERY-BOX-1");
-
-        // require(block.timestamp <= expiry, "Signature has expired");
-        // require(nonce == nonces[to] + 1, "Invalid nonce");
-        // address witnessAddress = ECDSA.recover(
-        //     keccak256(abi.encodePacked(to, "NOVA-MYSTERY-BOX-1")),
-        //     signature
-        // );
-        // _checkRole(WITNESS_ROLE, witnessAddress);
-
-        // nonces[to] = nonce;
+        check(to, signature, nonce, expiry, "NOVA-MYSTERY-BOX-");
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);

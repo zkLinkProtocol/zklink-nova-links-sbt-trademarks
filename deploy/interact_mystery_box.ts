@@ -32,18 +32,19 @@ export default async function () {
     console.log(`Current Balance for account ${accountAddress} is: ${response}`);
 
     let nonce = 1;
+    const expiry = 1711155895;
 
     for (let i = 0; i < 12; i++) {
         // Run contract write function
-        const transaction = await contract["safeMint(address,bytes,uint256,uint256)"](
+        const transaction = await contract["safeMint(address,bytes,string,uint256)"](
             accountAddress,
             getSignature(
                 accountAddress,
-                "NOVA-MYSTERY-BOX-1",
+                `NOVA-MYSTERY-BOX-${nonce}`,
                 process.env.WITNESS_SINGER_PRIVATE_KEY || ""
             ),
-            nonce,
-            1711155895
+            String(nonce),
+            expiry
         );
         console.log(`Transaction hash of setting new message: ${transaction.hash}`);
 

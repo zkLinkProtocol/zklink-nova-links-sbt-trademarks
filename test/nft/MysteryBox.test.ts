@@ -5,7 +5,7 @@ import { getWallet, deployContract, LOCAL_RICH_WALLETS } from '../../deploy/util
 
 import { getSignature } from "../../deploy/witness";
 
-describe("Trademark NFT", function () {
+describe("MysteryBox NFT", function () {
     let nftContract: Contract;
     let ownerWallet: Wallet;
     let recipientWallet: Wallet;
@@ -18,7 +18,7 @@ describe("Trademark NFT", function () {
         otherWallet = getWallet(LOCAL_RICH_WALLETS[3].privateKey);
 
         nftContract = await deployContract(
-            "TrademarkNFT",
+            "MysteryBoxNFT",
             [ownerWallet.address],
             { wallet: ownerWallet, silent: true, noVerify: true }
         );
@@ -32,12 +32,12 @@ describe("Trademark NFT", function () {
 
         const signature = getSignature(
             address,
-            `NOVA-TradeMark-1-${nonce}`,
+            `NOVA-MYSTERY-BOX-${nonce}`,
             ownerWallet.privateKey || ""
         );
 
 
-        const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "0", signature, String(nonce), expiry);
+        const tx = await nftContract['safeMint(address, bytes, string, uint256)'](address, signature, String(nonce), expiry);
         await tx.wait();
 
         const balance = await nftContract.totalSupply();
@@ -56,39 +56,39 @@ describe("Trademark NFT", function () {
 
             const signature = getSignature(
                 address,
-                `NOVA-TradeMark-1-${nonce}`,
+                `NOVA-MYSTERY-BOX-${nonce}`,
                 ownerWallet.privateKey || ""
             );
 
 
-            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "0", signature, String(nonce), expiry);
+            const tx = await nftContract['safeMint(address, bytes, string, uint256)'](address, signature, String(nonce), expiry);
         } catch (error) {
             expect(error.message).to.include("Used Signature");
         }
     });
 
-    it("Should mint 3 new NFT to the recipient", async function () {
+    it("Should mint 10 new NFT to the recipient", async function () {
         const expiry = 1711155895;
 
         const address = recipientWallet.address;
 
-        for (let nonce = 2; nonce <= 4; nonce++) {
+        for (let nonce = 2; nonce <= 11; nonce++) {
             const signature = getSignature(
                 address,
-                `NOVA-TradeMark-1-${nonce}`,
+                `NOVA-MYSTERY-BOX-${nonce}`,
                 ownerWallet.privateKey || ""
             );
 
 
-            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "ESFJ", signature, String(nonce), expiry);
+            const tx = await nftContract['safeMint(address, bytes, string, uint256)'](address, signature, String(nonce), expiry);
             await tx.wait();
         }
 
         const balance = await nftContract.totalSupply();
-        expect(balance).to.equal(BigInt("4"));
+        expect(balance).to.equal(BigInt("11"));
 
         const balanceOfRecipient = await nftContract.balanceOf(recipientWallet.address);
-        expect(balanceOfRecipient).to.equal(BigInt("4"));
+        expect(balanceOfRecipient).to.equal(BigInt("11"));
     });
 
 });
