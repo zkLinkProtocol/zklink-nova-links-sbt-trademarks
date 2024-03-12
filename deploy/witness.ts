@@ -21,7 +21,7 @@ export function getSignature(
   const signatureHex = hexlify(
     concat([splitSig.r, splitSig.s, signature.recoveryParam ? "0x1c" : "0x1b"])
   );
-  console.log("signatureHex", signatureHex);
+  // console.log("signatureHex", signatureHex);
   return signatureHex;
 }
 function digest(addr: string, projectId: string) {

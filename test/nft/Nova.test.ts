@@ -5,7 +5,7 @@ import { getWallet, deployContract, LOCAL_RICH_WALLETS } from '../../deploy/util
 
 import { getSignature } from "../../deploy/witness";
 
-describe("Trademark NFT", function () {
+describe("Nova NFT", function () {
     let nftContract: Contract;
     let ownerWallet: Wallet;
     let recipientWallet: Wallet;
@@ -18,7 +18,7 @@ describe("Trademark NFT", function () {
         otherWallet = getWallet(LOCAL_RICH_WALLETS[3].privateKey);
 
         nftContract = await deployContract(
-            "TrademarkNFT",
+            "NovaNFT",
             [ownerWallet.address],
             { wallet: ownerWallet, silent: true, noVerify: true }
         );
@@ -28,11 +28,11 @@ describe("Trademark NFT", function () {
         let nonce = 1;
         const expiry = 1711155895;
 
-        const address = recipientWallet.address;
+        const address = ownerWallet.address;
 
         const signature = getSignature(
             address,
-            `NOVA-TradeMark-1-${nonce}`,
+            `NOVA-SBT-1-${nonce}`,
             ownerWallet.privateKey || ""
         );
 
@@ -52,43 +52,64 @@ describe("Trademark NFT", function () {
             let nonce = 1;
             const expiry = 1711155895;
 
-            const address = recipientWallet.address;
+            const address = ownerWallet.address;
 
             const signature = getSignature(
                 address,
-                `NOVA-TradeMark-1-${nonce}`,
+                `NOVA-SBT-1-${nonce}`,
+                ownerWallet.privateKey || ""
+            );
+
+
+            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "0", signature, String(nonce), expiry);
+            await tx.wait();
+            expect.fail("Should not reach here");
+        } catch (error) {
+            expect(error.message).to.include("Used Signature");
+        }
+    });
+
+    it("Should only allow one user have one NFT", async function () {
+        try {
+            let nonce = 2;
+            const expiry = 1711155895;
+
+            const address = ownerWallet.address;
+
+            const signature = getSignature(
+                address,
+                `NOVA-SBT-1-${nonce}`,
                 ownerWallet.privateKey || ""
             );
 
 
             const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "0", signature, String(nonce), expiry);
         } catch (error) {
-            expect(error.message).to.include("Used Signature");
+            expect(error.message).to.include("You already have a character");
         }
     });
 
-    it("Should mint 10 new NFT to the recipient", async function () {
+    it("Should mint a new NFT to the recipient", async function () {
+        let nonce = 3;
         const expiry = 1711155895;
 
-        const address = recipientWallet.address;
+        const address = otherWallet.address;
 
-        for (let nonce = 2; nonce <= 11; nonce++) {
-            const signature = getSignature(
-                address,
-                `NOVA-TradeMark-1-${nonce}`,
-                ownerWallet.privateKey || ""
-            );
+        const signature = getSignature(
+            address,
+            `NOVA-SBT-1-${nonce}`,
+            ownerWallet.privateKey || ""
+        );
 
 
-            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "ESFJ", signature, String(nonce), expiry);
-            await tx.wait();
-        }
+        const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "0", signature, String(nonce), expiry);
+        await tx.wait();
 
         const balance = await nftContract.totalSupply();
-        expect(balance).to.equal(BigInt("11"));
+        expect(balance).to.equal(BigInt("2"));
 
-        const balanceOfRecipient = await nftContract.balanceOf(recipientWallet.address);
-        expect(balanceOfRecipient).to.equal(BigInt("11"));
+        const balanceOfRecipient = await nftContract.balanceOf(address);
+        expect(balanceOfRecipient).to.equal(BigInt("1"));
     });
 
 });
