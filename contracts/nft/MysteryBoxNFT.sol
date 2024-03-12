@@ -18,7 +18,7 @@ contract MysteryBoxNFT is
     constructor(
         address defaultWitness
     )
-        ERC721("NovaTradeMark", "NOVA-TRADE-MARK")
+        ERC721("NovaMysteryBox", "NOVA-MYSTERY-BOX")
         AccessControlDefaultAdminRules(1, msg.sender)
     {
         _setupRole(WITNESS_ROLE, defaultWitness);
@@ -39,10 +39,7 @@ contract MysteryBoxNFT is
             ERC721Enumerable.supportsInterface(interfaceId);
     }
 
-    function safeMint(
-        address to,
-        bytes calldata signature
-    ) public {
+    function safeMint(address to, bytes calldata signature) public {
         address witnessAddress = ECDSA.recover(
             keccak256(abi.encodePacked(to, "NOVA-MYSTERY-BOX-1")),
             signature
@@ -53,9 +50,7 @@ contract MysteryBoxNFT is
         _safeMint(to, tokenId);
     }
 
-    function safeMint(
-        bytes calldata signature
-    ) external {
+    function safeMint(bytes calldata signature) external {
         safeMint(msg.sender, signature);
     }
 

@@ -30,7 +30,7 @@ contract BoosterNFT is
         address defaultWitness,
         address boxAddress
     )
-        ERC721("FullNovaSBT", "FULL-NOVA-SBT")
+        ERC721("NovaBoosterNFT", "NOVA-BOOSTER-NFT")
         AccessControlDefaultAdminRules(1, msg.sender)
     {
         _setupRole(WITNESS_ROLE, defaultWitness);

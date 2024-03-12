@@ -37,7 +37,7 @@ contract FullNovaNFT is
         address trademarkAddress,
         address novaNFTAddress
     )
-        ERC721("FullNovaSBT", "FULL-NOVA-SBT")
+        ERC721("NovaLynk", "NOVA-LYNK")
         AccessControlDefaultAdminRules(1, msg.sender)
     {
         _setupRole(WITNESS_ROLE, defaultWitness);
@@ -82,18 +82,6 @@ contract FullNovaNFT is
         }
     }
 
-    function decode_address(
-        address to,
-        bytes calldata signature
-    ) public pure returns (address) {
-        address witnessAddress = ECDSA.recover(
-            keccak256(abi.encodePacked(to, "NOVA-FINAL-SBT-1")),
-            signature
-        );
-
-        return witnessAddress;
-    }
-
     function safeMint(
         address to,
         uint256 original_nft_id,
@@ -107,7 +95,7 @@ contract FullNovaNFT is
         check(to, trademark1, trademark2, trademark3, trademark4);
 
         address witnessAddress = ECDSA.recover(
-            keccak256(abi.encodePacked(to, "NOVA-FINAL-SBT-1")),
+            keccak256(abi.encodePacked(to, "NOVA-LYNK-1")),
             signature
         );
         _checkRole(WITNESS_ROLE, witnessAddress);

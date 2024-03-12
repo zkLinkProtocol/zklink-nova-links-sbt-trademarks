@@ -20,7 +20,7 @@ contract TrademarkNFT is
     constructor(
         address defaultWitness
     )
-        ERC721("NovaTradeMark", "NOVA-TRADE-MARK")
+        ERC721("NovaTradeMark", "NOVA-TRADEMARK")
         AccessControlDefaultAdminRules(1, msg.sender)
     {
         _setupRole(WITNESS_ROLE, defaultWitness);
@@ -79,7 +79,7 @@ contract TrademarkNFT is
     }
 
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://QmTvyy4BTNdNrs9TNCxPnyeVzEtJhQV1Ef4mTSK8onNAWu/";
+        return "ipfs://QmXH8EArX1w5T65q2KuqA2JVtZSVVJ9bTqYBLSSmPKcT6i/";
     }
 
     function tokenURI(
