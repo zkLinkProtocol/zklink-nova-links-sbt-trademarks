@@ -4,11 +4,11 @@ import { ethers } from "ethers";
 import { getSignature } from "./witness";
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = process.env.TRADEMARK_CONTRACT_ADDRESS as string;
 if (!CONTRACT_ADDRESS)
     throw "⛔️ Provide address of the contract to interact with!";
 
-const accountAddress = process.env.ACCOUNT_ADDRESS;
+const accountAddress = process.env.ACCOUNT_ADDRESS as string;
 
 // An example of a script to interact with the contract
 export default async function () {

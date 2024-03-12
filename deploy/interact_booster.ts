@@ -11,7 +11,7 @@ export default async function () {
   const BOOSTER_CONTRACT_ADDRESS = process.env.BOOSTER_CONTRACT_ADDRESS as string;
 
 
-  // console.log(`Running script to interact with Lynk contract ${FULL_NOVA_NFT_CONTRACT_ADDRESS}`);
+  console.log(`Running script to interact with Lynk contract ${BOOSTER_CONTRACT_ADDRESS}`);
 
   if (!process.env.WITNESS_SINGER_PRIVATE_KEY) {
     throw "⛔️ Provide WITNESS_SINGER_PRIVATE_KEY";
@@ -43,7 +43,7 @@ export default async function () {
   console.log("Approve Box Done");
 
   // NOTE: Change this
-  const tokenId = 5;
+  const tokenId = 0;
 
   const nonce = 1;
   const expiry = 1711155895;

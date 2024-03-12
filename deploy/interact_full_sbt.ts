@@ -38,10 +38,21 @@ export default async function () {
   );
 
   // NOTE: Change this
-  const tokenId = 5;
+  const tokenId = 1;
 
   // 1. Approve NOVA
-  console.log(`Trying to approve ${tokenId} NOVA NFT`);
+  console.log(`Trying to approve NOVA NFT with id ${tokenId}`);
+  try {
+    const ownerOfNFT = await fullNovaContract['ownerOf(uint256)'](tokenId);
+    if (ownerOfNFT === ACCOUNT_ADDRESS) {
+      console.log('You have already mint the full version of Nova Lynk.');
+      return;
+    }
+    console.log(`Owner of tokenId ${tokenId} is ${ownerOfNFT}`);
+  } catch (e) {
+
+  }
+
 
   const transaction = await novaNFTContract['approve(address, uint256)'](FULL_NOVA_NFT_CONTRACT_ADDRESS, tokenId);
 
@@ -59,13 +70,13 @@ export default async function () {
   const safe_mint_transaction = await fullNovaContract['safeMint(uint256, string, uint256, uint256, uint256, uint256, bytes)'](
     tokenId,
     'ESFJ',
-    0,
-    1,
-    2,
-    3,
+    4,
+    5,
+    6,
+    7,
     getSignature(
       ACCOUNT_ADDRESS,
-      "NOVA-FINAL-SBT-1",
+      "NOVA-LYNK-1",
       process.env.WITNESS_SINGER_PRIVATE_KEY || ""
     )
   );

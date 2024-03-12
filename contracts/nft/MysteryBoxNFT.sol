@@ -15,6 +15,8 @@ contract MysteryBoxNFT is
     uint256 private _nextTokenId;
     bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
+    mapping(address => uint256) nonces;
+
     constructor(
         address defaultWitness
     )
@@ -39,19 +41,32 @@ contract MysteryBoxNFT is
             ERC721Enumerable.supportsInterface(interfaceId);
     }
 
-    function safeMint(address to, bytes calldata signature) public {
+    function safeMint(
+        address to,
+        bytes calldata signature,
+        uint256 nonce,
+        uint256 expiry
+    ) public {
+        require(block.timestamp <= expiry, "Signature has expired");
+        require(nonce == nonces[to] + 1, "Invalid nonce");
         address witnessAddress = ECDSA.recover(
             keccak256(abi.encodePacked(to, "NOVA-MYSTERY-BOX-1")),
             signature
         );
         _checkRole(WITNESS_ROLE, witnessAddress);
 
+        nonces[to] = nonce;
+
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
     }
 
-    function safeMint(bytes calldata signature) external {
-        safeMint(msg.sender, signature);
+    function safeMint(
+        bytes calldata signature,
+        uint256 nonce,
+        uint256 expiry
+    ) external {
+        safeMint(msg.sender, signature, nonce, expiry);
     }
 
     function _beforeTokenTransfer(

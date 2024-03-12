@@ -4,11 +4,11 @@ import { ethers } from "ethers";
 import { getSignature } from "./witness";
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = process.env.BOX_CONTRACT_ADDRESS as string;
 if (!CONTRACT_ADDRESS)
     throw "⛔️ Provide address of the contract to interact with!";
 
-const accountAddress = process.env.ACCOUNT_ADDRESS;
+const accountAddress = process.env.ACCOUNT_ADDRESS as string;
 
 // An example of a script to interact with the contract
 export default async function () {
@@ -31,15 +31,19 @@ export default async function () {
     const response = await contract.balanceOf(accountAddress);
     console.log(`Current Balance for account ${accountAddress} is: ${response}`);
 
+    let nonce = 1;
+
     for (let i = 0; i < 12; i++) {
         // Run contract write function
-        const transaction = await contract["safeMint(address,bytes)"](
+        const transaction = await contract["safeMint(address,bytes,uint256,uint256)"](
             accountAddress,
             getSignature(
                 accountAddress,
                 "NOVA-MYSTERY-BOX-1",
                 process.env.WITNESS_SINGER_PRIVATE_KEY || ""
-            )
+            ),
+            nonce,
+            1711155895
         );
         console.log(`Transaction hash of setting new message: ${transaction.hash}`);
 
@@ -50,5 +54,7 @@ export default async function () {
         console.log(
             `The balance now is: ${await contract.balanceOf(accountAddress)}`
         );
+
+        nonce++;
     }
 }

@@ -37,6 +37,12 @@ npm install --force
 cp .env.example .env
 ```
 
+5. Compile all Smart contracts
+
+```bash
+npm run compile
+```
+
 ## Deployment
 
 ### Configuration
@@ -50,12 +56,39 @@ Before deployment, configure the `.env` file:
 #### Deploy Nova SBT NFT
 
 1. Run `npm run deploy`.
-2. Paste the Smart Contract Address into `NOVA_NFT_CONTRACT_ADDRESS` in the `.env` file.
+
+```bash
+npm run deploy
+
+> deploy
+> npx hardhat deploy-zksync --script nft/deploy.ts
+
+Starting deployment process of "NovaNFT"...
+rpcUrl https://goerli.rpc.zklink.io
+Estimated deployment cost: 0.00001036124 ETH
+Balance of Wallet: 91659544900000000
+
+"NovaNFT" was successfully deployed:
+ - Contract address: 0x047190965337D85c304E72DaEEFFE48aCC1FD47c
+ - Contract source: contracts/nft/NovaNFT.sol:NovaNFT
+ - Encoded constructor arguments: 0x0000000000000000000000008f9fac43a6740eba56b89d146841c5ed2d3665dd
+
+Requesting contract verification...
+Your verification ID is: 101
+Contract successfully verified on zkSync block explorer!
+```
+
+2. Paste the Smart Contract Address (`0x047190965337D85c304E72DaEEFFE48aCC1FD47c`) into `NOVA_NFT_CONTRACT_ADDRESS` in the `.env` file.
 
 #### Deploy Trademark NFT
 
 1. Execute `npm run deploy:trademark`.
 2. Paste the Smart Contract Address into `TRADEMARK_CONTRACT_ADDRESS` in the `.env` file.
+
+#### Deploy Nova Lynk NFT
+
+1. Execute `npm run deploy:full_nova_nft`
+2. Paste the Smart Contract Address into `FULL_NOVA_NFT_CONTRACT_ADDRESS` in the `.env` file.
 
 #### Deploy Mystery Box NFT
 
@@ -71,8 +104,13 @@ Before deployment, configure the `.env` file:
 
 Use the following scripts for interactions:
 
+### SBT
+
 1. Run `npm run interact` to receive one Nova SBT NFT to your wallet.
 2. Execute `npm run interact:trademark` to mint 4 trademarks to your wallet.
-3. Execute `npm run interact:box` to mint 12 mystery boxes to your wallet.
-4. Run `npm run interact:full` to burn SBT and 4 trademarks to obtain the Full Version NFT.
-5. Run `npm run interact:booster` to burn Box to obtain the Booster NFT.
+3. Run `npm run interact:full` to burn SBT and 4 trademarks to obtain the Full Version NFT.
+
+### Booster
+
+1. Execute `npm run interact:box` to mint 12 mystery boxes to your wallet.
+2. Run `npm run interact:booster` to burn Box to obtain the Booster NFT.
