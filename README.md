@@ -114,3 +114,8 @@ Use the following scripts for interactions:
 
 1. Execute `npm run interact:box` to mint 12 mystery boxes to your wallet.
 2. Run `npm run interact:booster` to burn Box to obtain the Booster NFT.
+
+## Testing
+
+1. Get the Goerli Testnet ETH
+2. Run `npx hardhat test` to deploy the script and run all test cases
