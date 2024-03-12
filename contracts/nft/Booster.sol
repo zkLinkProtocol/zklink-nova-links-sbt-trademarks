@@ -11,18 +11,20 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./MysteryBoxNFT.sol";
+import "../Checkable.sol";
 
 contract BoosterNFT is
     ERC721Burnable,
     ERC721Enumerable,
-    AccessControlDefaultAdminRules
+    AccessControlDefaultAdminRules,
+    Checkable
 {
     MysteryBoxNFT mysteryBoxNFT;
 
     uint256 private _nextTokenId;
-    bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
+    // bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
-    mapping(address => uint256) nonces;
+    // mapping(address => uint256) nonces;
 
     mapping(uint256 => string) public boosterMapping;
 
@@ -56,28 +58,29 @@ contract BoosterNFT is
         address to,
         uint256 original_nft_id,
         string memory type_of_booster,
-        uint256 nonce,
+        string memory nonce,
         uint256 expiry,
         bytes calldata signature
     ) public {
-        require(block.timestamp <= expiry, "Signature has expired");
-        require(nonce == nonces[to] + 1, "Invalid nonce");
+        // require(block.timestamp <= expiry, "Signature has expired");
+        check(to, signature, nonce, expiry, "NOVA-BOOSTER-SBT-");
+        // require(nonce == nonces[to] + 1, "Invalid nonce");
 
-        address witnessAddress = ECDSA.recover(
-            keccak256(
-                abi.encodePacked(
-                    to,
-                    string(
-                        abi.encodePacked("NOVA-BOOSTER-SBT-", type_of_booster)
-                    )
-                )
-            ),
-            signature
-        );
-        _checkRole(WITNESS_ROLE, witnessAddress);
+        // address witnessAddress = ECDSA.recover(
+        //     keccak256(
+        //         abi.encodePacked(
+        //             to,
+        //             string(
+        //                 abi.encodePacked("NOVA-BOOSTER-SBT-", type_of_booster)
+        //             )
+        //         )
+        //     ),
+        //     signature
+        // );
+        // _checkRole(WITNESS_ROLE, witnessAddress);
+        // nonces[to] = nonce;
+
         mysteryBoxNFT.burn(original_nft_id);
-
-        nonces[to] = nonce;
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -87,7 +90,7 @@ contract BoosterNFT is
     function safeMint(
         uint256 original_nft_id,
         string memory type_of_booster,
-        uint256 nonce,
+        string memory nonce,
         uint256 expiry,
         bytes calldata signature
     ) external {

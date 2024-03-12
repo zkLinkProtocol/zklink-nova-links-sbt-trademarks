@@ -24,7 +24,7 @@ export default async function () {
     const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
         contractArtifact.abi,
-        getWallet() // Interact with the contract on behalf of this wallet
+        getWallet()
     );
 
     // Run contract read function
@@ -38,15 +38,15 @@ export default async function () {
 
     for (let i = 0; i < trademarks.length; i++) {
         // Run contract write function
-        const transaction = await contract["safeMint(address,string,bytes,uint256,uint256)"](
+        const transaction = await contract["safeMint(address,string,bytes,string,uint256)"](
             accountAddress,
             trademarks[i],
             getSignature(
                 accountAddress,
-                "NOVA-TradeMark-1",
+                `NOVA-TradeMark-1-${nonce}`,
                 process.env.WITNESS_SINGER_PRIVATE_KEY || ""
             ),
-            nonce,
+            String(nonce),
             expiry
         );
         console.log(`Transaction hash of setting new message: ${transaction.hash}`);

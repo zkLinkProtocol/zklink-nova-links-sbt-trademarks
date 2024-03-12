@@ -6,16 +6,15 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "../Checkable.sol";
 
 contract TrademarkNFT is
     ERC721Burnable,
     ERC721Enumerable,
-    AccessControlDefaultAdminRules
+    AccessControlDefaultAdminRules,
+    Checkable
 {
     uint256 private _nextTokenId;
-    bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
-
-    mapping(address => uint256) nonces;
 
     mapping(uint256 => string) public tradeMarksMapping;
 
@@ -47,19 +46,10 @@ contract TrademarkNFT is
         address to,
         string memory type_of_trademark,
         bytes calldata signature,
-        uint256 nonce,
+        string memory nonce,
         uint256 expiry
     ) public {
-        require(block.timestamp <= expiry, "Signature has expired");
-        require(nonce == nonces[to] + 1, "Invalid nonce");
-
-        address witnessAddress = ECDSA.recover(
-            keccak256(abi.encodePacked(to, "NOVA-TradeMark-1")),
-            signature
-        );
-        _checkRole(WITNESS_ROLE, witnessAddress);
-
-        nonces[to] = nonce;
+        check(to, signature, nonce, expiry, "NOVA-TradeMark-1-");
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -69,7 +59,7 @@ contract TrademarkNFT is
     function safeMint(
         string memory type_of_trademark,
         bytes calldata signature,
-        uint256 nonce,
+        string memory nonce,
         uint256 expiry
     ) external {
         safeMint(msg.sender, type_of_trademark, signature, nonce, expiry);

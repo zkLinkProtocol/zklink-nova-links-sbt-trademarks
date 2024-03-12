@@ -22,6 +22,9 @@ const config: HardhatUserConfig = {
       zksync: true,
       verifyURL: "https://explorer.zklink.io/contract_verification",
     },
+    hardhat: {
+      zksync: true,
+    },
   },
   zksolc: {
     version: "1.3.22",

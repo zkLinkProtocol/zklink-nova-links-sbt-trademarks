@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+import "../Checkable.sol";
 import "./NovaNFT.sol";
 
 interface ITrademark is IERC721 {
@@ -21,14 +22,15 @@ interface ITrademark is IERC721 {
 contract FullNovaNFT is
     ERC721Burnable,
     ERC721Enumerable,
-    AccessControlDefaultAdminRules
+    AccessControlDefaultAdminRules,
+    Checkable
 {
     error TrademarkMismatch(string type_of_trademark, uint256 tokenId);
 
     ITrademark tradeMark;
     NovaNFT novaNFT;
     uint256 private _nextTokenId;
-    bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
+    // bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
     mapping(uint256 => string) public charactersMapping;
 
@@ -60,7 +62,7 @@ contract FullNovaNFT is
             ERC721Enumerable.supportsInterface(interfaceId);
     }
 
-    function check(
+    function checkTrademark(
         address to,
         uint256 trademark1,
         uint256 trademark2,
@@ -90,15 +92,19 @@ contract FullNovaNFT is
         uint256 trademark2,
         uint256 trademark3,
         uint256 trademark4,
-        bytes calldata signature
+        bytes calldata signature,
+        string memory nonce,
+        uint256 expiry
     ) public {
-        check(to, trademark1, trademark2, trademark3, trademark4);
+        checkTrademark(to, trademark1, trademark2, trademark3, trademark4);
 
-        address witnessAddress = ECDSA.recover(
-            keccak256(abi.encodePacked(to, "NOVA-LYNK-1")),
-            signature
-        );
-        _checkRole(WITNESS_ROLE, witnessAddress);
+        check(to, signature, nonce, expiry, "NOVA-LYNK-1-");
+
+        // address witnessAddress = ECDSA.recover(
+        //     keccak256(abi.encodePacked(to, "NOVA-LYNK-1")),
+        //     signature
+        // );
+        // _checkRole(WITNESS_ROLE, witnessAddress);
         novaNFT.burn(original_nft_id);
 
         tradeMark.burn(trademark1);
@@ -118,7 +124,9 @@ contract FullNovaNFT is
         uint256 trademark2,
         uint256 trademark3,
         uint256 trademark4,
-        bytes calldata signature
+        bytes calldata signature,
+        string memory nonce,
+        uint256 expiry
     ) external {
         safeMint(
             msg.sender,
@@ -128,7 +136,9 @@ contract FullNovaNFT is
             trademark2,
             trademark3,
             trademark4,
-            signature
+            signature,
+            nonce,
+            expiry
         );
     }
 

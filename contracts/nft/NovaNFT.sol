@@ -6,14 +6,16 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "../Checkable.sol";
 
 contract NovaNFT is
     ERC721Burnable,
     ERC721Enumerable,
-    AccessControlDefaultAdminRules
+    AccessControlDefaultAdminRules,
+    Checkable
 {
     uint256 private _nextTokenId;
-    bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
+    // bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
     mapping(uint256 => string) public charactersMapping;
 
@@ -44,14 +46,12 @@ contract NovaNFT is
     function safeMint(
         address to,
         string memory type_of_character,
-        bytes calldata signature
+        bytes calldata signature,
+        string memory nonce,
+        uint256 expiry
     ) public {
+        check(to, signature, nonce, expiry, "NOVA-SBT-1-");
         require(balanceOf(to) == 0, "You already have a character");
-        address witnessAddress = ECDSA.recover(
-            keccak256(abi.encodePacked(to, "NOVA-SBT-1")),
-            signature
-        );
-        _checkRole(WITNESS_ROLE, witnessAddress);
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -60,9 +60,11 @@ contract NovaNFT is
 
     function safeMint(
         string memory type_of_character,
-        bytes calldata signature
+        bytes calldata signature,
+        string memory nonce,
+        uint256 expiry
     ) external {
-        safeMint(msg.sender, type_of_character, signature);
+        safeMint(msg.sender, type_of_character, signature, nonce, expiry);
     }
 
     // Soul Bound Token

@@ -4,11 +4,11 @@ import { ethers } from "ethers";
 import { getSignature } from "./witness";
 
 export default async function () {
-  const CONTRACT_ADDRESS = process.env.NOVA_NFT_CONTRACT_ADDRESS;
+  const CONTRACT_ADDRESS = process.env.NOVA_NFT_CONTRACT_ADDRESS as string;
   if (!CONTRACT_ADDRESS)
     throw "⛔️ Provide address of the contract to interact with!";
 
-  const accountAddress = process.env.ACCOUNT_ADDRESS;
+  const accountAddress = process.env.ACCOUNT_ADDRESS as string;
   console.log(`Running script to interact with contract ${CONTRACT_ADDRESS}`);
 
   if (!process.env.WITNESS_SINGER_PRIVATE_KEY) {
@@ -32,15 +32,20 @@ export default async function () {
 
   console.log(`Minting: ${character}`);
 
+  const nonce = 1;
+  const expiry = 1711155895;
+
   // Run contract write function
-  const transaction = await contract["safeMint(address,string,bytes)"](
+  const transaction = await contract["safeMint(address,string,bytes,string,uint256)"](
     accountAddress,
     character,
     getSignature(
       accountAddress,
-      "NOVA-SBT-1",
+      `NOVA-SBT-1-${nonce}`,
       process.env.WITNESS_SINGER_PRIVATE_KEY || ""
-    )
+    ),
+    String(nonce),
+    expiry
   );
   console.log(`Transaction hash of setting new message: ${transaction.hash}`);
 

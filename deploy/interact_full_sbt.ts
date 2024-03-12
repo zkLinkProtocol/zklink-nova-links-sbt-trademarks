@@ -38,7 +38,7 @@ export default async function () {
   );
 
   // NOTE: Change this
-  const tokenId = 1;
+  const tokenId = 0;
 
   // 1. Approve NOVA
   console.log(`Trying to approve NOVA NFT with id ${tokenId}`);
@@ -66,19 +66,23 @@ export default async function () {
   console.log(`Transaction hash of setApprovalForAll: ${approve_all_transaction.hash}`);
 
   // 3. Burn the above NFTs and mint a full version NFT
+  const nonce = 1;
+  const expiry = 1711155895;
 
-  const safe_mint_transaction = await fullNovaContract['safeMint(uint256, string, uint256, uint256, uint256, uint256, bytes)'](
+  const safe_mint_transaction = await fullNovaContract['safeMint(uint256, string, uint256, uint256, uint256, uint256, bytes, string, uint256)'](
     tokenId,
     'ESFJ',
+    1,
+    2,
+    3,
     4,
-    5,
-    6,
-    7,
     getSignature(
       ACCOUNT_ADDRESS,
       "NOVA-LYNK-1",
       process.env.WITNESS_SINGER_PRIVATE_KEY || ""
-    )
+    ),
+    String(nonce),
+    expiry
   );
 
   console.log(`Transaction hash of safe mint Full Nova NFT: ${safe_mint_transaction.hash}`);

@@ -6,14 +6,16 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "../Checkable.sol";
 
 contract MysteryBoxNFT is
     ERC721Burnable,
     ERC721Enumerable,
-    AccessControlDefaultAdminRules
+    AccessControlDefaultAdminRules,
+    Checkable
 {
     uint256 private _nextTokenId;
-    bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
+    // bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
     mapping(address => uint256) nonces;
 
@@ -44,18 +46,20 @@ contract MysteryBoxNFT is
     function safeMint(
         address to,
         bytes calldata signature,
-        uint256 nonce,
+        string memory nonce,
         uint256 expiry
     ) public {
-        require(block.timestamp <= expiry, "Signature has expired");
-        require(nonce == nonces[to] + 1, "Invalid nonce");
-        address witnessAddress = ECDSA.recover(
-            keccak256(abi.encodePacked(to, "NOVA-MYSTERY-BOX-1")),
-            signature
-        );
-        _checkRole(WITNESS_ROLE, witnessAddress);
+        check(to, signature, nonce, expiry, "NOVA-MYSTERY-BOX-1");
 
-        nonces[to] = nonce;
+        // require(block.timestamp <= expiry, "Signature has expired");
+        // require(nonce == nonces[to] + 1, "Invalid nonce");
+        // address witnessAddress = ECDSA.recover(
+        //     keccak256(abi.encodePacked(to, "NOVA-MYSTERY-BOX-1")),
+        //     signature
+        // );
+        // _checkRole(WITNESS_ROLE, witnessAddress);
+
+        // nonces[to] = nonce;
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -63,7 +67,7 @@ contract MysteryBoxNFT is
 
     function safeMint(
         bytes calldata signature,
-        uint256 nonce,
+        string memory nonce,
         uint256 expiry
     ) external {
         safeMint(msg.sender, signature, nonce, expiry);

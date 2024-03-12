@@ -19,7 +19,8 @@
     "checkBalance": "npx hardhat run scripts/getBalanceOfNFT.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
-    "test": "hardhat test --network hardhat"
+    "test": "hardhat test --network hardhat",
+    "test:zklinkNovaGoerliTestnet": "hardhat test --network zklinkNovaGoerliTestnet"
   },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-deploy": "^1.1.2",
