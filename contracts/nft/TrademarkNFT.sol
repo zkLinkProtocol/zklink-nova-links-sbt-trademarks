@@ -15,6 +15,8 @@ contract TrademarkNFT is
     uint256 private _nextTokenId;
     bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
+    mapping(address => uint256) nonces;
+
     mapping(uint256 => string) public tradeMarksMapping;
 
     constructor(
@@ -44,13 +46,20 @@ contract TrademarkNFT is
     function safeMint(
         address to,
         string memory type_of_trademark,
-        bytes calldata signature
+        bytes calldata signature,
+        uint256 nonce,
+        uint256 expiry
     ) public {
+        require(block.timestamp <= expiry, "Signature has expired");
+        require(nonce == nonces[to] + 1, "Invalid nonce");
+
         address witnessAddress = ECDSA.recover(
             keccak256(abi.encodePacked(to, "NOVA-TradeMark-1")),
             signature
         );
         _checkRole(WITNESS_ROLE, witnessAddress);
+
+        nonces[to] = nonce;
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -59,9 +68,11 @@ contract TrademarkNFT is
 
     function safeMint(
         string memory type_of_trademark,
-        bytes calldata signature
+        bytes calldata signature,
+        uint256 nonce,
+        uint256 expiry
     ) external {
-        safeMint(msg.sender, type_of_trademark, signature);
+        safeMint(msg.sender, type_of_trademark, signature, nonce, expiry);
     }
 
     function _beforeTokenTransfer(

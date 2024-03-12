@@ -33,16 +33,21 @@ export default async function () {
 
     const trademarks = ["0", "1", "2", "3"];
 
+    let nonce = 1;
+    const expiry = 1711155895;
+
     for (let i = 0; i < trademarks.length; i++) {
         // Run contract write function
-        const transaction = await contract["safeMint(address,string,bytes)"](
+        const transaction = await contract["safeMint(address,string,bytes,uint256,uint256)"](
             accountAddress,
             trademarks[i],
             getSignature(
                 accountAddress,
                 "NOVA-TradeMark-1",
                 process.env.WITNESS_SINGER_PRIVATE_KEY || ""
-            )
+            ),
+            nonce,
+            expiry
         );
         console.log(`Transaction hash of setting new message: ${transaction.hash}`);
 
@@ -53,5 +58,6 @@ export default async function () {
         console.log(
             `The balance now is: ${await contract.balanceOf(accountAddress)}`
         );
+        nonce++;
     }
 }
