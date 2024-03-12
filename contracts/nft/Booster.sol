@@ -63,7 +63,10 @@ contract BoosterNFT is
         bytes calldata signature
     ) public {
         check(to, signature, nonce, expiry, "NOVA-BOOSTER-SBT-");
-
+        require(
+            mysteryBoxNFT.ownerOf(original_nft_id) == to,
+            "Not owner of BOX"
+        );
         mysteryBoxNFT.burn(original_nft_id);
 
         uint256 tokenId = _nextTokenId++;
