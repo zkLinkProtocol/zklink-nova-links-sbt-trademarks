@@ -1,12 +1,11 @@
 import { deployContract } from "../utils";
 
-// This script is used to deploy an NFT contract
-// as well as verify it on Block Explorer if possible for the network
 export default async function () {
-  // const name = "My new NFT";
-  // const symbol = "MYNFT";
-  // const baseTokenURI = "https://mybaseuri.com/token/";
-  await deployContract("NovaNFT", [process.env.WITNESS_ADDRESS], {
-    noVerify: false
-  });
+  // await deployContract("NovaNFT", [process.env.WITNESS_ADDRESS], {
+  //   noVerify: false
+  // });
+  await deployContract("NovaNFT", [], {
+    noVerify: false,
+    upgradable: true,
+  }, [process.env.WITNESS_ADDRESS]);
 }

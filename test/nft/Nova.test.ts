@@ -19,8 +19,9 @@ describe("Nova NFT", function () {
 
         nftContract = await deployContract(
             "NovaNFT",
-            [ownerWallet.address],
-            { wallet: ownerWallet, silent: true, noVerify: true }
+            [],
+            { wallet: ownerWallet, silent: true, noVerify: true, upgradable: true },
+            [ownerWallet.address]
         );
     });
 

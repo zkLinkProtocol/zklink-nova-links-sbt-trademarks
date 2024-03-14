@@ -75,8 +75,10 @@ type DeployContractOptions = {
    * If specified, the contract will be deployed using this wallet
    */
   wallet?: Wallet
+
+  upgradable?: boolean
 }
-export const deployContract = async (contractArtifactName: string, constructorArguments?: any[], options?: DeployContractOptions) => {
+export const deployContract = async (contractArtifactName: string, constructorArguments?: any[], options?: DeployContractOptions, initializerArguments?: any[]) => {
   const log = (message: string) => {
     if (!options?.silent) console.log(message);
   }
@@ -94,6 +96,8 @@ export const deployContract = async (contractArtifactName: string, constructorAr
     }
   });
 
+  log(`\nArtifact found! Deploying contract...`);
+
   // Estimate contract deployment fee
   const deploymentFee = await deployer.estimateDeployFee(artifact, constructorArguments || []);
   log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`);
@@ -101,8 +105,27 @@ export const deployContract = async (contractArtifactName: string, constructorAr
   // Check if the wallet has enough balance
   await verifyEnoughBalance(wallet, deploymentFee);
 
+  log(`\nDeploying contract...`);
+  log(`\nConstructor arguments: ${JSON.stringify(constructorArguments, null, 2)}`);
+  let contract;
+
   // Deploy the contract to zkSync
-  const contract = await deployer.deploy(artifact, constructorArguments);
+  if (options?.upgradable) {
+    contract = await hre.zkUpgrades.deployProxy(
+      deployer.zkWallet,
+      artifact,
+      initializerArguments,
+      {
+        initializer: 'initialize'
+      }
+    );
+  } else {
+    contract = await deployer.deploy(artifact, constructorArguments);
+  }
+
+
+  log(`\nContract deployed!`);
+
   const address = await contract.getAddress();
   const constructorArgs = contract.interface.encodeDeploy(constructorArguments);
   const fullContractSource = `${artifact.sourceName}:${artifact.contractName}`;
