@@ -142,17 +142,12 @@ contract FullNovaNFT is
         );
     }
 
-    // Soul Bound Token
     function _beforeTokenTransfer(
         address from,
         address to,
         uint256 firstTokenId,
         uint256 batchSize
     ) internal override(ERC721, ERC721Enumerable) {
-        require(
-            from == address(0) || to == address(0),
-            "Token not transferable"
-        );
         ERC721Enumerable._beforeTokenTransfer(
             from,
             to,
