@@ -18,6 +18,8 @@ contract TrademarkNFT is
 
     mapping(uint256 => string) public tradeMarksMapping;
 
+    mapping(address => uint256) public num_of_mint;
+
     constructor(
         address defaultWitness
     )
@@ -54,6 +56,10 @@ contract TrademarkNFT is
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
         tradeMarksMapping[tokenId] = type_of_trademark;
+
+        // Add the number of mint in the contract database
+        // So that backend can reduce the count of remaining mint using this number
+        num_of_mint[msg.sender]++;
     }
 
     function safeMint(
