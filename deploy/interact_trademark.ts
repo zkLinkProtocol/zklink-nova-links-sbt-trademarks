@@ -43,7 +43,7 @@ export default async function () {
             trademarks[i],
             getSignature(
                 accountAddress,
-                `NOVA-TradeMark-1-${nonce}`,
+                `NOVA-TradeMark-${trademarks}-${nonce}`,
                 process.env.WITNESS_SINGER_PRIVATE_KEY || ""
             ),
             String(nonce),
@@ -60,4 +60,7 @@ export default async function () {
         );
         nonce++;
     }
+
+    const num_of_mint = await contract["num_of_mint(address)"](accountAddress);
+    console.log("Number of mint: ", num_of_mint.toString());
 }

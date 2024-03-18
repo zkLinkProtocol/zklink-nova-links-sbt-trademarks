@@ -28,4 +28,12 @@ abstract contract Checkable is AccessControlDefaultAdminRules {
         _checkRole(WITNESS_ROLE, witnessAddress);
         signatures[signature] = true;
     }
+
+    function concatenateStrings(
+        string memory a,
+        string memory b
+    ) public pure returns (string memory) {
+        bytes memory concatenatedBytes = abi.encodePacked(a, b);
+        return string(concatenatedBytes);
+    }
 }

@@ -51,7 +51,15 @@ contract TrademarkNFT is
         string memory nonce,
         uint256 expiry
     ) public {
-        check(to, signature, nonce, expiry, "NOVA-TradeMark-1-");
+        // NOVA-Trademark-0
+        string memory projectId = concatenateStrings(
+            "NOVA-TradeMark-",
+            type_of_trademark
+        );
+
+        // NOVA-Trademark-0-
+        projectId = concatenateStrings(projectId, "-");
+        check(to, signature, nonce, expiry, projectId);
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);

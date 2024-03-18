@@ -27,17 +27,18 @@ describe("Trademark NFT", function () {
     it("Should mint a new NFT to the recipient", async function () {
         let nonce = 1;
         const expiry = 1711155895;
+        const type_of_nft = "0";
 
         const address = recipientWallet.address;
 
         const signature = getSignature(
             address,
-            `NOVA-TradeMark-1-${nonce}`,
+            `NOVA-TradeMark-${type_of_nft}-${nonce}`,
             ownerWallet.privateKey || ""
         );
 
 
-        const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "0", signature, String(nonce), expiry);
+        const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, type_of_nft, signature, String(nonce), expiry);
         await tx.wait();
 
         const balance = await nftContract.totalSupply();
@@ -51,17 +52,18 @@ describe("Trademark NFT", function () {
         try {
             let nonce = 1;
             const expiry = 1711155895;
+            const type_of_nft = "0";
 
             const address = recipientWallet.address;
 
             const signature = getSignature(
                 address,
-                `NOVA-TradeMark-1-${nonce}`,
+                `NOVA-TradeMark-${type_of_nft}-${nonce}`,
                 ownerWallet.privateKey || ""
             );
 
 
-            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "0", signature, String(nonce), expiry);
+            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, type_of_nft, signature, String(nonce), expiry);
         } catch (error) {
             expect(error.message).to.include("Used Signature");
         }
@@ -69,18 +71,18 @@ describe("Trademark NFT", function () {
 
     it("Should mint 3 new NFT to the recipient", async function () {
         const expiry = 1711155895;
-
+        const type_of_nft = "0";
         const address = recipientWallet.address;
 
         for (let nonce = 2; nonce <= 4; nonce++) {
             const signature = getSignature(
                 address,
-                `NOVA-TradeMark-1-${nonce}`,
+                `NOVA-TradeMark-${type_of_nft}-${nonce}`,
                 ownerWallet.privateKey || ""
             );
 
 
-            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, "ESFJ", signature, String(nonce), expiry);
+            const tx = await nftContract['safeMint(address, string, bytes, string, uint256)'](address, type_of_nft, signature, String(nonce), expiry);
             await tx.wait();
         }
 
