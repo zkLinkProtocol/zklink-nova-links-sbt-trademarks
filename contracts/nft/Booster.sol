@@ -22,9 +22,6 @@ contract BoosterNFT is
     MysteryBoxNFT mysteryBoxNFT;
 
     uint256 private _nextTokenId;
-    // bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
-
-    // mapping(address => uint256) nonces;
 
     mapping(uint256 => string) public boosterMapping;
 
@@ -62,7 +59,14 @@ contract BoosterNFT is
         uint256 expiry,
         bytes calldata signature
     ) public {
-        check(to, signature, nonce, expiry, "NOVA-BOOSTER-SBT-");
+        string memory projectId = concatenateStrings(
+            "NOVA-BOOSTER-SBT-",
+            type_of_booster
+        );
+
+        projectId = concatenateStrings(projectId, "-");
+
+        check(to, signature, nonce, expiry, projectId);
         require(
             mysteryBoxNFT.ownerOf(original_nft_id) == to,
             "Not owner of BOX"

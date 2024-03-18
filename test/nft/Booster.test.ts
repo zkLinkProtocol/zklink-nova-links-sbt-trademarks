@@ -63,20 +63,28 @@ describe("Booster NFT", function () {
         const balanceOfRecipient = await mysteryBoxNFTContract.balanceOf(address);
         expect(balanceOfRecipient).to.equal(BigInt("1"));
 
+        // End of Box
+
+        // Start of Booster
+
         console.log("Approve");
         // Approve
         const tx2 = await mysteryBoxNFTContract['approve(address, uint256)'](boosterNFTContractAddress, BigInt("0"));
         await tx2.wait();
 
+        const type_of_booster = "300";
+
+        // NOVA-BOOSTER-300-1
         const signature2 = getSignature(
             address,
-            `NOVA-BOOSTER-SBT-${nonce}`,
+            `NOVA-BOOSTER-SBT-${type_of_booster}-${nonce}`,
             ownerWallet.privateKey || ""
         );
+
         console.log(`Mystery BOX is approved`);
 
         // Mint Booster
-        const tx3 = await boosterNFTContract['safeMint(address, uint256, string, string, uint256, bytes)'](address, BigInt("0"), "300", String(nonce), expiry, signature2);
+        const tx3 = await boosterNFTContract['safeMint(address, uint256, string, string, uint256, bytes)'](address, BigInt("0"), type_of_booster, String(nonce), expiry, signature2);
 
         await tx3.wait();
 
