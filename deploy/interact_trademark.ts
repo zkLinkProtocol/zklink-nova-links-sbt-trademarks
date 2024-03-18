@@ -43,7 +43,7 @@ export default async function () {
             trademarks[i],
             getSignature(
                 accountAddress,
-                `NOVA-TradeMark-${trademarks}-${nonce}`,
+                `NOVA-TradeMark-${trademarks[i]}-${nonce}`,
                 process.env.WITNESS_SINGER_PRIVATE_KEY || ""
             ),
             String(nonce),
