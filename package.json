@@ -20,7 +20,13 @@
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "test": "hardhat test --network hardhat",
-    "test:zklinkNovaGoerliTestnet": "hardhat test --network zklinkNovaGoerliTestnet"
+    "test:zklinkNovaGoerliTestnet": "hardhat test --network zklinkNovaGoerliTestnet",
+    "lint": "yarn lint:js && yarn lint:sol",
+    "lint:fix": "yarn lint:js:fix && yarn lint:sol:fix",
+    "lint:js": "prettier --log-level warn --ignore-path .gitignore '**/*.{js,ts}' --check && eslint --ignore-path .gitignore .",
+    "lint:js:fix": "prettier --log-level warn --ignore-path .gitignore '**/*.{js,ts}' --write && eslint --ignore-path .gitignore . --fix",
+    "lint:sol": "prettier --log-level warn --ignore-path .gitignore 'contracts/**/*.sol' --check && solhint 'contracts/**/*.sol'",
+    "lint:sol:fix": "prettier --log-level warn --ignore-path .gitignore 'contracts/**/*.sol' --write"
   },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-deploy": "^1.1.2",
@@ -38,9 +44,15 @@
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
-    "zksync-ethers": "^6.0.0"
+    "zksync-ethers": "^6.0.0",
+    "eslint": "^8.30.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.0",
+    "prettier-plugin-solidity": "^1.1.0",
+    "solhint": "^4.1.1"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "4.9.5"
+    "@openzeppelin/contracts": "4.9.5",
+    "@openzeppelin/contracts-upgradeable": "^4.9.5"
   }
 }
