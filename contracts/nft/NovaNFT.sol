@@ -1,64 +1,57 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-// import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
-// import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "../CheckableUpgradeable.sol";
 
 contract NovaNFT is
-    ERC721BurnableUpgradeable,
-    ERC721EnumerableUpgradeable,
-    AccessControlDefaultAdminRulesUpgradeable,
-    CheckableUpgradeable
+    ERC721Burnable,
+    ERC721Enumerable,
+    AccessControlDefaultAdminRules
 {
     uint256 private _nextTokenId;
+    bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
     mapping(uint256 => string) public charactersMapping;
 
-    function initialize(address defaultWitness) public initializer {
-        __ERC721_init("NovaSBT", "NOVA-SBT");
-        __AccessControlDefaultAdminRules_init(1, msg.sender);
+    constructor(
+        address defaultWitness
+    )
+    ERC721("NovaSBT", "NOVA-SBT")
+    AccessControlDefaultAdminRules(1, msg.sender)
+    {
         _setupRole(WITNESS_ROLE, defaultWitness);
     }
 
     function supportsInterface(
         bytes4 interfaceId
     )
-        public
-        view
-        virtual
-        override(
-            ERC721Upgradeable,
-            ERC721EnumerableUpgradeable,
-            // AccessControlDefaultAdminRules,
-            AccessControlDefaultAdminRulesUpgradeable
-        )
-        returns (bool)
+    public
+    view
+    virtual
+    override(ERC721, ERC721Enumerable, AccessControlDefaultAdminRules)
+    returns (bool)
     {
         return
-            ERC721Upgradeable.supportsInterface(interfaceId) ||
-            AccessControlDefaultAdminRulesUpgradeable.supportsInterface(
-                interfaceId
-            ) ||
-            ERC721EnumerableUpgradeable.supportsInterface(interfaceId);
+            ERC721.supportsInterface(interfaceId) ||
+            AccessControlDefaultAdminRules.supportsInterface(interfaceId) ||
+            ERC721Enumerable.supportsInterface(interfaceId);
     }
 
     function safeMint(
         address to,
         string memory type_of_character,
-        bytes calldata signature,
-        string memory nonce,
-        uint256 expiry
+        bytes calldata signature
     ) public {
-        check(to, signature, nonce, expiry, "NOVA-SBT-1-");
         require(balanceOf(to) == 0, "You already have a character");
+        address witnessAddress = ECDSA.recover(
+            keccak256(abi.encodePacked(to, "NOVA-SBT-1")),
+            signature
+        );
+        _checkRole(WITNESS_ROLE, witnessAddress);
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -67,11 +60,9 @@ contract NovaNFT is
 
     function safeMint(
         string memory type_of_character,
-        bytes calldata signature,
-        string memory nonce,
-        uint256 expiry
+        bytes calldata signature
     ) external {
-        safeMint(msg.sender, type_of_character, signature, nonce, expiry);
+        safeMint(msg.sender, type_of_character, signature);
     }
 
     // Soul Bound Token
@@ -80,12 +71,12 @@ contract NovaNFT is
         address to,
         uint256 firstTokenId,
         uint256 batchSize
-    ) internal override(ERC721Upgradeable, ERC721EnumerableUpgradeable) {
+    ) internal override(ERC721, ERC721Enumerable) {
         require(
             from == address(0) || to == address(0),
             "Token not transferable"
         );
-        ERC721EnumerableUpgradeable._beforeTokenTransfer(
+        ERC721Enumerable._beforeTokenTransfer(
             from,
             to,
             firstTokenId,

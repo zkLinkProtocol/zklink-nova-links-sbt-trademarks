@@ -98,7 +98,8 @@ contract FullNovaNFT is
     ) public {
         checkTrademark(to, trademark1, trademark2, trademark3, trademark4);
 
-        check(to, signature, nonce, expiry, "NOVA-LYNK-1-");
+        string memory nftId = string.concat("NOVA-LYNK-1-", nonce);
+        check(to, nftId, expiry, signature);
 
         // address witnessAddress = ECDSA.recover(
         //     keccak256(abi.encodePacked(to, "NOVA-LYNK-1")),

@@ -19,9 +19,9 @@ contract BoosterNFT is
     AccessControlDefaultAdminRules,
     Checkable
 {
-    MysteryBoxNFT mysteryBoxNFT;
+    MysteryBoxNFT public mysteryBoxNFT;
 
-    uint256 private _nextTokenId;
+    uint256 public nextTokenId;
 
     mapping(uint256 => string) public boosterMapping;
 
@@ -30,7 +30,7 @@ contract BoosterNFT is
         address boxAddress
     )
         ERC721("NovaBoosterNFT", "NOVA-BOOSTER-NFT")
-        AccessControlDefaultAdminRules(1, msg.sender)
+        AccessControlDefaultAdminRules(0, msg.sender)
     {
         _setupRole(WITNESS_ROLE, defaultWitness);
         mysteryBoxNFT = MysteryBoxNFT(boxAddress);
@@ -51,31 +51,47 @@ contract BoosterNFT is
             ERC721Enumerable.supportsInterface(interfaceId);
     }
 
+    // to = alice
+    // original_nft_id0 = 'NovaMysteryBox100'
+    // original_nft_id1 = 'NovaMysteryBox101'
+    // original_nft_id2 = 'NovaMysteryBox103'
+    //     type_of_booster = 'ABC'
+    //  nonce = 89
+    // expiry = 800
+    // signature = witness_key.sign([to, type_of_booster, nonce])
+    //
+    // safeMint(to, original_nft_id0, type_of_booster, nonce, signature)
+    // 销毁original_nft_id0， 让to得到BOOSTER0
+
+    // safeMint(to, original_nft_id2, type_of_booster, nonce, signature)
+    // 销毁original_nft_id2， 让to得到BOOSTER0
+
     function safeMint(
         address to,
         uint256 original_nft_id,
-        string memory type_of_booster,
+        string memory typeOfBooster,
         string memory nonce,
         uint256 expiry,
         bytes calldata signature
     ) public {
-        string memory projectId = concatenateStrings(
+        string memory nftId = string.concat(
             "NOVA-BOOSTER-SBT-",
-            type_of_booster
+            typeOfBooster,
+            "-",
+            nonce
         );
 
-        projectId = concatenateStrings(projectId, "-");
-
-        check(to, signature, nonce, expiry, projectId);
+        check(to, nftId, expiry, signature);
         require(
             mysteryBoxNFT.ownerOf(original_nft_id) == to,
             "Not owner of BOX"
         );
+        // fixme attacker can burn any other nft of the [original_nft_id owner]  if the signature of `to` leakage
         mysteryBoxNFT.burn(original_nft_id);
 
-        uint256 tokenId = _nextTokenId++;
+        uint256 tokenId = nextTokenId++;
         _safeMint(to, tokenId);
-        boosterMapping[tokenId] = type_of_booster;
+        boosterMapping[tokenId] = typeOfBooster;
     }
 
     function safeMint(
@@ -121,7 +137,7 @@ contract BoosterNFT is
     function tokenURI(
         uint256 tokenId
     ) public view override returns (string memory) {
-        require(tokenId < _nextTokenId, "Token not exists");
+        require(tokenId < nextTokenId, "Token not exists");
         return string.concat(_baseURI(), boosterMapping[tokenId]);
     }
 }

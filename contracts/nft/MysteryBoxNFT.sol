@@ -11,19 +11,17 @@ import "../Checkable.sol";
 contract MysteryBoxNFT is
     ERC721Burnable,
     ERC721Enumerable,
-    AccessControlDefaultAdminRules,
     Checkable
 {
-    uint256 private _nextTokenId;
-    // bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
+    uint256 public nextTokenId;
 
-    mapping(address => uint256) nonces;
+    mapping(address => uint256) public nonces;
 
     constructor(
         address defaultWitness
     )
         ERC721("NovaMysteryBox", "NOVA-MYSTERY-BOX")
-        AccessControlDefaultAdminRules(1, msg.sender)
+        AccessControlDefaultAdminRules(0, msg.sender)
     {
         _setupRole(WITNESS_ROLE, defaultWitness);
     }
@@ -49,9 +47,10 @@ contract MysteryBoxNFT is
         string memory nonce,
         uint256 expiry
     ) public {
-        check(to, signature, nonce, expiry, "NOVA-MYSTERY-BOX-");
+        string memory nftId = string.concat("NOVA-MYSTERY-BOX-", nonce);
+        check(to, nftId, expiry, signature);
 
-        uint256 tokenId = _nextTokenId++;
+        uint256 tokenId = nextTokenId++;
         _safeMint(to, tokenId);
     }
 
@@ -63,6 +62,7 @@ contract MysteryBoxNFT is
         safeMint(msg.sender, signature, nonce, expiry);
     }
 
+    // todo do we need to override this function
     function _beforeTokenTransfer(
         address from,
         address to,
@@ -80,7 +80,7 @@ contract MysteryBoxNFT is
     function tokenURI(
         uint256 tokenId
     ) public view override returns (string memory) {
-        require(tokenId < _nextTokenId, "Token not exists");
+        require(tokenId < nextTokenId, "Token not exists");
         return "ipfs://QmVP55kqNJp7TBtgga2JUYikKrUguH2L8RcBcy3CDKqpht";
     }
 }
