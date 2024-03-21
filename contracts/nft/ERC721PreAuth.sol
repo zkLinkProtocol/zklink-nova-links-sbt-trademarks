@@ -25,8 +25,7 @@ contract ERC721PreAuth is
     ERC721Upgradeable,
     ERC721EnumerableUpgradeable,
     ERC721BurnableUpgradeable,
-    ERC721RoyaltyUpgradeable,
-    EIP712Upgradeable
+    ERC721RoyaltyUpgradeable
 {
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
