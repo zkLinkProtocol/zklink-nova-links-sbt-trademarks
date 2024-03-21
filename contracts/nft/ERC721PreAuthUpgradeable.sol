@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
@@ -15,14 +14,12 @@ import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/crypto
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 
-contract ERC721PreAuth is
-    ContextUpgradeable,
+contract ERC721PreAuthUpgradeable is
+    Initializable,
     OwnableUpgradeable,
-    UUPSUpgradeable,
     ReentrancyGuardUpgradeable,
     PausableUpgradeable,
     AccessControlEnumerableUpgradeable,
-    ERC721Upgradeable,
     ERC721EnumerableUpgradeable,
     ERC721BurnableUpgradeable,
     ERC721RoyaltyUpgradeable,
@@ -37,40 +34,46 @@ contract ERC721PreAuth is
 
     string private _baseTokenURI;
 
+    uint256 private _currentSupply;
+
     mapping(bytes32 => bool) public signatures;
 
-    constructor() {
-        _disableInitializers();
-    }
-
-    function initialize(
+    function __ERC721PreAuth_init(
         string memory name,
         string memory symbol,
         string memory baseTokenURI,
         address defaultWitness
-    ) external initializer {
-        __Context_init();
-        __Ownable_init();
-        __UUPSUpgradeable_init();
-        __ReentrancyGuard_init();
-        __Pausable_init();
-        __AccessControlEnumerable_init();
-        __ERC721_init(name, symbol);
-        __ERC721Enumerable_init();
-        __ERC721Burnable_init();
-        __ERC721Royalty_init();
-        __EIP712_init(name, "0");
+    ) internal onlyInitializing {
+        __Context_init_unchained();
+        __Ownable_init_unchained();
+        __ReentrancyGuard_init_unchained();
+        __Pausable_init_unchained();
+        __AccessControlEnumerable_init_unchained();
+        __ERC721_init_unchained(name, symbol);
+        __ERC721Enumerable_init_unchained();
+        __ERC721Burnable_init_unchained();
+        __ERC721Royalty_init_unchained();
+        __EIP712_init_unchained(name, "0");
 
+        __ERC721PreAuth_init_unchained(baseTokenURI, defaultWitness);
+    }
+
+    function __ERC721PreAuth_init_unchained(
+        string memory baseTokenURI,
+        address defaultWitness
+    ) internal onlyInitializing {
         _baseTokenURI = baseTokenURI;
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(WITNESS_ROLE, defaultWitness);
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
-
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;
+    }
+
+    function _totalSupply() internal view returns (uint256) {
+        return _currentSupply;
     }
 
     function isMintAuthorized(
@@ -84,22 +87,16 @@ contract ERC721PreAuth is
         return hasRole(WITNESS_ROLE, witnessAddress);
     }
 
-    function safeMint(
-        address to,
-        uint256 nonce,
-        uint256 expiry,
-        bytes calldata signature
-    ) public nonReentrant whenNotPaused {
+    function _safeMint(address to, uint256 nonce, uint256 expiry, bytes calldata signature) internal {
         _checkMintAuthorization(to, nonce, expiry, signature);
 
         // We cannot just use balanceOf to create the new tokenId because tokens
         // can be burned (destroyed), so we need a separate counter.
         _safeMint(to, _tokenIdTracker.current());
         _tokenIdTracker.increment();
-    }
-
-    function safeMint(uint256 nonce, uint256 expiry, bytes calldata signature) external {
-        safeMint(msg.sender, nonce, expiry, signature);
+        unchecked {
+            _currentSupply++;
+        }
     }
 
     function _checkMintAuthorization(address to, uint256 nonce, uint256 expiry, bytes calldata signature) internal {
@@ -144,5 +141,15 @@ contract ERC721PreAuth is
 
     function _burn(uint256 tokenId) internal virtual override(ERC721Upgradeable, ERC721RoyaltyUpgradeable) {
         super._burn(tokenId);
+        unchecked {
+            _currentSupply--;
+        }
     }
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+     */
+    uint256[46] private __gap;
 }
