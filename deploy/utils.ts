@@ -78,6 +78,10 @@ type DeployContractOptions = {
   wallet?: Wallet;
 
   upgradable?: boolean;
+
+  kind?: "uups" | "transparent" | "beacon" | undefined;
+
+  unsafeAllow?: ("constructor" | "delegatecall" | "selfdestruct" | "state-variable-assignment" | "state-variable-immutable" | "external-library-linking" | "struct-definition" | "enum-definition" | "missing-public-upgradeto")[] | undefined
 };
 export const deployContract = async (
   contractArtifactName: string,
@@ -119,6 +123,8 @@ export const deployContract = async (
   if (options?.upgradable) {
     contract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, artifact, initializerArguments, {
       initializer: 'initialize',
+      kind: options.kind,
+      unsafeAllow: options.unsafeAllow,
     });
   } else {
     contract = await deployer.deploy(artifact, constructorArguments);

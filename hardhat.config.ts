@@ -5,8 +5,18 @@ import '@matterlabs/hardhat-zksync-deploy';
 import '@matterlabs/hardhat-zksync-solc';
 import '@matterlabs/hardhat-zksync-verify';
 import "@matterlabs/hardhat-zksync-upgradable";
+import 'hardhat-abi-exporter';
 
 const config: HardhatUserConfig = {
+  abiExporter: {
+    path: './abi',
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    spacing: 2,
+    only: ['contracts/.*.sol'],
+    format: 'json',
+  },
   defaultNetwork: 'zklinkNovaGoerliTestnet',
   networks: {
     zklinkNovaGoerliTestnet: {

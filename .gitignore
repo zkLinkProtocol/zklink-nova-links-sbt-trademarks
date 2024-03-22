@@ -14,6 +14,7 @@ lerna-debug.log*
 # hardhat artifacts
 artifacts
 cache
+abi
 
 # zksync artifacts
 artifacts-zk

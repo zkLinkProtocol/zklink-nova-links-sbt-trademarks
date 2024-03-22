@@ -42,6 +42,15 @@ contract ERC721PreAuthUpgradeable is
         string memory baseTokenURI,
         address defaultWitness
     ) internal onlyInitializing {
+        __ERC721PreAuth_init_unchained(name, symbol, baseTokenURI, defaultWitness);
+    }
+
+    function __ERC721PreAuth_init_unchained(
+        string memory name,
+        string memory symbol,
+        string memory baseTokenURI,
+        address defaultWitness
+    ) internal onlyInitializing {
         __Context_init_unchained();
         __Ownable_init_unchained();
         __ReentrancyGuard_init_unchained();
@@ -53,13 +62,6 @@ contract ERC721PreAuthUpgradeable is
         __ERC721Royalty_init_unchained();
         __EIP712_init_unchained(name, "0");
 
-        __ERC721PreAuth_init_unchained(baseTokenURI, defaultWitness);
-    }
-
-    function __ERC721PreAuth_init_unchained(
-        string memory baseTokenURI,
-        address defaultWitness
-    ) internal onlyInitializing {
         _baseTokenURI = baseTokenURI;
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());

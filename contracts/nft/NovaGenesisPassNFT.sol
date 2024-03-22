@@ -9,6 +9,10 @@ contract NovaGenesisPassNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
 
     event HardtopLimitChanged(uint256 newHardtopLimit);
 
+    constructor() {
+        _disableInitializers();
+    }
+
     function initialize(
         string memory _name,
         string memory _symbol,
@@ -16,9 +20,9 @@ contract NovaGenesisPassNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
         uint256 _hardtopLimit,
         address _defaultWitness
     ) external initializer {
-        __UUPSUpgradeable_init();
+        __UUPSUpgradeable_init_unchained();
 
-        __ERC721PreAuth_init(_name, _symbol, _baseTokenURI, _defaultWitness);
+        __ERC721PreAuth_init_unchained(_name, _symbol, _baseTokenURI, _defaultWitness);
 
         _setHardtopLimit(_hardtopLimit);
     }
