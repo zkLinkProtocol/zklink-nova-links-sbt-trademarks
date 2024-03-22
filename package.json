@@ -8,7 +8,7 @@
   "scripts": {
     "deploy": "npx hardhat deploy-zksync --script nft/deploy.ts",
     "deploy:trademark": "npx hardhat deploy-zksync --script nft/deployTrademark.ts",
-    "deploy:box": "npx hardhat deploy-zksync --script nft/deployMysteryBox.ts",
+    "deploy:mysteryBox": "npx hardhat deploy-zksync --script nft/deployNovaMysteryBox.ts",
     "deploy:genesisPass": "npx hardhat deploy-zksync --script nft/deployGenesisPass.ts",
     "deploy:booster": "npx hardhat deploy-zksync --script nft/deployBooster.ts",
     "deploy:lynks": "npx hardhat deploy-zksync --script nft/deployLynks.ts",

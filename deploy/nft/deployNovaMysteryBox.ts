@@ -10,6 +10,6 @@ export default async function () {
             kind: "uups",
             unsafeAllow: ["constructor"]
         },
-        ['Nova Mystery Box NFT', 'NMB', '', '0x8f9FAc43A6740Eba56b89d146841c5ED2D3665DD'],
+        ['Nova Mystery Box NFT', 'NMB', '', '0xd14653F6fA807107084e5d8a18bB5Ce3C5BbFB90'],
     );
 }
