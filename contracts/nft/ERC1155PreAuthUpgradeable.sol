@@ -28,7 +28,9 @@ contract ERC1155PreAuthUpgradeable is
     bytes32 public constant MINT_AUTH_TYPE_HASH =
         keccak256("MintAuth(address to,uint256 nonce,uint256 tokenId,uint256 amount,uint256 expiry)");
     bytes32 public constant BATCH_MINT_AUTH_TYPE_HASH =
-        keccak256("BatchMintAuth(address to,uint256 nonce,uint256[] tokenIds,uint256[] amounts,uint256 expiry)");
+        keccak256(
+            "BatchMintAuth(address to,uint256 nonce,uint256[] memory tokenIds,uint256[] memory amounts,uint256 expiry)"
+        );
 
     mapping(bytes32 => bool) public signatures;
 
