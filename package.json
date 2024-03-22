@@ -36,27 +36,22 @@
     "@matterlabs/hardhat-zksync-solc": "^1.0.6",
     "@matterlabs/hardhat-zksync-verify": "^1.2.2",
     "@matterlabs/hardhat-zksync-upgradable": "^1.2.1",
-    "@matterlabs/zksync-contracts": "^0.6.1",
-    "@nomiclabs/hardhat-etherscan": "^3.1.7",
-    "@types/chai": "^4.3.4",
-    "@types/mocha": "^10.0.1",
-    "hardhat-abi-exporter": "^2.10.1",
-    "chai": "^4.3.7",
-    "dotenv": "^16.0.3",
-    "ethers": "^6.9.2",
-    "hardhat": "^2.12.4",
-    "mocha": "^10.2.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.5",
-    "zksync-ethers": "^6.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "dotenv": "^16.4.5",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^9.0.0",
+    "hardhat": "^2.22.1",
+    "hardhat-abi-exporter": "^2.10.1",
+    "hardhat-gas-reporter": "^1.0.10",
     "prettier": "^3.0.0",
     "prettier-plugin-solidity": "^1.1.0",
-    "solhint": "^4.1.1"
+    "solhint": "^4.1.1",
+    "solidity-coverage": "^0.8.11",
+    "zksync-ethers": "^6.0.0"
   },
   "dependencies": {
     "@openzeppelin/contracts": "4.9.5",
-    "@openzeppelin/contracts-upgradeable": "^4.9.5"
+    "@openzeppelin/contracts-upgradeable": "^4.9.5",
+    "@openzeppelin/hardhat-upgrades": "^3.0.5"
   }
 }

@@ -1,6 +1,6 @@
 import { HardhatUserConfig } from 'hardhat/config';
-
-import '@matterlabs/hardhat-zksync-node';
+import '@nomicfoundation/hardhat-toolbox';
+import '@openzeppelin/hardhat-upgrades';
 import '@matterlabs/hardhat-zksync-deploy';
 import '@matterlabs/hardhat-zksync-solc';
 import '@matterlabs/hardhat-zksync-verify';
@@ -32,7 +32,7 @@ const config: HardhatUserConfig = {
       verifyURL: 'https://explorer.zklink.io/contract_verification',
     },
     hardhat: {
-      zksync: true,
+      zksync: false,
     },
   },
   zksolc: {
@@ -43,7 +43,18 @@ const config: HardhatUserConfig = {
     },
   },
   solidity: {
-    version: '0.8.20',
+    compilers: [
+      {
+        version: '0.8.23',
+        settings: {
+          viaIR: true,
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
 };
 
