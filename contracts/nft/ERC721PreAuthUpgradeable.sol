@@ -86,6 +86,10 @@ contract ERC721PreAuthUpgradeable is
     function _safeMint(address to, uint256 nonce, uint256 expiry, bytes calldata signature) internal {
         _checkMintAuthorization(to, nonce, expiry, signature);
 
+        _safeMint(to);
+    }
+
+    function _safeMint(address to) internal {
         // We cannot just use balanceOf to create the new tokenId because tokens
         // can be burned (destroyed), so we need a separate counter.
         _safeMint(to, _tokenIdTracker.current());

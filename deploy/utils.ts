@@ -148,6 +148,7 @@ export const deployContract = async (
       initializer: 'initialize',
       kind: options.kind,
       unsafeAllow: options.unsafeAllow,
+      constructorArgs: constructorArguments,
     });
   } else {
     contract = await deployer.deploy(artifact, constructorArguments);
