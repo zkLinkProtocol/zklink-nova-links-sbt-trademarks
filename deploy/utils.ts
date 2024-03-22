@@ -3,12 +3,32 @@ import * as hre from 'hardhat';
 import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 import dotenv from 'dotenv';
 import { ethers } from 'ethers';
+import { getImplementationAddress } from '@openzeppelin/upgrades-core';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import '@matterlabs/hardhat-zksync-node/dist/type-extensions';
 import '@matterlabs/hardhat-zksync-verify/dist/src/type-extensions';
 
 // Load env file
 dotenv.config();
+
+export const createOrGetDeployLog = (networkName: string) => {
+  const zkLinkRoot = path.resolve(__dirname, '..');
+  const deployLogPath = `${zkLinkRoot}/log/${networkName}.log`;
+  console.log('deploy log path', deployLogPath);
+  const logPath = path.dirname(deployLogPath);
+  if (!fs.existsSync(logPath)) {
+    fs.mkdirSync(logPath, { recursive: true });
+  }
+
+  let deployLog = {};
+  if (fs.existsSync(deployLogPath)) {
+    const data = fs.readFileSync(deployLogPath, 'utf8');
+    deployLog = JSON.parse(data);
+  }
+  return { deployLogPath, deployLog };
+}
 
 export const getProvider = () => {
   const rpcUrl = hre.network.config.url;
@@ -93,6 +113,8 @@ export const deployContract = async (
     if (!options?.silent) console.log(message);
   };
 
+  const { deployLogPath, deployLog } = createOrGetDeployLog(hre.network.name);
+
   log(`\nStarting deployment process of "${contractArtifactName}"...`);
 
   const wallet = options?.wallet ?? getWallet();
@@ -107,6 +129,7 @@ export const deployContract = async (
   });
 
   log(`\nArtifact found! Deploying contract...`);
+  const contractName = artifact.contractName;
 
   // Estimate contract deployment fee
   const deploymentFee = await deployer.estimateDeployFee(artifact, constructorArguments || []);
@@ -134,10 +157,17 @@ export const deployContract = async (
 
   const address = await contract.getAddress();
   const constructorArgs = contract.interface.encodeDeploy(constructorArguments);
-  const fullContractSource = `${artifact.sourceName}:${artifact.contractName}`;
+  const fullContractSource = `${artifact.sourceName}:${contractName}`;
+
+  (deployLog as any)[contractName] = address;
+  if (options?.upgradable) {
+    const implementationAddress = await getImplementationAddress(hre.network.provider, address);
+    (deployLog as any)[`${contractName}_Implementation`] = implementationAddress;
+  }
+  fs.writeFileSync(deployLogPath, JSON.stringify(deployLog, null, 2));
 
   // Display contract deployment info
-  log(`\n"${artifact.contractName}" was successfully deployed:`);
+  log(`\n"${contractName}" was successfully deployed:`);
   log(` - Contract address: ${address}`);
   log(` - Contract source: ${fullContractSource}`);
   log(` - Encoded constructor arguments: ${constructorArgs}\n`);
