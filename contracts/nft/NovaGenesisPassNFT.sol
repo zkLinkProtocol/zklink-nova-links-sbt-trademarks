@@ -31,7 +31,7 @@ contract NovaGenesisPassNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
         uint256 expiry,
         bytes calldata signature
     ) public nonReentrant whenNotPaused {
-        require(_totalSupply() < hardtopLimit, "Hardtop limit reached");
+        require(totalSupply() < hardtopLimit, "Hardtop limit reached");
         _safeMint(to, nonce, expiry, signature);
     }
 
@@ -44,7 +44,7 @@ contract NovaGenesisPassNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
     }
 
     function _setHardtopLimit(uint256 _newHardtopLimit) internal {
-        require(_newHardtopLimit >= _totalSupply(), "Hardtop limit cannot be less than current supply");
+        require(_newHardtopLimit >= totalSupply(), "Hardtop limit cannot be less than current supply");
         hardtopLimit = _newHardtopLimit;
 
         emit HardtopLimitChanged(_newHardtopLimit);
@@ -52,13 +52,5 @@ contract NovaGenesisPassNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
 
     function baseTokenURI() public view returns (string memory) {
         return _baseURI();
-    }
-
-    function burn(uint256 tokenId) public override nonReentrant whenNotPaused {
-        _burn(tokenId);
-    }
-
-    function totalSupply() public view override returns (uint256) {
-        return _totalSupply();
     }
 }

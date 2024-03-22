@@ -34,8 +34,6 @@ contract ERC721PreAuthUpgradeable is
 
     string private _baseTokenURI;
 
-    uint256 private _currentSupply;
-
     mapping(bytes32 => bool) public signatures;
 
     function __ERC721PreAuth_init(
@@ -72,10 +70,6 @@ contract ERC721PreAuthUpgradeable is
         return _baseTokenURI;
     }
 
-    function _totalSupply() internal view returns (uint256) {
-        return _currentSupply;
-    }
-
     function isMintAuthorized(
         address to,
         uint256 nonce,
@@ -94,9 +88,6 @@ contract ERC721PreAuthUpgradeable is
         // can be burned (destroyed), so we need a separate counter.
         _safeMint(to, _tokenIdTracker.current());
         _tokenIdTracker.increment();
-        unchecked {
-            _currentSupply++;
-        }
     }
 
     function _checkMintAuthorization(address to, uint256 nonce, uint256 expiry, bytes calldata signature) internal {
@@ -141,9 +132,6 @@ contract ERC721PreAuthUpgradeable is
 
     function _burn(uint256 tokenId) internal virtual override(ERC721Upgradeable, ERC721RoyaltyUpgradeable) {
         super._burn(tokenId);
-        unchecked {
-            _currentSupply--;
-        }
     }
 
     /**
@@ -151,5 +139,5 @@ contract ERC721PreAuthUpgradeable is
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
-    uint256[46] private __gap;
+    uint256[47] private __gap;
 }
