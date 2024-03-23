@@ -187,6 +187,91 @@ export const deployContract = async (
   return contract;
 };
 
+export const upgradeContract = async (
+  contractArtifactName: string,
+  constructorArguments?: any[],
+  options?: DeployContractOptions,
+) => {
+  const log = (message: string) => {
+    if (!options?.silent) console.log(message);
+  };
+
+  const { deployLogPath, deployLog } = createOrGetDeployLog(hre.network.name);
+
+  log(`\nStarting upgrade process of "${contractArtifactName}"...`);
+
+  const wallet = options?.wallet ?? getWallet();
+  const deployer = new Deployer(hre, wallet);
+  const artifact = await deployer.loadArtifact(contractArtifactName).catch(error => {
+    if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
+      console.error(error.message);
+      throw `Please make sure you have compiled your contracts or specified the correct contract name!`;
+    } else {
+      throw error;
+    }
+  });
+
+  log(`\nArtifact found! Deploying contract...`);
+  const contractName = artifact.contractName;
+
+  // Estimate contract deployment fee
+  const deploymentFee = await deployer.estimateDeployFee(artifact, constructorArguments || []);
+  log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`);
+
+  // Check if the wallet has enough balance
+  await verifyEnoughBalance(wallet, deploymentFee);
+
+  log(`\nDeploying new implementation contract...`);
+  log(`\nConstructor arguments: ${JSON.stringify(constructorArguments, null, 2)}`);
+
+  // Deploy the contract to zkSync
+  if (options?.upgradable) {
+    const proxyAddress = (deployLog as any)[contractName];
+    console.log('proxyAddress', proxyAddress);
+    if (!proxyAddress) {
+      throw new Error("⛔️ Proxy address not found! Please deploy the contract first.");
+    }
+
+    await hre.zkUpgrades.upgradeProxy(deployer.zkWallet, proxyAddress, artifact, {
+      unsafeAllow: options.unsafeAllow,
+      constructorArgs: constructorArguments,
+    });
+
+    const implementationAddress = await getImplementationAddress(hre.network.provider, proxyAddress);
+    log(`\nNew implementation address: ${implementationAddress}`);
+
+    (deployLog as any)[`${contractName}_Implementation`] = implementationAddress;
+    fs.writeFileSync(deployLogPath, JSON.stringify(deployLog, null, 2));
+  } else {
+    throw `⛔️ Upgrade contract must be upgradable!`;
+  }
+
+  log(`\nContract upgraded!`);
+  const contract = await hre.ethers.getContractAt(artifact.abi, (deployLog as any)[contractName]);
+  const address = await contract.getAddress();
+  const constructorArgs = contract.interface.encodeDeploy(constructorArguments);
+  const fullContractSource = `${artifact.sourceName}:${contractName}`;
+
+  // Display contract deployment info
+  log(`\n"${contractName}" was successfully deployed:`);
+  log(` - Contract address: ${address}`);
+  log(` - Contract source: ${fullContractSource}`);
+  log(` - Encoded constructor arguments: ${constructorArgs}\n`);
+
+  if (!options?.noVerify && hre.network.config.verifyURL) {
+    log(`Requesting contract verification...`);
+
+    await verifyContract({
+      address,
+      contract: fullContractSource,
+      constructorArguments: constructorArgs,
+      bytecode: artifact.bytecode,
+    });
+  }
+
+  return contract;
+};
+
 /**
  * Rich wallets can be used for testing purposes.
  * Available on zkSync In-memory node and Dockerized node.

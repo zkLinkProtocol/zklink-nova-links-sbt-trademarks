@@ -34,6 +34,8 @@ contract ERC1155PreAuthUpgradeable is
 
     mapping(bytes32 => bool) public signatures;
 
+    mapping(address => uint256) public mintNonces;
+
     function __ERC1155PreAuth_init(
         string memory name,
         string memory baseTokenURI,
@@ -101,6 +103,7 @@ contract ERC1155PreAuthUpgradeable is
         _checkMintAuthorization(to, nonce, tokenId, amount, expiry, signature);
 
         _mint(to, tokenId, amount, "");
+        mintNonces[msg.sender] += 1;
     }
 
     function _safeBatchMint(
@@ -114,6 +117,7 @@ contract ERC1155PreAuthUpgradeable is
         _checkBatchMintAuthorization(to, nonce, tokenIds, amounts, expiry, signature);
 
         _mintBatch(to, tokenIds, amounts, "");
+        mintNonces[msg.sender] += 1;
     }
 
     function _checkMintAuthorization(
@@ -180,5 +184,5 @@ contract ERC1155PreAuthUpgradeable is
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
-    uint256[49] private __gap;
+    uint256[48] private __gap;
 }
