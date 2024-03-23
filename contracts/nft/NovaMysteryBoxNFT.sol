@@ -27,11 +27,10 @@ contract NovaMysteryBoxNFT is UUPSUpgradeable, ERC721PreAuthUpgradeable {
         _safeMint(to, nonce, expiry, signature);
     }
 
-     function safeMint(uint256 nonce, uint256 expiry, bytes calldata signature) external {
+    function safeMint(uint256 nonce, uint256 expiry, bytes calldata signature) external {
         safeMint(msg.sender, nonce, expiry, signature);
     }
     function baseTokenURI() public view returns (string memory) {
         return _baseURI();
     }
-
 }

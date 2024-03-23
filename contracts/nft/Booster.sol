@@ -13,12 +13,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "./MysteryBoxNFT.sol";
 import "../Checkable.sol";
 
-contract BoosterNFT is
-    ERC721Burnable,
-    ERC721Enumerable,
-    AccessControlDefaultAdminRules,
-    Checkable
-{
+contract BoosterNFT is ERC721Burnable, ERC721Enumerable, AccessControlDefaultAdminRules, Checkable {
     MysteryBoxNFT public mysteryBoxNFT;
 
     uint256 public nextTokenId;
@@ -28,23 +23,14 @@ contract BoosterNFT is
     constructor(
         address defaultWitness,
         address boxAddress
-    )
-        ERC721("NovaBoosterNFT", "NOVA-BOOSTER-NFT")
-        AccessControlDefaultAdminRules(0, msg.sender)
-    {
+    ) ERC721("NovaBoosterNFT", "NOVA-BOOSTER-NFT") AccessControlDefaultAdminRules(0, msg.sender) {
         _setupRole(WITNESS_ROLE, defaultWitness);
         mysteryBoxNFT = MysteryBoxNFT(boxAddress);
     }
 
     function supportsInterface(
         bytes4 interfaceId
-    )
-        public
-        view
-        virtual
-        override(ERC721, ERC721Enumerable, AccessControlDefaultAdminRules)
-        returns (bool)
-    {
+    ) public view virtual override(ERC721, ERC721Enumerable, AccessControlDefaultAdminRules) returns (bool) {
         return
             ERC721.supportsInterface(interfaceId) ||
             AccessControlDefaultAdminRules.supportsInterface(interfaceId) ||
@@ -74,18 +60,10 @@ contract BoosterNFT is
         uint256 expiry,
         bytes calldata signature
     ) public {
-        string memory nftId = string.concat(
-            "NOVA-BOOSTER-SBT-",
-            typeOfBooster,
-            "-",
-            nonce
-        );
+        string memory nftId = string.concat("NOVA-BOOSTER-SBT-", typeOfBooster, "-", nonce);
 
         check(to, nftId, expiry, signature);
-        require(
-            mysteryBoxNFT.ownerOf(original_nft_id) == to,
-            "Not owner of BOX"
-        );
+        require(mysteryBoxNFT.ownerOf(original_nft_id) == to, "Not owner of BOX");
         // fixme attacker can burn any other nft of the [original_nft_id owner]  if the signature of `to` leakage
         mysteryBoxNFT.burn(original_nft_id);
 
@@ -101,14 +79,7 @@ contract BoosterNFT is
         uint256 expiry,
         bytes calldata signature
     ) external {
-        safeMint(
-            msg.sender,
-            original_nft_id,
-            type_of_booster,
-            nonce,
-            expiry,
-            signature
-        );
+        safeMint(msg.sender, original_nft_id, type_of_booster, nonce, expiry, signature);
     }
 
     // Soul Bound Token
@@ -118,25 +89,15 @@ contract BoosterNFT is
         uint256 firstTokenId,
         uint256 batchSize
     ) internal override(ERC721, ERC721Enumerable) {
-        require(
-            from == address(0) || to == address(0),
-            "Token not transferable"
-        );
-        ERC721Enumerable._beforeTokenTransfer(
-            from,
-            to,
-            firstTokenId,
-            batchSize
-        );
+        require(from == address(0) || to == address(0), "Token not transferable");
+        ERC721Enumerable._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 
     function _baseURI() internal pure override returns (string memory) {
         return "ipfs://QmTEhRPzKsUhMWRjWiXDZC2LzJZnNXvgupJLGEEDmajJA8/";
     }
 
-    function tokenURI(
-        uint256 tokenId
-    ) public view override returns (string memory) {
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
         require(tokenId < nextTokenId, "Token not exists");
         return string.concat(_baseURI(), boosterMapping[tokenId]);
     }

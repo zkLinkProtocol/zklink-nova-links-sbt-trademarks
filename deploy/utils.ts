@@ -28,7 +28,7 @@ export const createOrGetDeployLog = (networkName: string) => {
     deployLog = JSON.parse(data);
   }
   return { deployLogPath, deployLog };
-}
+};
 
 export const getProvider = () => {
   const rpcUrl = hre.network.config.url;
@@ -99,9 +99,21 @@ type DeployContractOptions = {
 
   upgradable?: boolean;
 
-  kind?: "uups" | "transparent" | "beacon" | undefined;
+  kind?: 'uups' | 'transparent' | 'beacon' | undefined;
 
-  unsafeAllow?: ("constructor" | "delegatecall" | "selfdestruct" | "state-variable-assignment" | "state-variable-immutable" | "external-library-linking" | "struct-definition" | "enum-definition" | "missing-public-upgradeto")[] | undefined
+  unsafeAllow?:
+    | (
+        | 'constructor'
+        | 'delegatecall'
+        | 'selfdestruct'
+        | 'state-variable-assignment'
+        | 'state-variable-immutable'
+        | 'external-library-linking'
+        | 'struct-definition'
+        | 'enum-definition'
+        | 'missing-public-upgradeto'
+      )[]
+    | undefined;
 };
 export const deployContract = async (
   contractArtifactName: string,
@@ -229,7 +241,7 @@ export const upgradeContract = async (
     const proxyAddress = (deployLog as any)[contractName];
     console.log('proxyAddress', proxyAddress);
     if (!proxyAddress) {
-      throw new Error("⛔️ Proxy address not found! Please deploy the contract first.");
+      throw new Error('⛔️ Proxy address not found! Please deploy the contract first.');
     }
 
     await hre.zkUpgrades.upgradeProxy(deployer.zkWallet, proxyAddress, artifact, {

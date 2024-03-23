@@ -4,7 +4,7 @@ import '@openzeppelin/hardhat-upgrades';
 import '@matterlabs/hardhat-zksync-deploy';
 import '@matterlabs/hardhat-zksync-solc';
 import '@matterlabs/hardhat-zksync-verify';
-import "@matterlabs/hardhat-zksync-upgradable";
+import '@matterlabs/hardhat-zksync-upgradable';
 import 'hardhat-abi-exporter';
 
 const config: HardhatUserConfig = {
