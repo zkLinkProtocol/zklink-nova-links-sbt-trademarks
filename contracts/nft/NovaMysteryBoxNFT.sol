@@ -5,6 +5,9 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC721PreAuthUpgradeable} from "./ERC721PreAuthUpgradeable.sol";
 
 contract NovaMysteryBoxNFT is UUPSUpgradeable, ERC721PreAuthUpgradeable {
+    // The nonce of the burn transaction
+    mapping(address => uint256) public burnNonces;
+
     function initialize(
         string memory _name,
         string memory _symbol,
@@ -30,7 +33,20 @@ contract NovaMysteryBoxNFT is UUPSUpgradeable, ERC721PreAuthUpgradeable {
     function safeMint(uint256 nonce, uint256 expiry, bytes calldata signature) external {
         safeMint(msg.sender, nonce, expiry, signature);
     }
+
     function baseTokenURI() public view returns (string memory) {
         return _baseURI();
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        _requireMinted(tokenId);
+        return _baseURI();
+    }
+
+    function burn(uint256 tokenId) public override {
+        //solhint-disable-next-line max-line-length
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner or approved");
+        burnNonces[_msgSender()] += 1;
+        _burn(tokenId);
     }
 }
