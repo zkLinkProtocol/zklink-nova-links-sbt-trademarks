@@ -10,6 +10,11 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor', 'state-variable-immutable'],
     },
-    ['Nova Lynks', 'LYNKS', '', process.env.WITNESS_ADDRESS],
+    [
+      'Nova Lynks',
+      'LYNKS',
+      'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/lynknft/',
+      process.env.WITNESS_ADDRESS,
+    ],
   );
 }

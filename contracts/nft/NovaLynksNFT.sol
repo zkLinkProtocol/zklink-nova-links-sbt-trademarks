@@ -53,10 +53,12 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
         require(NOVA_SBT.balanceOf(msg.sender) > 0, "Only nova SBT holders can mint");
         uint256[] memory _burnAmounts;
         uint256[] memory _burnTokenIds;
-        for (uint256 i = 0; i < trademarkTokenIds.length; i++) {
-            require(trademarkTokenIds[i] != 0, "Invalid trademark token id");
-            _burnAmounts[i] = 1;
-            _burnTokenIds[i] = trademarkTokenIds[i];
+        unchecked {
+            for (uint256 i = 0; i < trademarkTokenIds.length; i++) {
+                require(trademarkTokenIds[i] != 0, "Invalid trademark token id");
+                _burnAmounts[i] = 1;
+                _burnTokenIds[i] = trademarkTokenIds[i];
+            }
         }
         NOVA_TRADEMARK.burnBatch(msg.sender, _burnTokenIds, _burnAmounts);
 
