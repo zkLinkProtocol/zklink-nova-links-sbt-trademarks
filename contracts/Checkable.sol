@@ -9,12 +9,7 @@ abstract contract Checkable is AccessControlDefaultAdminRules {
     mapping(bytes32 => bool) public signatures;
     bytes32 public constant WITNESS_ROLE = keccak256("WITNESS_ROLE");
 
-    function check(
-        address to,
-        string memory nftId,
-        uint256 expiry,
-        bytes calldata signature
-    ) public {
+    function check(address to, string memory nftId, uint256 expiry, bytes calldata signature) public {
         require(block.timestamp <= expiry, "Signature has expired");
         bytes32 hash = keccak256(abi.encodePacked(to, nftId, expiry));
         require(!signatures[hash], "Used Signature");

@@ -36,6 +36,8 @@ contract ERC721PreAuthUpgradeable is
 
     mapping(bytes32 => bool) public signatures;
 
+    mapping(address => uint256) public mintNonces;
+
     function __ERC721PreAuth_init(
         string memory name,
         string memory symbol,
@@ -83,13 +85,22 @@ contract ERC721PreAuthUpgradeable is
         return hasRole(WITNESS_ROLE, witnessAddress);
     }
 
+    function exists(uint256 tokenId) external view returns (bool) {
+        return _exists(tokenId);
+    }
+
     function _safeMint(address to, uint256 nonce, uint256 expiry, bytes calldata signature) internal {
         _checkMintAuthorization(to, nonce, expiry, signature);
 
+        _safeMint(to);
+    }
+
+    function _safeMint(address to) internal {
         // We cannot just use balanceOf to create the new tokenId because tokens
         // can be burned (destroyed), so we need a separate counter.
         _safeMint(to, _tokenIdTracker.current());
         _tokenIdTracker.increment();
+        mintNonces[msg.sender] += 1;
     }
 
     function _checkMintAuthorization(address to, uint256 nonce, uint256 expiry, bytes calldata signature) internal {
@@ -141,5 +152,5 @@ contract ERC721PreAuthUpgradeable is
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
-    uint256[47] private __gap;
+    uint256[46] private __gap;
 }

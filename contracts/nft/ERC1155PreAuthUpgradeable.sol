@@ -28,9 +28,13 @@ contract ERC1155PreAuthUpgradeable is
     bytes32 public constant MINT_AUTH_TYPE_HASH =
         keccak256("MintAuth(address to,uint256 nonce,uint256 tokenId,uint256 amount,uint256 expiry)");
     bytes32 public constant BATCH_MINT_AUTH_TYPE_HASH =
-        keccak256("BatchMintAuth(address to,uint256 nonce,uint256[] tokenIds,uint256[] amounts,uint256 expiry)");
+        keccak256(
+            "BatchMintAuth(address to,uint256 nonce,uint256[] memory tokenIds,uint256[] memory amounts,uint256 expiry)"
+        );
 
     mapping(bytes32 => bool) public signatures;
+
+    mapping(address => uint256) public mintNonces;
 
     function __ERC1155PreAuth_init(
         string memory name,
@@ -99,6 +103,7 @@ contract ERC1155PreAuthUpgradeable is
         _checkMintAuthorization(to, nonce, tokenId, amount, expiry, signature);
 
         _mint(to, tokenId, amount, "");
+        mintNonces[msg.sender] += 1;
     }
 
     function _safeBatchMint(
@@ -112,6 +117,7 @@ contract ERC1155PreAuthUpgradeable is
         _checkBatchMintAuthorization(to, nonce, tokenIds, amounts, expiry, signature);
 
         _mintBatch(to, tokenIds, amounts, "");
+        mintNonces[msg.sender] += 1;
     }
 
     function _checkMintAuthorization(
@@ -178,5 +184,5 @@ contract ERC1155PreAuthUpgradeable is
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
-    uint256[49] private __gap;
+    uint256[48] private __gap;
 }

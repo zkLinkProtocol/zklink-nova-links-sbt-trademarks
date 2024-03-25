@@ -4,8 +4,11 @@ import '@openzeppelin/hardhat-upgrades';
 import '@matterlabs/hardhat-zksync-deploy';
 import '@matterlabs/hardhat-zksync-solc';
 import '@matterlabs/hardhat-zksync-verify';
-import "@matterlabs/hardhat-zksync-upgradable";
+import '@matterlabs/hardhat-zksync-upgradable';
 import 'hardhat-abi-exporter';
+import dotenv from 'dotenv';
+// Load env file
+dotenv.config();
 
 const config: HardhatUserConfig = {
   abiExporter: {
@@ -17,7 +20,7 @@ const config: HardhatUserConfig = {
     only: ['contracts/.*.sol'],
     format: 'json',
   },
-  defaultNetwork: 'zklinkNovaGoerliTestnet',
+  defaultNetwork: process.env.DEFAULT_NETWORK || 'hardhat',
   networks: {
     zklinkNovaGoerliTestnet: {
       url: 'https://goerli.rpc.zklink.io',

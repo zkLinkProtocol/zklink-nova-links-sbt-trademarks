@@ -19,12 +19,7 @@ interface ITrademark is IERC721 {
     function burn(uint256) external;
 }
 
-contract FullNovaNFT is
-    ERC721Burnable,
-    ERC721Enumerable,
-    AccessControlDefaultAdminRules,
-    Checkable
-{
+contract FullNovaNFT is ERC721Burnable, ERC721Enumerable, AccessControlDefaultAdminRules, Checkable {
     error TrademarkMismatch(string type_of_trademark, uint256 tokenId);
 
     ITrademark tradeMark;
@@ -38,10 +33,7 @@ contract FullNovaNFT is
         address defaultWitness,
         address trademarkAddress,
         address novaNFTAddress
-    )
-        ERC721("NovaLynk", "NOVA-LYNK")
-        AccessControlDefaultAdminRules(1, msg.sender)
-    {
+    ) ERC721("NovaLynk", "NOVA-LYNK") AccessControlDefaultAdminRules(1, msg.sender) {
         _setupRole(WITNESS_ROLE, defaultWitness);
         tradeMark = ITrademark(trademarkAddress);
         novaNFT = NovaNFT(novaNFTAddress);
@@ -49,13 +41,7 @@ contract FullNovaNFT is
 
     function supportsInterface(
         bytes4 interfaceId
-    )
-        public
-        view
-        virtual
-        override(ERC721, ERC721Enumerable, AccessControlDefaultAdminRules)
-        returns (bool)
-    {
+    ) public view virtual override(ERC721, ERC721Enumerable, AccessControlDefaultAdminRules) returns (bool) {
         return
             ERC721.supportsInterface(interfaceId) ||
             AccessControlDefaultAdminRules.supportsInterface(interfaceId) ||
@@ -149,21 +135,14 @@ contract FullNovaNFT is
         uint256 firstTokenId,
         uint256 batchSize
     ) internal override(ERC721, ERC721Enumerable) {
-        ERC721Enumerable._beforeTokenTransfer(
-            from,
-            to,
-            firstTokenId,
-            batchSize
-        );
+        ERC721Enumerable._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 
     function _baseURI() internal pure override returns (string memory) {
         return "ipfs://QmTLVSrRdZBE61dH2sX2FfVkER3htFVreEZNUUHg3Wi2oS/";
     }
 
-    function tokenURI(
-        uint256 tokenId
-    ) public view override returns (string memory) {
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
         require(tokenId < _nextTokenId, "Token not exists");
         return string.concat(_baseURI(), charactersMapping[tokenId]);
     }
