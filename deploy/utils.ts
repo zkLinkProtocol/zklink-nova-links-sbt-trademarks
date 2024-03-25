@@ -9,6 +9,7 @@ import * as path from 'path';
 
 import '@matterlabs/hardhat-zksync-node/dist/type-extensions';
 import '@matterlabs/hardhat-zksync-verify/dist/src/type-extensions';
+import { sleep } from 'zksync-ethers/build/utils';
 
 // Load env file
 dotenv.config();
@@ -102,18 +103,18 @@ type DeployContractOptions = {
   kind?: 'uups' | 'transparent' | 'beacon' | undefined;
 
   unsafeAllow?:
-    | (
-        | 'constructor'
-        | 'delegatecall'
-        | 'selfdestruct'
-        | 'state-variable-assignment'
-        | 'state-variable-immutable'
-        | 'external-library-linking'
-        | 'struct-definition'
-        | 'enum-definition'
-        | 'missing-public-upgradeto'
-      )[]
-    | undefined;
+  | (
+    | 'constructor'
+    | 'delegatecall'
+    | 'selfdestruct'
+    | 'state-variable-assignment'
+    | 'state-variable-immutable'
+    | 'external-library-linking'
+    | 'struct-definition'
+    | 'enum-definition'
+    | 'missing-public-upgradeto'
+  )[]
+  | undefined;
 };
 export const deployContract = async (
   contractArtifactName: string,
@@ -174,7 +175,7 @@ export const deployContract = async (
 
   (deployLog as any)[contractName] = address;
   if (options?.upgradable) {
-    const implementationAddress = await getImplementationAddress(hre.network.provider, address);
+    const implementationAddress = await getImplementationAddress(getProvider(), address);
     (deployLog as any)[`${contractName}_Implementation`] = implementationAddress;
   }
   fs.writeFileSync(deployLogPath, JSON.stringify(deployLog, null, 2));
@@ -249,7 +250,8 @@ export const upgradeContract = async (
       constructorArgs: constructorArguments,
     });
 
-    const implementationAddress = await getImplementationAddress(hre.network.provider, proxyAddress);
+    await sleep(2_000);
+    const implementationAddress = await getImplementationAddress(getProvider(), proxyAddress);
     log(`\nNew implementation address: ${implementationAddress}`);
 
     (deployLog as any)[`${contractName}_Implementation`] = implementationAddress;
@@ -307,7 +309,7 @@ export const verifyContractByName = async (
     throw new Error('⛔️ Proxy address not found! Please deploy the contract first.');
   }
 
-  const implementationAddress = await getImplementationAddress(hre.network.provider, proxyAddress);
+  const implementationAddress = await getImplementationAddress(getProvider(), proxyAddress);
   console.log(`\nNew implementation address: ${implementationAddress}`);
 
   const contract = await hre.ethers.getContractAt(artifact.abi, proxyAddress);
