@@ -10,6 +10,6 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova Mystery Box NFT', 'NMB', 'ipfs://QmaocxsiLmVCHqNi5AEwZxWgZfrZAZwySvNXQkDdpk1o9w/MysteryBox.json', '0xd14653F6fA807107084e5d8a18bB5Ce3C5BbFB90'],
+    ['Nova Mystery Box', 'MYSTERYBOX', 'ipfs://QmaocxsiLmVCHqNi5AEwZxWgZfrZAZwySvNXQkDdpk1o9w/MysteryBox.json', process.env.WITNESS_ADDRESS],
   );
 }

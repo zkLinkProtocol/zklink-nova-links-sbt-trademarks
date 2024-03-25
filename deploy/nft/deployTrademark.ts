@@ -10,6 +10,6 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova Trademark NFT', '', '0xd14653F6fA807107084e5d8a18bB5Ce3C5BbFB90'],
+    ['Nova Trademarks', '', process.env.WITNESS_ADDRESS],
   );
 }
