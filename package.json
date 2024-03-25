@@ -21,6 +21,7 @@
     "interact:booster": "hardhat deploy-zksync --script interact_booster.ts",
     "interact:full": "hardhat deploy-zksync --script interact_full_sbt.ts",
     "checkBalance": "npx hardhat run scripts/getBalanceOfNFT.ts",
+    "setURI:ERC1155": "npx hardhat run scripts/setURI.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "export-abi": "npx hardhat export-abi",

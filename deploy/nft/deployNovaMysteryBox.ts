@@ -10,6 +10,11 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova Mystery Box', 'MYSTERYBOX', 'ipfs://QmaocxsiLmVCHqNi5AEwZxWgZfrZAZwySvNXQkDdpk1o9w/MysteryBox.json', process.env.WITNESS_ADDRESS],
+    [
+      'Nova Mystery Box',
+      'MYSTERYBOX',
+      'ipfs://QmaocxsiLmVCHqNi5AEwZxWgZfrZAZwySvNXQkDdpk1o9w/MysteryBox.json',
+      process.env.WITNESS_ADDRESS,
+    ],
   );
 }
