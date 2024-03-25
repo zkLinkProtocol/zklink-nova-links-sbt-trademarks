@@ -284,6 +284,52 @@ export const upgradeContract = async (
   return contract;
 };
 
+export const verifyContractByName = async (
+  proxyAddress: string,
+  contractArtifactName: string,
+  constructorArguments?: any[],
+) => {
+  const wallet = getWallet();
+  const deployer = new Deployer(hre, wallet);
+
+  const artifact = await deployer.loadArtifact(contractArtifactName).catch(error => {
+    if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
+      console.error(error.message);
+      throw `Please make sure you have compiled your contracts or specified the correct contract name!`;
+    } else {
+      throw error;
+    }
+  });
+
+  const contractName = artifact.contractName;
+  console.log('proxyAddress', proxyAddress);
+  if (!proxyAddress) {
+    throw new Error('⛔️ Proxy address not found! Please deploy the contract first.');
+  }
+
+  const implementationAddress = await getImplementationAddress(hre.network.provider, proxyAddress);
+  console.log(`\nNew implementation address: ${implementationAddress}`);
+
+  const contract = await hre.ethers.getContractAt(artifact.abi, proxyAddress);
+  const address = await contract.getAddress();
+  const constructorArgs = contract.interface.encodeDeploy(constructorArguments);
+  const fullContractSource = `${artifact.sourceName}:${contractName}`;
+
+  // Display contract deployment info
+  console.log(`\n"${contractName}" was successfully deployed:`);
+  console.log(` - Contract address: ${address}`);
+  console.log(` - Contract source: ${fullContractSource}`);
+  console.log(` - Encoded constructor arguments: ${constructorArgs}\n`);
+  console.log(`Requesting contract verification...`);
+
+  await verifyContract({
+    address,
+    contract: fullContractSource,
+    constructorArguments: constructorArgs,
+    bytecode: artifact.bytecode,
+  });
+};
+
 /**
  * Rich wallets can be used for testing purposes.
  * Available on zkSync In-memory node and Dockerized node.

@@ -28,9 +28,7 @@ contract ERC1155PreAuthUpgradeable is
     bytes32 public constant MINT_AUTH_TYPE_HASH =
         keccak256("MintAuth(address to,uint256 nonce,uint256 tokenId,uint256 amount,uint256 expiry)");
     bytes32 public constant BATCH_MINT_AUTH_TYPE_HASH =
-        keccak256(
-            "BatchMintAuth(address to,uint256 nonce,uint256[] memory tokenIds,uint256[] memory amounts,uint256 expiry)"
-        );
+        keccak256("BatchMintAuth(address to,uint256 nonce,uint256[] tokenIds,uint256[] amounts,uint256 expiry)");
 
     mapping(bytes32 => bool) public signatures;
 
@@ -87,7 +85,11 @@ contract ERC1155PreAuthUpgradeable is
         uint256 expiry,
         bytes calldata signature
     ) external view returns (bool) {
-        bytes32 mintAuthHash = keccak256(abi.encode(BATCH_MINT_AUTH_TYPE_HASH, to, nonce, tokenIds, amounts, expiry));
+        bytes32 tokenIdsHash = keccak256(abi.encodePacked(tokenIds));
+        bytes32 amountsHash = keccak256(abi.encodePacked(amounts));
+        bytes32 mintAuthHash = keccak256(
+            abi.encode(BATCH_MINT_AUTH_TYPE_HASH, to, nonce, tokenIdsHash, amountsHash, expiry)
+        );
         address witnessAddress = ECDSAUpgradeable.recover(_hashTypedDataV4(mintAuthHash), signature);
         return hasRole(WITNESS_ROLE, witnessAddress);
     }
@@ -146,7 +148,11 @@ contract ERC1155PreAuthUpgradeable is
         bytes calldata signature
     ) internal {
         require(block.timestamp <= expiry, "Signature has expired");
-        bytes32 mintAuthHash = keccak256(abi.encode(BATCH_MINT_AUTH_TYPE_HASH, to, nonce, tokenIds, amounts, expiry));
+        bytes32 tokenIdsHash = keccak256(abi.encodePacked(tokenIds));
+        bytes32 amountsHash = keccak256(abi.encodePacked(amounts));
+        bytes32 mintAuthHash = keccak256(
+            abi.encode(BATCH_MINT_AUTH_TYPE_HASH, to, nonce, tokenIdsHash, amountsHash, expiry)
+        );
         require(!signatures[mintAuthHash], "Used Signature");
 
         address witnessAddress = ECDSAUpgradeable.recover(_hashTypedDataV4(mintAuthHash), signature);
