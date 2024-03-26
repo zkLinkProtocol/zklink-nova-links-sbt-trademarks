@@ -103,18 +103,18 @@ type DeployContractOptions = {
   kind?: 'uups' | 'transparent' | 'beacon' | undefined;
 
   unsafeAllow?:
-  | (
-    | 'constructor'
-    | 'delegatecall'
-    | 'selfdestruct'
-    | 'state-variable-assignment'
-    | 'state-variable-immutable'
-    | 'external-library-linking'
-    | 'struct-definition'
-    | 'enum-definition'
-    | 'missing-public-upgradeto'
-  )[]
-  | undefined;
+    | (
+        | 'constructor'
+        | 'delegatecall'
+        | 'selfdestruct'
+        | 'state-variable-assignment'
+        | 'state-variable-immutable'
+        | 'external-library-linking'
+        | 'struct-definition'
+        | 'enum-definition'
+        | 'missing-public-upgradeto'
+      )[]
+    | undefined;
 };
 export const deployContract = async (
   contractArtifactName: string,
