@@ -4,7 +4,6 @@ import { Contract, Wallet } from 'ethers';
 import { upgrades } from 'hardhat';
 
 describe('NovaTrademark', function () {
-
   let NovaTrademarkNFT;
   let TradeMark: Contract;
   let tradeAddr;
@@ -12,7 +11,6 @@ describe('NovaTrademark', function () {
   let addr1: Wallet;
   let addr2: Wallet;
   let signature;
-
 
   before(async function () {
     NovaTrademarkNFT = await ethers.getContractFactory('NovaTrademarkNFT');
@@ -56,7 +54,6 @@ describe('NovaTrademark', function () {
       amount: 1,
       expiry: 1742630631000,
     };
-    
 
     // mint TradeMark
     signature = await owner.signTypedData(domain, types, message1);
@@ -72,7 +69,6 @@ describe('NovaTrademark', function () {
     let token1Bal = await TradeMark.balanceOf(addr1.address, 1);
     expect(token1Bal).to.equal(1);
   });
-
 
   it('mintbatch TradeMark', async function () {
     tradeAddr = await TradeMark.getAddress();
@@ -137,4 +133,4 @@ describe('NovaTrademark', function () {
     let token1Bal = await TradeMark.balanceOf(addr1.address, 1);
     expect(token1Bal).to.equal(1);
   });
-})
+});
