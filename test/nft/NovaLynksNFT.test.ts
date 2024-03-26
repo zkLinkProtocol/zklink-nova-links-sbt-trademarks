@@ -103,7 +103,6 @@ describe('NovaLynksNFT', function () {
     };
 
     // mint TradeMark
-
     signature = await owner.signTypedData(domain, types, message1);
     await TradeMark['safeMint(address,uint256,uint256,uint256,uint256,bytes)'](
       addr1.address,
@@ -158,7 +157,7 @@ describe('NovaLynksNFT', function () {
     let tokenids: number[] = [1, 2, 3, 4];
     await Lynk.setTrademarkTokenIds(tokenids);
 
-    // 将token approve给Lynk
+    // token approve to LynkContract
     const addr1TradeMark = new ethers.Contract(await TradeMark.getAddress(), TradeMark.interface, addr1);
     addr1TradeMark.setApprovalForAll(Lynk.getAddress(), true);
 
@@ -241,7 +240,7 @@ describe('NovaLynksNFT', function () {
     let tokenids: number[] = [1, 2, 3, 4];
     await Lynk.setTrademarkTokenIds(tokenids);
 
-    // 将token approve给Lynk
+    // token approve to Lynk contract
     const addr1TradeMark = new ethers.Contract(await TradeMark.getAddress(), TradeMark.interface, addr1);
     addr1TradeMark.setApprovalForAll(Lynk.getAddress(), true);
 
@@ -250,7 +249,7 @@ describe('NovaLynksNFT', function () {
     await addr1Lynk['safeMint(address)'](addr1);
 
     const balance = await Lynk.balanceOf(addr1.address);
-    console.log('Lynk balance:', balance); // mint success
+    expect(balance).to.equal(1);
 
     let token1Bal = await TradeMark.balanceOf(addr1.address, 1);
     let token2Bal = await TradeMark.balanceOf(addr1.address, 2);

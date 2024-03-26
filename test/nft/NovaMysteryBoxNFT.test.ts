@@ -49,12 +49,10 @@ describe('NovaMysteryBoxNFT', function () {
       expiry: 1742630631000,
     };
     signature = await owner.signTypedData(domain, types, message);
-    // signature = await addr1.signTypedData(domain,types,message); // AccessControl error
     await nft['safeMint(address,uint256,uint256,bytes)'](addr1.address, 1, 1742630631000, signature);
     const balance = await nft.balanceOf(addr1.address);
     expect(balance).to.equal(1);
   });
-
 
   it('only owner can signature', async function () {
     let nftAddr = await nft.getAddress();
@@ -78,48 +76,48 @@ describe('NovaMysteryBoxNFT', function () {
       nonce: 1,
       expiry: 1742630631000,
     };
-    signature = await addr1.signTypedData(domain,types,message);
+    signature = await addr1.signTypedData(domain, types, message);
     expect(nft['safeMint(address,uint256,uint256,bytes)'](addr1.address, 1, 1742630631000, signature)).to.be.reverted;
-  })
+  });
 
   /**
    * test transfer
    */
-  it("non-NFT owner should not have permission to transfer", async function () {
-      const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
-      const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
-      await addr1TokenContract.approve(addr2.address,0);
-      await addr2TokenContract.transferFrom(addr1,addr2,0);
-      assert.equal(await nft.ownerOf(0), addr2.address);
+  it('non-NFT owner should not have permission to transfer', async function () {
+    const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
+    const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
+    await addr1TokenContract.approve(addr2.address, 0);
+    await addr2TokenContract.transferFrom(addr1, addr2, 0);
+    assert.equal(await nft.ownerOf(0), addr2.address);
   });
 
   /**
    * test not ower or approved burn
    */
-  it("approve burn error", async function () {
-      const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
-      addr1TokenContract.approve(addr2.address,0);
-      const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
-      await addr2TokenContract.burn(0);
-      let exist = await addr1TokenContract.exists(0);
-      expect(exist).to.equal(false);
+  it('approve burn error', async function () {
+    const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
+    addr1TokenContract.approve(addr2.address, 0);
+    const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
+    await addr2TokenContract.burn(0);
+    let exist = await addr1TokenContract.exists(0);
+    expect(exist).to.equal(false);
   });
 
   it('non-NFT owner should not have permission to burn', async function () {
     const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
-    await expect( addr2TokenContract.burn(0)).to.be.revertedWith("ERC721: caller is not token owner or approved");
+    await expect(addr2TokenContract.burn(0)).to.be.revertedWith('ERC721: caller is not token owner or approved');
   });
 
   /**
    * test ower burn
    */
-  it("burn fail", async function () {
-      const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
-      await addr1TokenContract.burn(0);
-      let exist = await addr1TokenContract.exists(0);
-      expect(exist).to.equal(false);
+  it('burn fail', async function () {
+    const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
+    await addr1TokenContract.burn(0);
+    let exist = await addr1TokenContract.exists(0);
+    expect(exist).to.equal(false);
 
-      let nonce = await addr1TokenContract.burnNonces(addr1.address);
-      expect(nonce).to.equal(1);
+    let nonce = await addr1TokenContract.burnNonces(addr1.address);
+    expect(nonce).to.equal(1);
   });
 });
