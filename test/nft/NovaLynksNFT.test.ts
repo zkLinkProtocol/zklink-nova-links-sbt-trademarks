@@ -15,7 +15,7 @@ describe('NovaLynksNFT', function () {
   let mysteryAddr;
   let tradeAddr;
 
-  let owner = new Wallet('0xbb64ec9d1d3b623d1172f7fb01e99512232a8064c403f97cb0978a1d4f100fb1', ethers.provider);
+  let owner = new Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80', ethers.provider);
   let addr1: Wallet;
   let addr2: Wallet;
   let signature;
