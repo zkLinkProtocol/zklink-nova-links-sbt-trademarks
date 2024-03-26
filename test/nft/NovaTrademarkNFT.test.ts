@@ -1,4 +1,4 @@
-import { expect} from 'chai';
+import { expect } from 'chai';
 const { ethers } = require('hardhat');
 import { Contract, Wallet } from 'ethers';
 import { upgrades } from 'hardhat';
