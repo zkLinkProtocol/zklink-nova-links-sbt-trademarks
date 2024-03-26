@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { expect} from 'chai';
 const { ethers } = require('hardhat');
 import { Contract, Wallet } from 'ethers';
 import { upgrades } from 'hardhat';
@@ -14,7 +14,7 @@ describe('NovaLynksNFT', function () {
   let mysteryAddr;
   let tradeAddr;
 
-  let owner = new Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80', ethers.provider);
+  let owner: Wallet;
   let addr1: Wallet;
   let addr2: Wallet;
   let signature;
@@ -70,7 +70,7 @@ describe('NovaLynksNFT', function () {
     await expect(addr1Lynk['safeMint(address)'](addr1)).to.be.revertedWith('Only nova SBT holders can mint');
   });
 
-  it('mint Mystery', async function () {
+  it('mint Mystery success', async function () {
     mysteryAddr = await Mystery.getAddress();
     const domain = {
       name: 'NMB',
@@ -96,7 +96,7 @@ describe('NovaLynksNFT', function () {
     expect(await Mystery.balanceOf(addr1.address)).to.equal(1);
   });
 
-  it('mintbatch TradeMark', async function () {
+  it('mintbatch TradeMark success', async function () {
     tradeAddr = await TradeMark.getAddress();
 
     let tokenIdList: number[] = [1, 2, 3, 4];
@@ -137,7 +137,7 @@ describe('NovaLynksNFT', function () {
     expect(token1Bal).to.equal(2);
   });
 
-  it('mint Lynk error', async function () {
+  it('mint Lynk success', async function () {
     lynkAddr = await Lynk.getAddress();
 
     //  set tokenIds
@@ -165,7 +165,7 @@ describe('NovaLynksNFT', function () {
     expect(token4Bal).to.equal(1);
   });
 
-  it('mint Lynk with Auth error', async function () {
+  it('mint Lynk with Auth success', async function () {
     lynkAddr = await Lynk.getAddress();
     const domain = {
       name: 'Lynk',
@@ -189,7 +189,7 @@ describe('NovaLynksNFT', function () {
     signature = await owner.signTypedData(domain, types, message);
     await Lynk['safeMintWithAuth(address,uint256,uint256,bytes)'](addr1.address, 1, 1742630631000, signature);
     const balance = await Lynk.balanceOf(addr1.address);
-    console.log('Lynk balance Auth:', balance); // mint success
+    console.log('Lynk balance Auth:', balance);
     expect(balance).to.equal(2);
   });
 });

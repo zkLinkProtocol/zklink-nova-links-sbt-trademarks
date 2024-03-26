@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { expect} from 'chai';
 const { ethers } = require('hardhat');
 import { Contract, Wallet } from 'ethers';
 import { upgrades } from 'hardhat';
@@ -7,7 +7,7 @@ describe('NovaTrademark', function () {
   let NovaTrademarkNFT;
   let TradeMark: Contract;
   let tradeAddr;
-  let owner = new Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80', ethers.provider);
+  let owner: Wallet;
   let addr1: Wallet;
   let addr2: Wallet;
   let signature;
@@ -28,7 +28,7 @@ describe('NovaTrademark', function () {
     tradeAddr = await TradeMark.getAddress();
   });
 
-  it('mint TradeMark error', async function () {
+  it('mint TradeMark with sign success', async function () {
     tradeAddr = await TradeMark.getAddress();
     const domain = {
       name: 'TradeMark',
@@ -70,7 +70,7 @@ describe('NovaTrademark', function () {
     expect(token1Bal).to.equal(1);
   });
 
-  it('mintbatch TradeMark', async function () {
+  it('mintbatch TradeMark success', async function () {
     tradeAddr = await TradeMark.getAddress();
 
     let tokenIdList: number[] = [1, 2, 3, 4];

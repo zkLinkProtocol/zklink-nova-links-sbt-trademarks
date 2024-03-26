@@ -26,7 +26,7 @@ describe('NovaMysteryBoxNFT', function () {
     });
   });
 
-  it('should sign and verify EIP-712 signature', async function () {
+  it('mint NMB and verify EIP-712 signature', async function () {
     let nftAddr = await nft.getAddress();
     console.log('nftAddr:', nftAddr);
     const domain = {
@@ -80,10 +80,7 @@ describe('NovaMysteryBoxNFT', function () {
     expect(nft['safeMint(address,uint256,uint256,bytes)'](addr1.address, 1, 1742630631000, signature)).to.be.reverted;
   });
 
-  /**
-   * test transfer
-   */
-  it('non-NFT owner should not have permission to transfer', async function () {
+  it('nft approve and transfer success ', async function () {
     const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
     const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
     await addr1TokenContract.approve(addr2.address, 0);
@@ -94,7 +91,7 @@ describe('NovaMysteryBoxNFT', function () {
   /**
    * test not ower or approved burn
    */
-  it('approve burn error', async function () {
+  it('approve burn success', async function () {
     const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
     addr1TokenContract.approve(addr2.address, 0);
     const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
@@ -103,7 +100,7 @@ describe('NovaMysteryBoxNFT', function () {
     expect(exist).to.equal(false);
   });
 
-  it('non-NFT owner should not have permission to burn', async function () {
+  it('only owner or approver can burn', async function () {
     const addr2TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr2);
     await expect(addr2TokenContract.burn(0)).to.be.revertedWith('ERC721: caller is not token owner or approved');
   });
@@ -111,7 +108,7 @@ describe('NovaMysteryBoxNFT', function () {
   /**
    * test ower burn
    */
-  it('burn fail', async function () {
+  it('burn success and nonce added', async function () {
     const addr1TokenContract = new ethers.Contract(await nft.getAddress(), nft.interface, addr1);
     await addr1TokenContract.burn(0);
     let exist = await addr1TokenContract.exists(0);
