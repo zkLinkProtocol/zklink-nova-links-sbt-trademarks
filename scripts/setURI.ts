@@ -15,7 +15,7 @@ const tokenInfos = {
     ],
   },
   NovaBoosterkNFT: {
-    contractAddress: process.env.BOOSTER_CONTRACT_ADDRESSTRADEMARK_CONTRACT_ADDRESS,
+    contractAddress: process.env.BOOSTER_CONTRACT_ADDRESS,
     tokenIds: [3, 4, 100, 300, 500, 1000, 2000],
     tokenURIs: [
       'ipfs://QmaocxsiLmVCHqNi5AEwZxWgZfrZAZwySvNXQkDdpk1o9w/NovaBooster-x3.json',
