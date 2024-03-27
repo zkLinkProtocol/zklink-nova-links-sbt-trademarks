@@ -5,7 +5,7 @@ dotenv.config();
 
 const tokenInfos = {
   NovaTrademarkNFT: {
-    contractAddress: process.env.BOOSTER_CONTRACT_ADDRESS,
+    contractAddress: process.env.TRADEMARK_CONTRACT_ADDRESS,
     tokenIds: [1, 2, 3, 4],
     tokenURIs: [
       'ipfs://QmaocxsiLmVCHqNi5AEwZxWgZfrZAZwySvNXQkDdpk1o9w/OakTreeRoots.json',
@@ -15,7 +15,7 @@ const tokenInfos = {
     ],
   },
   NovaBoosterkNFT: {
-    contractAddress: process.env.TRADEMARK_CONTRACT_ADDRESS,
+    contractAddress: process.env.BOOSTER_CONTRACT_ADDRESSTRADEMARK_CONTRACT_ADDRESS,
     tokenIds: [3, 4, 100, 300, 500, 1000, 2000],
     tokenURIs: [
       'ipfs://QmaocxsiLmVCHqNi5AEwZxWgZfrZAZwySvNXQkDdpk1o9w/NovaBooster-x3.json',
