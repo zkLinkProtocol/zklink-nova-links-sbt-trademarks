@@ -5,6 +5,9 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC1155PreAuthUpgradeable} from "./ERC1155PreAuthUpgradeable.sol";
 
 contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
+
+    mapping(address => uint256) public mintNonces2;
+
     constructor() {
         _disableInitializers();
     }
@@ -65,5 +68,21 @@ contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
 
     function setURI(uint256 tokenId, string memory newURI) external onlyOwner {
         _setURI(tokenId, newURI);
+    }
+
+    function safeMint2(
+        address to,
+        uint256 nonce,
+        uint256 tokenId,
+        uint256 amount,
+        uint256 expiry,
+        bytes calldata signature
+    ) public nonReentrant whenNotPaused {
+        _safeMint(to, nonce, tokenId, amount, expiry, signature);
+        mintNonces2[to] += 1;
+    }
+
+    function subMintNonce2(address to) public view returns(uint256){
+        return mintNonces[to] - mintNonces2[to];
     }
 }

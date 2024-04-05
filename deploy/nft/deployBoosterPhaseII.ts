@@ -10,6 +10,6 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova - Phase II', '', process.env.WITNESS_ADDRESS],
+    ['Nova Booster - Phase II', '', process.env.WITNESS_ADDRESS],
   );
 }
