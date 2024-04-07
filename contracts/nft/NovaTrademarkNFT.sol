@@ -79,10 +79,10 @@ contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
         bytes calldata signature
     ) public nonReentrant whenNotPaused {
         _safeMint(to, nonce, tokenId, amount, expiry, signature);
-        mintNonces2[to] += 1;
+        mintNonces2[msg.sender] += 1;
     }
 
-    function subMintNonce2(address to) public view returns(uint256){
-        return mintNonces[to] - mintNonces2[to];
+    function subMintNonce2(address user) public view returns(uint256){
+        return mintNonces[user] - mintNonces2[user];
     }
 }
