@@ -105,7 +105,7 @@ contract ERC1155PreAuthUpgradeable is
         _checkMintAuthorization(to, nonce, tokenId, amount, expiry, signature);
 
         _mint(to, tokenId, amount, "");
-        mintNonces[msg.sender] += 1;
+        mintNonces[to] += 1;
     }
 
     function _safeBatchMint(
@@ -119,7 +119,7 @@ contract ERC1155PreAuthUpgradeable is
         _checkBatchMintAuthorization(to, nonce, tokenIds, amounts, expiry, signature);
 
         _mintBatch(to, tokenIds, amounts, "");
-        mintNonces[msg.sender] += 1;
+        mintNonces[to] += 1;
     }
 
     function _checkMintAuthorization(
