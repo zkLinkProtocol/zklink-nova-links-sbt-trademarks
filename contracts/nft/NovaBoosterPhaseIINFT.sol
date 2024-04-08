@@ -5,6 +5,11 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC1155PreAuthUpgradeable} from "./ERC1155PreAuthUpgradeable.sol";
 
 contract NovaBoosterPhaseIINFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
+
+    mapping(uint256 => bool) public typeMinted;
+
+    mapping(uint256 => mapping(address => uint256)) public mintNoncesMap;
+
     constructor() {
         _disableInitializers();
     }
@@ -77,5 +82,33 @@ contract NovaBoosterPhaseIINFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
 
     function setURI(uint256 tokenId, string memory newURI) external onlyOwner {
         _setURI(tokenId, newURI);
+    }
+
+    function safeMintCommon(
+        address to,
+        uint256 nonce,
+        uint256 tokenId,
+        uint256 amount,
+        uint256 expiry,
+        bytes calldata signature,
+        uint256 mintType
+    ) public nonReentrant whenNotPaused {
+        _safeMint(to, nonce, tokenId, amount, expiry, signature);
+        mintNoncesMap[mintType][to] += 1;
+        if(typeMinted[mintType] == false){
+            typeMinted[mintType] = true;
+        }
+    }
+
+     function getMintNonceOne(address user) public view returns(uint256){
+        uint256 nonceOne = mintNonces[user];
+        for(uint256 i = 3;  ; i++){
+            if (typeMinted[i] == false) {
+                break;
+            }
+            nonceOne -= mintNoncesMap[i][user];
+        }
+    
+        return nonceOne;
     }
 }

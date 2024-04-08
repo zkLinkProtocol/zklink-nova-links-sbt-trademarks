@@ -133,4 +133,134 @@ describe('NovaTrademark', function () {
     let token1Bal = await TradeMark.balanceOf(addr1.address, 1);
     expect(token1Bal).to.equal(1);
   });
+
+
+  it('without safeMintCommon success', async function () {
+    tradeAddr = await TradeMark.getAddress();
+    const domain = {
+      name: 'TradeMark',
+      version: '0',
+      chainId: 31337,
+      verifyingContract: tradeAddr,
+    };
+
+    let types = {
+      MintAuth: [
+        { name: 'to', type: 'address' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'tokenId', type: 'uint256' },
+        { name: 'amount', type: 'uint256' },
+        { name: 'expiry', type: 'uint256' },
+      ],
+    };
+
+    let message1 = {
+      to: addr1.address,
+      nonce: 1,
+      tokenId: 1,
+      amount: 4,
+      expiry: 1742630631000,
+    };
+
+    signature = await owner.signTypedData(domain, types, message1);
+    await TradeMark['safeMint2(address,uint256,uint256,uint256,uint256,bytes)'](
+      addr1.address,
+      1,
+      1,
+      4,
+      1742630631000,
+      signature
+    );
+
+    expect(await TradeMark.balanceOf(addr1.address, 1)).to.equal(5);
+    expect(await TradeMark.mintNoncesMap(3,addr1.address)).to.equal(0);
+    expect(await TradeMark.typeMinted(3)).to.equal(false);
+    expect(await TradeMark.getMintNonceOne(addr1.address)).to.equal(1);
+  });
+
+  it('safeMintCommon success', async function () {
+    tradeAddr = await TradeMark.getAddress();
+    const domain = {
+      name: 'TradeMark',
+      version: '0',
+      chainId: 31337,
+      verifyingContract: tradeAddr,
+    };
+
+    let types = {
+      MintAuth: [
+        { name: 'to', type: 'address' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'tokenId', type: 'uint256' },
+        { name: 'amount', type: 'uint256' },
+        { name: 'expiry', type: 'uint256' },
+      ],
+    };
+
+    let message1 = {
+      to: addr1.address,
+      nonce: 1,
+      tokenId: 1,
+      amount: 2,
+      expiry: 1742630631000,
+    };
+
+    // mint TradeMark
+    signature = await owner.signTypedData(domain, types, message1);
+    
+    await TradeMark['safeMintCommon(address,uint256,uint256,uint256,uint256,bytes,uint256)'](
+      addr1.address,
+      1,
+      1,
+      2,
+      1742630631000,
+      signature,
+      3
+    );
+
+    message1 = {
+      to: addr1.address,
+      nonce: 1,
+      tokenId: 1,
+      amount: 3,
+      expiry: 1742630631000,
+    };
+
+    signature = await owner.signTypedData(domain, types, message1);
+    // mint nft by safeMintCommon
+    await TradeMark['safeMintCommon(address,uint256,uint256,uint256,uint256,bytes,uint256)'](
+      addr1.address,
+      1,
+      1,
+      3,
+      1742630631000,
+      signature,
+      3
+    );
+
+    message1 = {
+      to: addr1.address,
+      nonce: 1,
+      tokenId: 1,
+      amount: 4,
+      expiry: 1742630631000,
+    };
+
+    signature = await owner.signTypedData(domain, types, message1);
+    await TradeMark['safeMint2(address,uint256,uint256,uint256,uint256,bytes)'](
+      addr1.address,
+      1,
+      1,
+      4,
+      1742630631000,
+      signature
+    );
+
+    expect(await TradeMark.balanceOf(addr1.address, 1)).to.equal(10);
+    expect(await TradeMark.mintNoncesMap(3,addr1.address)).to.equal(2);
+    expect(await TradeMark.typeMinted(3)).to.equal(true);
+    expect(await TradeMark.getMintNonceOne(addr1.address)).to.equal(1);
+
+  });
+
 });
