@@ -78,61 +78,64 @@ describe('NovaBoosterPhaseIINFT', function () {
     };
 
     let types = {
-      MintAuth: [
+      MintCommonAuth: [
         { name: 'to', type: 'address' },
         { name: 'nonce', type: 'uint256' },
         { name: 'tokenId', type: 'uint256' },
         { name: 'amount', type: 'uint256' },
         { name: 'expiry', type: 'uint256' },
+        { name: 'mintType', type: 'uint256' },
       ],
     };
 
-    let message1 = {
+    let message2 = {
       to: addr1.address,
-      nonce: 1,
+      nonce: 2,
       tokenId: 1,
       amount: 2,
       expiry: 1742630631000,
+      mintType: 2,
     };
 
     // mint Booster
-    signature = await owner.signTypedData(domain, types, message1);
+    signature = await owner.signTypedData(domain, types, message2);
 
     await Booster['safeMintCommon(address,uint256,uint256,uint256,uint256,bytes,uint256)'](
       addr1.address,
-      1,
+      2,
       1,
       2,
       1742630631000,
       signature,
-      3,
+      2,
     );
 
-    message1 = {
+    message2 = {
       to: addr1.address,
-      nonce: 1,
+      nonce: 3,
       tokenId: 1,
       amount: 3,
       expiry: 1742630631000,
+      mintType: 3,
     };
 
-    signature = await owner.signTypedData(domain, types, message1);
+    signature = await owner.signTypedData(domain, types, message2);
     // mint nft by safeMintCommon
     await Booster['safeMintCommon(address,uint256,uint256,uint256,uint256,bytes,uint256)'](
       addr1.address,
-      1,
+      3,
       1,
       3,
       1742630631000,
       signature,
-      4,
+      3,
     );
 
-    expect(await Booster.balanceOf(addr1.address, 1)).to.equal(6);
-    expect(await Booster.mintNoncesMap(3, addr1.address)).to.equal(1);
-    expect(await Booster.mintNoncesMap(4, addr1.address)).to.equal(1);
-    expect(await Booster.typeMinted(3)).to.equal(true);
-    expect(await Booster.typeMinted(4)).to.equal(true);
-    expect(await Booster.getMintNonceOne(addr1.address)).to.equal(1);
+    expect(await Booster.balanceOf(addr1.address, 1), 'mint mistake').to.equal(6);
+    expect(await Booster.mintNoncesMap(2, addr1.address), 'mintNoncesMap 3 mistake').to.equal(1);
+    expect(await Booster.mintNoncesMap(3, addr1.address), 'mintNoncesMap 4 mistake').to.equal(1);
+    expect(await Booster.typeMinted(2), 'typeMinted3 mistake').to.equal(true);
+    expect(await Booster.typeMinted(3), 'typeMinted3 mistake').to.equal(true);
+    expect(await Booster.getMintNonceOne(addr1.address), 'getMintNonceOne mistake').to.equal(1);
   });
 });

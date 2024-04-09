@@ -3,11 +3,17 @@ pragma solidity ^0.8.0;
 
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {ERC1155PreAuthUpgradeable} from "./ERC1155PreAuthUpgradeable.sol";
+import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 
 contract NovaBoosterPhaseIINFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
     mapping(uint256 => bool) public typeMinted;
 
     mapping(uint256 => mapping(address => uint256)) public mintNoncesMap;
+
+    bytes32 public constant MINT_COMMON_AUTH_TYPE_HASH =
+        keccak256(
+            "MintCommonAuth(address to,uint256 nonce,uint256 tokenId,uint256 amount,uint256 expiry,uint256 mintType)"
+        );
 
     constructor() {
         _disableInitializers();
@@ -92,7 +98,9 @@ contract NovaBoosterPhaseIINFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
         bytes calldata signature,
         uint256 mintType
     ) public nonReentrant whenNotPaused {
-        _safeMint(to, nonce, tokenId, amount, expiry, signature);
+        _checkMintCommonAuthorization(to, nonce, tokenId, amount, expiry, mintType, signature);
+        _mint(to, tokenId, amount, "");
+        mintNonces[to] += 1;
         mintNoncesMap[mintType][to] += 1;
         if (typeMinted[mintType] == false) {
             typeMinted[mintType] = true;
@@ -101,7 +109,7 @@ contract NovaBoosterPhaseIINFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
 
     function getMintNonceOne(address user) public view returns (uint256) {
         uint256 nonceOne = mintNonces[user];
-        for (uint256 i = 3; ; i++) {
+        for (uint256 i = 2; ; i++) {
             if (typeMinted[i] == false) {
                 break;
             }
@@ -109,5 +117,25 @@ contract NovaBoosterPhaseIINFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
         }
 
         return nonceOne;
+    }
+
+    function _checkMintCommonAuthorization(
+        address to,
+        uint256 nonce,
+        uint256 tokenId,
+        uint256 amount,
+        uint256 expiry,
+        uint256 mintType,
+        bytes calldata signature
+    ) internal {
+        require(block.timestamp <= expiry, "Signature has expired");
+        bytes32 mintAuthHash = keccak256(
+            abi.encode(MINT_COMMON_AUTH_TYPE_HASH, to, nonce, tokenId, amount, expiry, mintType)
+        );
+        require(!signatures[mintAuthHash], "Used Signature");
+
+        address witnessAddress = ECDSAUpgradeable.recover(_hashTypedDataV4(mintAuthHash), signature);
+        _checkRole(WITNESS_ROLE, witnessAddress);
+        signatures[mintAuthHash] = true;
     }
 }
