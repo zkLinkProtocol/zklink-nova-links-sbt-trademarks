@@ -134,7 +134,6 @@ describe('NovaTrademark', function () {
     expect(token1Bal).to.equal(1);
   });
 
-
   it('without safeMintCommon success', async function () {
     tradeAddr = await TradeMark.getAddress();
     const domain = {
@@ -169,11 +168,11 @@ describe('NovaTrademark', function () {
       1,
       4,
       1742630631000,
-      signature
+      signature,
     );
 
     expect(await TradeMark.balanceOf(addr1.address, 1)).to.equal(5);
-    expect(await TradeMark.mintNoncesMap(3,addr1.address)).to.equal(0);
+    expect(await TradeMark.mintNoncesMap(3, addr1.address)).to.equal(0);
     expect(await TradeMark.typeMinted(3)).to.equal(false);
     expect(await TradeMark.getMintNonceOne(addr1.address)).to.equal(1);
   });
@@ -207,7 +206,7 @@ describe('NovaTrademark', function () {
 
     // mint TradeMark
     signature = await owner.signTypedData(domain, types, message1);
-    
+
     await TradeMark['safeMintCommon(address,uint256,uint256,uint256,uint256,bytes,uint256)'](
       addr1.address,
       1,
@@ -215,7 +214,7 @@ describe('NovaTrademark', function () {
       2,
       1742630631000,
       signature,
-      3
+      3,
     );
 
     message1 = {
@@ -235,7 +234,7 @@ describe('NovaTrademark', function () {
       3,
       1742630631000,
       signature,
-      3
+      3,
     );
 
     message1 = {
@@ -253,14 +252,12 @@ describe('NovaTrademark', function () {
       1,
       4,
       1742630631000,
-      signature
+      signature,
     );
 
     expect(await TradeMark.balanceOf(addr1.address, 1)).to.equal(10);
-    expect(await TradeMark.mintNoncesMap(3,addr1.address)).to.equal(2);
+    expect(await TradeMark.mintNoncesMap(3, addr1.address)).to.equal(2);
     expect(await TradeMark.typeMinted(3)).to.equal(true);
     expect(await TradeMark.getMintNonceOne(addr1.address)).to.equal(1);
-
   });
-
 });

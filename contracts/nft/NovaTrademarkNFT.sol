@@ -5,13 +5,11 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC1155PreAuthUpgradeable} from "./ERC1155PreAuthUpgradeable.sol";
 
 contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
-
     mapping(address => uint256) public mintNonces2;
 
     mapping(uint256 => bool) public typeMinted;
 
     mapping(uint256 => mapping(address => uint256)) public mintNoncesMap;
-
 
     constructor() {
         _disableInitializers();
@@ -87,7 +85,7 @@ contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
         mintNonces2[to] += 1;
     }
 
-    function subMintNonce2(address to) public view returns(uint256){
+    function subMintNonce2(address to) public view returns (uint256) {
         return mintNonces[to] - mintNonces2[to];
     }
 
@@ -102,20 +100,20 @@ contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
     ) public nonReentrant whenNotPaused {
         _safeMint(to, nonce, tokenId, amount, expiry, signature);
         mintNoncesMap[mintType][to] += 1;
-        if(typeMinted[mintType] == false){
+        if (typeMinted[mintType] == false) {
             typeMinted[mintType] = true;
         }
     }
 
-     function getMintNonceOne(address user) public view returns(uint256){
+    function getMintNonceOne(address user) public view returns (uint256) {
         uint256 nonceOne = mintNonces[user] - mintNonces2[user];
-        for(uint256 i = 3;  ; i++){
+        for (uint256 i = 3; ; i++) {
             if (typeMinted[i] == false) {
                 break;
             }
             nonceOne -= mintNoncesMap[i][user];
         }
-        
+
         return nonceOne;
     }
 }
