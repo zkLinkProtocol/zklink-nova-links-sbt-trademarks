@@ -134,8 +134,6 @@ describe('NovaBoosterPhaseIINFT', function () {
     expect(await Booster.balanceOf(addr1.address, 1), 'mint mistake').to.equal(6);
     expect(await Booster.mintNoncesMap(2, addr1.address), 'mintNoncesMap 3 mistake').to.equal(1);
     expect(await Booster.mintNoncesMap(3, addr1.address), 'mintNoncesMap 4 mistake').to.equal(1);
-    expect(await Booster.typeMinted(2), 'typeMinted3 mistake').to.equal(true);
-    expect(await Booster.typeMinted(3), 'typeMinted3 mistake').to.equal(true);
     expect(await Booster.getMintNonceOne(addr1.address), 'getMintNonceOne mistake').to.equal(1);
   });
 });
