@@ -52,11 +52,11 @@ contract NovaComposeNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         safeMintWithAuth(msg.sender, nonce, expiry, mintType, signature);
     }
 
-    function safeMint(uint256 mintType) external {
-        safeMint(msg.sender, mintType);
+    function safeMint() external {
+        safeMint(msg.sender);
     }
 
-    function safeMint(address to, uint256 mintType) public nonReentrant whenNotPaused {
+    function safeMint(address to) public nonReentrant whenNotPaused {
         require(totalSupply() + 1 <= maxSupply, "Exceeds max supply");
         uint256[] memory _burnTokenIds = new uint256[](novaMemeIds.length);
         uint256[] memory _burnAmounts = new uint256[](novaMemeIds.length);
@@ -67,7 +67,7 @@ contract NovaComposeNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         }
 
         NOVA_MEME.burnBatch(msg.sender, _burnTokenIds, _burnAmounts);
-        _safeMintNormal(to, mintType);
+        _safeMintNormal(to, 1);
     }
 
     function setMemeTokenIds(uint256 tokenId, uint256 amount) external onlyOwner {
