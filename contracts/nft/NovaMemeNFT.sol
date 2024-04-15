@@ -6,6 +6,7 @@ import {ERC1155PhaseIIPreAuthUpgradeable} from "./ERC1155PhaseIIPreAuthUpgradeab
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 
 contract NovaMemeNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
+    mapping(address => mapping(uint256 => bool)) public mintRecord;
     constructor() {
         _disableInitializers();
     }
@@ -31,6 +32,8 @@ contract NovaMemeNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         uint256 mintType,
         bytes calldata signature
     ) public nonReentrant whenNotPaused {
+        require(mintRecord[to][tokenId] == false, "TokenId already minted");
+        mintRecord[to][tokenId] = true;
         _safeMint(to, nonce, tokenId, amount, expiry, mintType, signature);
     }
 
@@ -43,6 +46,10 @@ contract NovaMemeNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         uint256 mintType,
         bytes calldata signature
     ) public nonReentrant whenNotPaused {
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            require(mintRecord[to][tokenIds[i]] == false, "TokenId already minted");
+            mintRecord[to][tokenIds[i]] = true;
+        }
         _safeBatchMint(to, nonce, tokenIds, amounts, expiry, mintType, signature);
     }
 
