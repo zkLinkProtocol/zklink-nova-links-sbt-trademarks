@@ -28,6 +28,12 @@ const config: HardhatUserConfig = {
       zksync: true,
       verifyURL: 'https://goerli.explorer.zklink.io/contract_verification',
     },
+    zklinkNovaSepoliaTestnet: {
+      url: 'https://sepolia.rpc.zklink.io',
+      ethNetwork: 'sepolia',
+      zksync: true,
+      verifyURL: 'https://sepolia.explorer.zklink.io/contract_verification',
+    },
     zkLinkNovaMainnet: {
       url: 'https://rpc.zklink.io',
       ethNetwork: 'mainnet',
