@@ -47,14 +47,14 @@ describe('NovaComposeNFT', function () {
       unsafeAllow: ['constructor'],
     });
     memeAddr = await NovaMeme.getAddress();
-    NovaCompose = await upgrades.deployProxy(NovaComposeNFT, ['compose NFT', 'compose', '', owner.address, 2, 1], {
+    NovaCompose = await upgrades.deployProxy(NovaComposeNFT, ['compose NFT', 'compose', '', owner.address, 2], {
       kind: 'uups',
       initializer: 'initialize',
       constructorArgs: [memeAddr],
       unsafeAllow: ['constructor', 'state-variable-immutable'],
     });
     composeAddr = await NovaCompose.getAddress();
-    await NovaCompose['setMemeTokenIds(uint256)'](1);
+    await NovaCompose['setMemeTokenIds(uint256,uint256)'](1, 1);
     console.log('NovaCompose deployed to:', composeAddr);
     console.log('owner addr', owner.address);
   });
@@ -87,8 +87,8 @@ describe('NovaComposeNFT', function () {
 
   it('mint with burn meme', async function () {
     memeAddr = await NovaMeme.getAddress();
-    let tokenIdList: number[] = [1];
-    let amountList: number[] = [2];
+    let tokenIdList: number[] = [1, 2];
+    let amountList: number[] = [2, 2];
     const domain = {
       name: 'meme NFT',
       version: '0',
@@ -121,10 +121,9 @@ describe('NovaComposeNFT', function () {
 
     aliceCompose = new ethers.Contract(await NovaCompose.getAddress(), NovaCompose.interface, alice);
     ownerCompose = new ethers.Contract(await NovaCompose.getAddress(), NovaCompose.interface, owner);
-    let burnTokenId: number[] = [1];
-    let burnAmount: number[] = [1];
-    await aliceCompose.safeMint(burnTokenId, burnAmount, 1);
+    await aliceCompose.safeMint(1);
     expect(await NovaMeme.balanceOf(alice.address, 1)).to.equal(1);
+    expect(await NovaMeme.balanceOf(alice.address, 2)).to.equal(2);
   });
 
   it("test 'Exceeds max supply' success", async function () {
@@ -155,35 +154,14 @@ describe('NovaComposeNFT', function () {
     ).to.be.revertedWith('Exceeds max supply');
   });
 
-  it('set burnmin success', async function () {
-    expect(aliceCompose.setBurnCount(3)).to.be.revertedWith('Ownable: caller is not the owner');
-    await ownerCompose.setBurnCount(10);
-    await ownerCompose.setMaxSupply(10);
+  it("test 'Ownable: caller is not the owner' success", async function () {
+    expect(aliceCompose.setMaxSupply(3)).to.be.revertedWith('Ownable: caller is not the owner');
   });
 
-  it("test 'Invalid tokenIds and amounts'success", async function () {
-    let burnTokenId: number[] = [1];
-    let burnAmount: number[] = [2, 2];
-    await expect(aliceCompose.safeMint(burnTokenId, burnAmount, 1)).to.be.revertedWith('Invalid tokenIds and amounts');
-  });
-
-  it("test 'Invalid tokenId' success", async function () {
-    let burnTokenId: number[] = [2];
-    let burnAmount: number[] = [1];
-    await expect(aliceCompose.safeMint(burnTokenId, burnAmount, 1)).to.be.revertedWith('Invalid tokenId');
-  });
-
-  it("test 'Invalid amount' success", async function () {
-    let burnTokenId: number[] = [1];
-    let burnAmount: number[] = [0];
-    await expect(aliceCompose.safeMint(burnTokenId, burnAmount, 1)).to.be.revertedWith('Invalid amount');
-  });
-
-  it("test 'Total amount must equal to burnMin' sueecss", async function () {
-    let burnTokenId: number[] = [1];
-    let burnAmount: number[] = [2];
-    await expect(aliceCompose.safeMint(burnTokenId, burnAmount, 1)).to.be.revertedWith(
-      'Total amount must equal to burnCount',
-    );
+  it("test 'novaMemeIdMap' success", async function () {
+    let tokenId = await aliceCompose.novaMemeIdMap(2);
+    let token0 = await aliceCompose.novaMemeIds(0);
+    expect(tokenId).to.be.equal(0);
+    expect(token0).to.be.equal(1);
   });
 });
