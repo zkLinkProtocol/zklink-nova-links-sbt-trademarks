@@ -11,6 +11,7 @@ describe('NovaComposeNFT', function () {
   let memeAddr;
   let owner: Wallet;
   let alice: Wallet;
+  let tom: Wallet;
   let signature;
   let aliceMeme: Contract;
   let aliceCompose: Contract;
@@ -39,7 +40,7 @@ describe('NovaComposeNFT', function () {
     NovaComposeNFT = await ethers.getContractFactory('NovaComposeNFT');
     NovaMemeNFT = await ethers.getContractFactory('NovaMemeNFT');
     const signers: Signer[] = await ethers.getSigners();
-    [owner, alice] = signers as Wallet[];
+    [owner, alice,tom] = signers as Wallet[];
     NovaMeme = await upgrades.deployProxy(NovaMemeNFT, ['meme NFT', 'meme', owner.address], {
       kind: 'uups',
       initializer: 'initialize',
@@ -178,4 +179,8 @@ describe('NovaComposeNFT', function () {
     );
   });
 
+  it("test transfer success", async function () {
+      await aliceCompose.safeTransferFrom(alice.address,tom.address,0);
+      expect(await NovaCompose.ownerOf(0)).to.equal(tom.address);
+  })
 });
