@@ -5,18 +5,17 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC721PhaseIIPreAuthUpgradeable} from "./ERC721PhaseIIPreAuthUpgradeable.sol";
 import {ERC1155BurnableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 
-contract NovaComposeNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
-    ERC1155BurnableUpgradeable public immutable NOVA_MEME;
+contract NovaMemeCrossNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
+    ERC1155BurnableUpgradeable public immutable NOVA_MEME_AXIS;
     uint256 public maxSupply;
     uint256 public burnCount;
 
     mapping(uint256 => uint256) public burnCountMap;
 
-
-    constructor(ERC1155BurnableUpgradeable _meme) {
+    constructor(ERC1155BurnableUpgradeable _memeAxis) {
         _disableInitializers();
 
-        NOVA_MEME = _meme;
+        NOVA_MEME_AXIS = _memeAxis;
     }
 
     function initialize(
@@ -64,10 +63,7 @@ contract NovaComposeNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         safeMint(msg.sender, tokenIds);
     }
 
-    function safeMint(
-        address to,
-        uint256[] calldata tokenIds
-    ) public nonReentrant whenNotPaused {
+    function safeMint(address to, uint256[] calldata tokenIds) public nonReentrant whenNotPaused {
         require(totalSupply() + 1 <= maxSupply, "Exceeds max supply");
         require(tokenIds.length == burnCount, "TokenIds length must equal to burnCount");
         uint256[] memory burnAmounts = new uint256[](tokenIds.length);
@@ -82,11 +78,11 @@ contract NovaComposeNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
             lastTokenId = sortedId[i];
         }
 
-        NOVA_MEME.burnBatch(msg.sender, sortedId, burnAmounts);
+        NOVA_MEME_AXIS.burnBatch(msg.sender, sortedId, burnAmounts);
         _safeMintNormal(to, 1);
     }
 
-    function setMemeTokenIds(uint256 tokenId, uint256 amount) external onlyOwner {
+    function setMemeAxisTokenIds(uint256 tokenId, uint256 amount) external onlyOwner {
         burnCountMap[tokenId] = amount;
     }
 
@@ -94,7 +90,13 @@ contract NovaComposeNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         return _baseURI();
     }
 
-    function bubbleSort(uint256[] memory arr) public pure returns (uint256[] memory) {
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        _requireMinted(tokenId);
+
+        return _baseURI();
+    }
+
+    function bubbleSort(uint256[] memory arr) internal pure returns (uint256[] memory) {
         uint n = arr.length;
         for (uint i = 0; i < n - 1; i++) {
             for (uint j = 0; j < n - i - 1; j++) {

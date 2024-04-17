@@ -5,7 +5,7 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC1155PhaseIIPreAuthUpgradeable} from "./ERC1155PhaseIIPreAuthUpgradeable.sol";
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 
-contract NovaMemeNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
+contract NovaMemeAxisNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
     mapping(address => mapping(uint256 => bool)) public mintRecord;
     constructor() {
         _disableInitializers();
