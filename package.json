@@ -7,6 +7,8 @@
   "repository": "https://github.com/zkLinkProtocol/zklink-nova-links-sbt-trademarks.git",
   "scripts": {
     "upgrade": "npx hardhat deploy-zksync --script nft/upgradeNFTContract.ts",
+    "upgradeTrademark": "npx hardhat deploy-zksync --script nft/upgradeTrademarkNFTContract.ts",
+    "upgradeBoosterPhaseII": "npx hardhat deploy-zksync --script nft/upgradeBoosterPhaseIIContract.ts",
     "deploy:trademark": "npx hardhat deploy-zksync --script nft/deployTrademark.ts",
     "verify": "npx hardhat deploy-zksync --script nft/verifyContract.ts",
     "deploy:mysteryBox": "npx hardhat deploy-zksync --script nft/deployNovaMysteryBox.ts",
