@@ -44,7 +44,7 @@ async function main() {
     );
 
     for (let i = 0; i < tokenInfo.tokenIds.length; i++) {
-      const tx = await contract.setMemeTokenIds(tokenInfo.tokenIds[i], tokenInfo.amount[i]);
+      const tx = await contract.setMemeAxisTokenIds(tokenInfo.tokenIds[i], tokenInfo.amount[i]);
       console.log(`Transaction hash: ${tx.hash}`);
       await tx.wait();
       console.log(`set tokenId:${tokenInfo.tokenIds[i]} burn amount: ${tokenInfo.amount[i]}`);

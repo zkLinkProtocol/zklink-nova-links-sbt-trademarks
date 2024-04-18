@@ -10,6 +10,6 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova MemeAxis', 'MENEAXIS', process.env.WITNESS_ADDRESS],
+    ['Nova MemeAxis', '', process.env.WITNESS_ADDRESS],
   );
 }
