@@ -2,8 +2,8 @@ import { deployContract } from '../utils';
 
 export default async function () {
   await deployContract(
-    'NovaMemeCrossNFT',
-    [process.env.MEME_AXIS_CONTRACT_ADDRESS],
+    'NovaChadNFT',
+    [process.env.INFINITY_STONES_ADDRESS],
     {
       noVerify: false,
       upgradable: true,
@@ -11,9 +11,9 @@ export default async function () {
       unsafeAllow: ['constructor', 'state-variable-immutable'],
     },
     [
-      'Nova MemeCross',
-      'MEMECROSS',
-      'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/MemeCross-test/0',
+      'Nova Chad',
+      'CHAD',
+      'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/Chad-test/0',
       process.env.WITNESS_ADDRESS,
       10000,
     ],

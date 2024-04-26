@@ -4,17 +4,17 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const tokenInfos = {
-  NovaMemeAxisNFT: {
-    contractAddress: process.env.MEME_AXIS_CONTRACT_ADDRESS,
+  NovaInfinityStonesNFT: {
+    contractAddress: process.env.INFINITY_STONES_ADDRESS,
     tokenIds: [1, 2, 3, 4, 5, 6, 7],
     tokenURIs: [
-      'ipfs://QmdV3wGziGW1n9bNuANr5xLd3LxWWfuGBGH9sgUsj9ffHf/MemeAxis%20%231.json',
-      'ipfs://QmdV3wGziGW1n9bNuANr5xLd3LxWWfuGBGH9sgUsj9ffHf/MemeAxis%20%232.json',
-      'ipfs://QmdV3wGziGW1n9bNuANr5xLd3LxWWfuGBGH9sgUsj9ffHf/MemeAxis%20%233.json',
-      'ipfs://QmdV3wGziGW1n9bNuANr5xLd3LxWWfuGBGH9sgUsj9ffHf/MemeAxis%20%234.json',
-      'ipfs://QmdV3wGziGW1n9bNuANr5xLd3LxWWfuGBGH9sgUsj9ffHf/MemeAxis%20%235.json',
-      'ipfs://QmdV3wGziGW1n9bNuANr5xLd3LxWWfuGBGH9sgUsj9ffHf/MemeAxis%20%236.json',
-      'ipfs://QmdV3wGziGW1n9bNuANr5xLd3LxWWfuGBGH9sgUsj9ffHf/MemeAxis%20%237.json',
+      'ipfs://QmTzs2iSRwLArfw3LiLBBFpQM6X9m5tcJKpx47C5fWXvKg/Infinity%20Stones%20%231.json',
+      'ipfs://QmTzs2iSRwLArfw3LiLBBFpQM6X9m5tcJKpx47C5fWXvKg/Infinity%20Stones%20%232.json',
+      'ipfs://QmTzs2iSRwLArfw3LiLBBFpQM6X9m5tcJKpx47C5fWXvKg/Infinity%20Stones%20%233.json',
+      'ipfs://QmTzs2iSRwLArfw3LiLBBFpQM6X9m5tcJKpx47C5fWXvKg/Infinity%20Stones%20%234.json',
+      'ipfs://QmTzs2iSRwLArfw3LiLBBFpQM6X9m5tcJKpx47C5fWXvKg/Infinity%20Stones%20%235.json',
+      'ipfs://QmTzs2iSRwLArfw3LiLBBFpQM6X9m5tcJKpx47C5fWXvKg/Infinity%20Stones%20%236.json',
+      'ipfs://QmTzs2iSRwLArfw3LiLBBFpQM6X9m5tcJKpx47C5fWXvKg/Infinity%20Stones%20%237.json',
     ],
   },
 };

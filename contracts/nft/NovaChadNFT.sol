@@ -5,14 +5,14 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC721PhaseIIPreAuthUpgradeable} from "./ERC721PhaseIIPreAuthUpgradeable.sol";
 import {ERC1155BurnableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 
-contract NovaMemeCrossNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
-    ERC1155BurnableUpgradeable public immutable NOVA_MEME_AXIS;
+contract NovaChadNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
+    ERC1155BurnableUpgradeable public immutable NOVA_INFINITY_STONES;
     uint256 public maxSupply;
 
-    constructor(ERC1155BurnableUpgradeable _memeAxis) {
+    constructor(ERC1155BurnableUpgradeable _infinityStones) {
         _disableInitializers();
 
-        NOVA_MEME_AXIS = _memeAxis;
+        NOVA_INFINITY_STONES = _infinityStones;
     }
 
     function initialize(
@@ -65,7 +65,7 @@ contract NovaMemeCrossNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
 
         _compositeMint(to, nonce, tokenIds, amounts, expiry, mintType, signature);
 
-        NOVA_MEME_AXIS.burnBatch(msg.sender, tokenIds, amounts);
+        NOVA_INFINITY_STONES.burnBatch(msg.sender, tokenIds, amounts);
     }
 
     function baseTokenURI() public view returns (string memory) {

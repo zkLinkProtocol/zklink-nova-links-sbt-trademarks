@@ -2,7 +2,7 @@ import { deployContract } from '../utils';
 
 export default async function () {
   await deployContract(
-    'NovaMemeAxisNFT',
+    'NovaInfinityStonesNFT',
     [],
     {
       noVerify: false,
@@ -10,6 +10,6 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova MemeAxis', '', process.env.WITNESS_ADDRESS],
+    ['Nova Infinity Stones', '', process.env.WITNESS_ADDRESS],
   );
 }

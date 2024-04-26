@@ -2,20 +2,20 @@ import { expect } from 'chai';
 import { Contract, Wallet, Signer } from 'ethers';
 import { upgrades, ethers } from 'hardhat';
 
-describe('NovaMemeCrossNFT', function () {
-  let NovaMemeCrossNFT;
-  let NovaMemeAxisNFT;
-  let NovaMemeCross: Contract;
-  let NovaMemeAxis: Contract;
-  let MemeCrossAddr;
-  let MemeAxisAddr;
+describe('NovaChadNFT', function () {
+  let NovaChadNFT;
+  let NovaInfinityStonesNFT;
+  let NovaChad: Contract;
+  let NovaInfinityStones: Contract;
+  let ChadAddr;
+  let InfinityStonesAddr;
   let owner: Wallet;
   let alice: Wallet;
   let tom: Wallet;
   let signature;
-  let aliceMemeAxis: Contract;
-  let aliceMemeCross: Contract;
-  let ownerMemeCross: Contract;
+  let aliceInfinityStones: Contract;
+  let aliceChad: Contract;
+  let ownerChad: Contract;
 
   let types = {
     MintAuth: [
@@ -48,37 +48,37 @@ describe('NovaMemeCrossNFT', function () {
   };
 
   before(async function () {
-    NovaMemeCrossNFT = await ethers.getContractFactory('NovaMemeCrossNFT');
-    NovaMemeAxisNFT = await ethers.getContractFactory('NovaMemeAxisNFT');
+    NovaChadNFT = await ethers.getContractFactory('NovaChadNFT');
+    NovaInfinityStonesNFT = await ethers.getContractFactory('NovaInfinityStonesNFT');
     const signers: Signer[] = await ethers.getSigners();
     [owner, alice, tom] = signers as Wallet[];
-    NovaMemeAxis = await upgrades.deployProxy(NovaMemeAxisNFT, ['MemeAxis NFT', 'MemeAxis', owner.address], {
+    NovaInfinityStones = await upgrades.deployProxy(NovaInfinityStonesNFT, ['InfinityStones NFT', 'InfinityStones', owner.address], {
       kind: 'uups',
       initializer: 'initialize',
       unsafeAllow: ['constructor'],
     });
-    MemeAxisAddr = await NovaMemeAxis.getAddress();
-    NovaMemeCross = await upgrades.deployProxy(NovaMemeCrossNFT, ['MemeCross NFT', 'MemeCross', '', owner.address, 2], {
+    InfinityStonesAddr = await NovaInfinityStones.getAddress();
+    NovaChad = await upgrades.deployProxy(NovaChadNFT, ['Chad NFT', 'Chad', '', owner.address, 2], {
       kind: 'uups',
       initializer: 'initialize',
-      constructorArgs: [MemeAxisAddr],
+      constructorArgs: [InfinityStonesAddr],
       unsafeAllow: ['constructor', 'state-variable-immutable'],
     });
-    MemeCrossAddr = await NovaMemeCross.getAddress();
-    console.log('NovaMemeCross deployed to:', MemeCrossAddr);
+    ChadAddr = await NovaChad.getAddress();
+    console.log('NovaChad deployed to:', ChadAddr);
     console.log('owner addr', owner.address);
 
-    aliceMemeCross = new ethers.Contract(await NovaMemeCross.getAddress(), NovaMemeCross.interface, alice);
-    ownerMemeCross = new ethers.Contract(await NovaMemeCross.getAddress(), NovaMemeCross.interface, owner);
+    aliceChad = new ethers.Contract(await NovaChad.getAddress(), NovaChad.interface, alice);
+    ownerChad = new ethers.Contract(await NovaChad.getAddress(), NovaChad.interface, owner);
   });
 
   it('mint with sign', async function () {
-    MemeCrossAddr = await NovaMemeCross.getAddress();
+    ChadAddr = await NovaChad.getAddress();
     let domain = {
-      name: 'MemeCross NFT',
+      name: 'Chad NFT',
       version: '0',
       chainId: 31337,
-      verifyingContract: MemeCrossAddr,
+      verifyingContract: ChadAddr,
     };
 
     let signMessage = {
@@ -88,29 +88,31 @@ describe('NovaMemeCrossNFT', function () {
       mintType: 1,
     };
     signature = await owner.signTypedData(domain, types, signMessage);
-    await NovaMemeCross['safeMintWithAuth(address,uint256,uint256,uint256,bytes)'](
+    await NovaChad['safeMintWithAuth(address,uint256,uint256,uint256,bytes)'](
       alice.address,
       1,
       2675420294000,
       1,
       signature,
     );
-    expect(await NovaMemeCross.balanceOf(alice.address)).to.equal(1);
-    expect(await NovaMemeCross.mintNoncesMap(1, alice.address)).to.equal(1);
+    expect(await NovaChad.balanceOf(alice.address)).to.equal(1);
+    expect(await NovaChad.mintNoncesMap(1, alice.address)).to.equal(1);
+    console.log("tokenid:",await NovaChad._tokenIdTracker())
+    expect(await NovaChad._tokenIdTracker()).to.equal(1);
   });
 
-  it('mint with burn MemeAxis', async function () {
-    MemeAxisAddr = await NovaMemeAxis.getAddress();
-    MemeCrossAddr = await NovaMemeCross.getAddress();
+  it('mint with burn InfinityStones', async function () {
+    InfinityStonesAddr = await NovaInfinityStones.getAddress();
+    ChadAddr = await NovaChad.getAddress();
 
     // mint axis
     let tokenIdList: number[] = [1, 2];
     let amountList: number[] = [2, 2];
     const domain = {
-      name: 'MemeAxis NFT',
+      name: 'InfinityStones NFT',
       version: '0',
       chainId: 31337,
-      verifyingContract: MemeAxisAddr,
+      verifyingContract: InfinityStonesAddr,
     };
 
     let batchMessage = {
@@ -122,7 +124,7 @@ describe('NovaMemeCrossNFT', function () {
       mintType: 1,
     };
     signature = await owner.signTypedData(domain, batchTypes, batchMessage);
-    await NovaMemeAxis['safeBatchMint(address,uint256,uint256[],uint256[],uint256,uint256,bytes)'](
+    await NovaInfinityStones['safeBatchMint(address,uint256,uint256[],uint256[],uint256,uint256,bytes)'](
       alice.address,
       1,
       tokenIdList,
@@ -131,19 +133,19 @@ describe('NovaMemeCrossNFT', function () {
       1,
       signature,
     );
-    expect(await NovaMemeAxis.balanceOf(alice.address, 1)).to.equal(2);
+    expect(await NovaInfinityStones.balanceOf(alice.address, 1)).to.equal(2);
 
-    aliceMemeAxis = new ethers.Contract(await NovaMemeAxis.getAddress(), NovaMemeAxis.interface, alice);
-    await aliceMemeAxis.setApprovalForAll(NovaMemeCross.getAddress(), true);
+    aliceInfinityStones = new ethers.Contract(await NovaInfinityStones.getAddress(), NovaInfinityStones.interface, alice);
+    await aliceInfinityStones.setApprovalForAll(NovaChad.getAddress(), true);
 
     // mint cross by burn
     let burnIdList: number[] = [1, 2];
     let burnAmountList: number[] = [1, 1];
     const crossDomain = {
-      name: 'MemeCross NFT',
+      name: 'Chad NFT',
       version: '0',
       chainId: 31337,
-      verifyingContract: MemeCrossAddr,
+      verifyingContract: ChadAddr,
     };
     let compositeMessage = {
       to: alice.address,
@@ -156,7 +158,7 @@ describe('NovaMemeCrossNFT', function () {
     signature = await owner.signTypedData(crossDomain, CompositeType, compositeMessage);
 
     expect(
-      await NovaMemeCross.isCompositeAuthorized(
+      await NovaChad.isCompositeAuthorized(
         alice.address,
         1,
         burnIdList,
@@ -166,20 +168,20 @@ describe('NovaMemeCrossNFT', function () {
         signature,
       ),
     ).equals(true);
-    await aliceMemeCross.compositeWithAuth(alice.address, 1, burnIdList, burnAmountList, 1742630631000, 1, signature);
-    expect(await NovaMemeAxis.balanceOf(alice.address, 1)).to.equal(1);
-    expect(await NovaMemeAxis.balanceOf(alice.address, 2)).to.equal(1);
-    expect(await NovaMemeCross.balanceOf(alice.address)).to.equal(2);
+    await aliceChad.compositeWithAuth(alice.address, 1, burnIdList, burnAmountList, 1742630631000, 1, signature);
+    expect(await NovaInfinityStones.balanceOf(alice.address, 1)).to.equal(1);
+    expect(await NovaInfinityStones.balanceOf(alice.address, 2)).to.equal(1);
+    expect(await NovaChad.balanceOf(alice.address)).to.equal(2);
   });
 
   it("test 'Exceeds max supply' success", async function () {
-    MemeCrossAddr = await NovaMemeCross.getAddress();
+    ChadAddr = await NovaChad.getAddress();
 
     let domain = {
-      name: 'MemeCross NFT',
+      name: 'Chad NFT',
       version: '0',
       chainId: 31337,
-      verifyingContract: MemeCrossAddr,
+      verifyingContract: ChadAddr,
     };
 
     let signMessage = {
@@ -190,7 +192,7 @@ describe('NovaMemeCrossNFT', function () {
     };
     signature = await owner.signTypedData(domain, types, signMessage);
     await expect(
-      NovaMemeCross['safeMintWithAuth(address,uint256,uint256,uint256,bytes)'](
+      NovaChad['safeMintWithAuth(address,uint256,uint256,uint256,bytes)'](
         alice.address,
         2,
         2675420294000,
@@ -201,7 +203,7 @@ describe('NovaMemeCrossNFT', function () {
   });
 
   it('test transfer success', async function () {
-    await aliceMemeCross.safeTransferFrom(alice.address, tom.address, 0);
-    expect(await NovaMemeCross.ownerOf(0)).to.equal(tom.address);
+    await aliceChad.safeTransferFrom(alice.address, tom.address, 0);
+    expect(await NovaChad.ownerOf(0)).to.equal(tom.address);
   });
 });
