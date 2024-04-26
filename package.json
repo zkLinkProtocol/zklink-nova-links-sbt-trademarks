@@ -9,6 +9,7 @@
     "upgrade": "npx hardhat deploy-zksync --script nft/upgradeNFTContract.ts",
     "upgradeTrademark": "npx hardhat deploy-zksync --script nft/upgradeTrademarkNFTContract.ts",
     "upgradeBoosterPhaseII": "npx hardhat deploy-zksync --script nft/upgradeBoosterPhaseIIContract.ts",
+    "upgradeMemeAxis": "npx hardhat deploy-zksync --script nft/upgradeMemeAxisContract.ts",
     "deploy:trademark": "npx hardhat deploy-zksync --script nft/deployTrademark.ts",
     "verify": "npx hardhat deploy-zksync --script nft/verifyContract.ts",
     "deploy:mysteryBox": "npx hardhat deploy-zksync --script nft/deployNovaMysteryBox.ts",

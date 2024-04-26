@@ -36,6 +36,17 @@ describe('NovaMemeCrossNFT', function () {
     ],
   };
 
+  let CompositeType = {
+    CompositeAuth: [
+      { name: 'to', type: 'address' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'tokenIds', type: 'uint256[]' },
+      { name: 'amounts', type: 'uint256[]' },
+      { name: 'expiry', type: 'uint256' },
+      { name: 'mintType', type: 'uint256' },
+    ],
+  };
+
   before(async function () {
     NovaMemeCrossNFT = await ethers.getContractFactory('NovaMemeCrossNFT');
     NovaMemeAxisNFT = await ethers.getContractFactory('NovaMemeAxisNFT');
@@ -47,20 +58,20 @@ describe('NovaMemeCrossNFT', function () {
       unsafeAllow: ['constructor'],
     });
     MemeAxisAddr = await NovaMemeAxis.getAddress();
-    NovaMemeCross = await upgrades.deployProxy(NovaMemeCrossNFT, ['MemeCross NFT', 'MemeCross', '', owner.address, 2, 1], {
+    NovaMemeCross = await upgrades.deployProxy(NovaMemeCrossNFT, ['MemeCross NFT', 'MemeCross', '', owner.address, 2], {
       kind: 'uups',
       initializer: 'initialize',
       constructorArgs: [MemeAxisAddr],
       unsafeAllow: ['constructor', 'state-variable-immutable'],
     });
     MemeCrossAddr = await NovaMemeCross.getAddress();
-    await NovaMemeCross['setMemeAxisTokenIds(uint256,uint256)'](1, 1);
     console.log('NovaMemeCross deployed to:', MemeCrossAddr);
     console.log('owner addr', owner.address);
 
     aliceMemeCross = new ethers.Contract(await NovaMemeCross.getAddress(), NovaMemeCross.interface, alice);
     ownerMemeCross = new ethers.Contract(await NovaMemeCross.getAddress(), NovaMemeCross.interface, owner);
   });
+
   it('mint with sign', async function () {
     MemeCrossAddr = await NovaMemeCross.getAddress();
     let domain = {
@@ -90,8 +101,11 @@ describe('NovaMemeCrossNFT', function () {
 
   it('mint with burn MemeAxis', async function () {
     MemeAxisAddr = await NovaMemeAxis.getAddress();
-    let tokenIdList: number[] = [1];
-    let amountList: number[] = [2];
+    MemeCrossAddr = await NovaMemeCross.getAddress();
+
+    // mint axis
+    let tokenIdList: number[] = [1, 2];
+    let amountList: number[] = [2, 2];
     const domain = {
       name: 'MemeAxis NFT',
       version: '0',
@@ -122,9 +136,40 @@ describe('NovaMemeCrossNFT', function () {
     aliceMemeAxis = new ethers.Contract(await NovaMemeAxis.getAddress(), NovaMemeAxis.interface, alice);
     await aliceMemeAxis.setApprovalForAll(NovaMemeCross.getAddress(), true);
 
-    let burnTokenId: number[] = [1];
-    await aliceMemeCross.safeMint(burnTokenId);
+    // mint cross by burn
+    let burnIdList: number[] = [1, 2];
+    let burnAmountList: number[] = [1, 1];
+    const crossDomain = {
+      name: 'MemeCross NFT',
+      version: '0',
+      chainId: 31337,
+      verifyingContract: MemeCrossAddr,
+    };
+    let compositeMessage = {
+      to: alice.address,
+      nonce: 1,
+      tokenIds: burnIdList,
+      amounts: burnAmountList,
+      expiry: 1742630631000,
+      mintType: 1,
+    };
+    signature = await owner.signTypedData(crossDomain, CompositeType, compositeMessage);
+
+    expect(
+      await NovaMemeCross.isCompositeAuthorized(
+        alice.address,
+        1,
+        burnIdList,
+        burnAmountList,
+        1742630631000,
+        1,
+        signature,
+      ),
+    ).equals(true);
+    await aliceMemeCross.compositeWithAuth(alice.address, 1, burnIdList, burnAmountList, 1742630631000, 1, signature);
     expect(await NovaMemeAxis.balanceOf(alice.address, 1)).to.equal(1);
+    expect(await NovaMemeAxis.balanceOf(alice.address, 2)).to.equal(1);
+    expect(await NovaMemeCross.balanceOf(alice.address)).to.equal(2);
   });
 
   it("test 'Exceeds max supply' success", async function () {
@@ -153,30 +198,6 @@ describe('NovaMemeCrossNFT', function () {
         signature,
       ),
     ).to.be.revertedWith('Exceeds max supply');
-  });
-
-  it('set burnCount success', async function () {
-    expect(aliceMemeCross.setBurnCount(3)).to.be.revertedWith('Ownable: caller is not the owner');
-    await ownerMemeCross.setMaxSupply(10);
-  });
-
-  it("test 'Invalid tokenId' success", async function () {
-    let burnTokenId: number[] = [2];
-    await expect(aliceMemeCross.safeMint(burnTokenId)).to.be.revertedWith('Invalid tokenId');
-  });
-
-  it("test 'TokenId repeat' success", async function () {
-    await ownerMemeCross.setBurnCount(5);
-    await NovaMemeCross['setMemeAxisTokenIds(uint256,uint256)'](7, 1);
-    await NovaMemeCross['setMemeAxisTokenIds(uint256,uint256)'](8, 1);
-    await NovaMemeCross['setMemeAxisTokenIds(uint256,uint256)'](2, 1);
-    let burnTokenId: number[] = [1,7,2,8,7];
-    await expect(aliceMemeCross.safeMint(burnTokenId)).to.be.revertedWith('TokenId repeat');
-  });
-
-  it("test 'TokenIds length must equal to burnCount' sueecss", async function () {
-    let burnTokenId: number[] = [1];
-    await expect(aliceMemeCross.safeMint(burnTokenId)).to.be.revertedWith('TokenIds length must equal to burnCount');
   });
 
   it('test transfer success', async function () {

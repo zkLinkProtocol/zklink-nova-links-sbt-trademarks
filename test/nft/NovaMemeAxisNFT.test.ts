@@ -97,16 +97,18 @@ describe('NovaMemeAxis', function () {
       mintType: 1,
     };
     signature = await owner.signTypedData(domain, types, signMessage);
-    await expect(NovaMemeAxis['safeMint(address,uint256,uint256,uint256,uint256,uint256,bytes)'](
-      alice.address,
-      1,
-      1,
-      1,
-      1742630631000,
-      1,
-      signature,
-    )).to.be.revertedWith('TokenId already minted');
-  })
+    await expect(
+      NovaMemeAxis['safeMint(address,uint256,uint256,uint256,uint256,uint256,bytes)'](
+        alice.address,
+        1,
+        1,
+        1,
+        1742630631000,
+        1,
+        signature,
+      ),
+    ).to.be.revertedWith('TokenId already minted');
+  });
 
   it('batchmint MemeAxis with sign success', async function () {
     MemeAxisAddr = await NovaMemeAxis.getAddress();

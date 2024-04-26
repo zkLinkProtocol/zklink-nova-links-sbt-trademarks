@@ -32,7 +32,12 @@ contract ERC721PhaseIIPreAuthUpgradeable is
     bytes32 public constant MINT_AUTH_TYPE_HASH =
         keccak256("MintAuth(address to,uint256 nonce,uint256 expiry,uint256 mintType)");
 
-    CountersUpgradeable.Counter private _tokenIdTracker;
+    bytes32 public constant COMPOSITE_AUTH_TYPE_HASH =
+        keccak256(
+            "CompositeAuth(address to,uint256 nonce,uint256[] tokenIds,uint256[] amounts,uint256 expiry,uint256 mintType)"
+        );
+
+    CountersUpgradeable.Counter public _tokenIdTracker;
 
     string private _baseTokenURI;
 
@@ -88,6 +93,24 @@ contract ERC721PhaseIIPreAuthUpgradeable is
         return hasRole(WITNESS_ROLE, witnessAddress);
     }
 
+    function isCompositeAuthorized(
+        address to,
+        uint256 nonce,
+        uint256[] calldata tokenIds,
+        uint256[] calldata amounts,
+        uint256 expiry,
+        uint256 mintType,
+        bytes calldata signature
+    ) public view returns (bool) {
+        bytes32 tokenIdsHash = keccak256(abi.encodePacked(tokenIds));
+        bytes32 amountsHash = keccak256(abi.encodePacked(amounts));
+        bytes32 compositeAuthHash = keccak256(
+            abi.encode(COMPOSITE_AUTH_TYPE_HASH, to, nonce, tokenIdsHash, amountsHash, expiry, mintType)
+        );
+        address witnessAddress = ECDSAUpgradeable.recover(_hashTypedDataV4(compositeAuthHash), signature);
+        return hasRole(WITNESS_ROLE, witnessAddress);
+    }
+
     function exists(uint256 tokenId) external view returns (bool) {
         return _exists(tokenId);
     }
@@ -95,6 +118,19 @@ contract ERC721PhaseIIPreAuthUpgradeable is
     function _safeMint(address to, uint256 nonce, uint256 expiry, uint256 mintType, bytes calldata signature) internal {
         _checkMintAuthorization(to, nonce, expiry, mintType, signature);
 
+        _safeMintNormal(to, mintType);
+    }
+
+    function _compositeMint(
+        address to,
+        uint256 nonce,
+        uint256[] calldata tokenIds,
+        uint256[] calldata amounts,
+        uint256 expiry,
+        uint256 mintType,
+        bytes calldata signature
+    ) internal {
+        _checkCompositeAuthorization(to, nonce, tokenIds, amounts, expiry, mintType, signature);
         _safeMintNormal(to, mintType);
     }
 
@@ -120,6 +156,28 @@ contract ERC721PhaseIIPreAuthUpgradeable is
         address witnessAddress = ECDSAUpgradeable.recover(_hashTypedDataV4(mintAuthHash), signature);
         _checkRole(WITNESS_ROLE, witnessAddress);
         signatures[mintAuthHash] = true;
+    }
+
+    function _checkCompositeAuthorization(
+        address to,
+        uint256 nonce,
+        uint256[] calldata tokenIds,
+        uint256[] calldata amounts,
+        uint256 expiry,
+        uint256 mintType,
+        bytes calldata signature
+    ) internal {
+        require(block.timestamp <= expiry, "Signature has expired");
+        bytes32 tokenIdsHash = keccak256(abi.encodePacked(tokenIds));
+        bytes32 amountsHash = keccak256(abi.encodePacked(amounts));
+        bytes32 compositeAuthHash = keccak256(
+            abi.encode(COMPOSITE_AUTH_TYPE_HASH, to, nonce, tokenIdsHash, amountsHash, expiry, mintType)
+        );
+        require(!signatures[compositeAuthHash], "Used Signature");
+
+        address witnessAddress = ECDSAUpgradeable.recover(_hashTypedDataV4(compositeAuthHash), signature);
+        _checkRole(WITNESS_ROLE, witnessAddress);
+        signatures[compositeAuthHash] = true;
     }
 
     function _beforeTokenTransfer(

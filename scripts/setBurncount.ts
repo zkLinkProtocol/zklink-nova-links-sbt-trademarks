@@ -7,7 +7,7 @@ const tokenInfos = {
   NovaMemeCrossNFT: {
     contractAddress: process.env.MEME_CROSS_CONTRACT_ADDRESS,
     tokenIds: [1, 2, 3, 4, 5, 6, 7],
-    amount: [ 1, 1, 1, 1, 1, 1, 1,],
+    amount: [1, 1, 1, 1, 1, 1, 1],
   },
 };
 
@@ -24,20 +24,20 @@ async function main() {
         {
           inputs: [
             {
-              internalType: "uint256",
-              name: "tokenId",
-              type: "uint256"
+              internalType: 'uint256',
+              name: 'tokenId',
+              type: 'uint256',
             },
             {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256"
-            }
+              internalType: 'uint256',
+              name: 'amount',
+              type: 'uint256',
+            },
           ],
-          name: "setMemeAxisTokenIds",
+          name: 'setMemeAxisTokenIds',
           outputs: [],
-          stateMutability: "nonpayable",
-          type: "function"
+          stateMutability: 'nonpayable',
+          type: 'function',
         },
       ],
       wallet,

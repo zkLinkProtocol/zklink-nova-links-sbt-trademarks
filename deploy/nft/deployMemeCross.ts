@@ -10,6 +10,12 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor', 'state-variable-immutable'],
     },
-    ['Nova MemeCross', 'MEMECROSS', '', process.env.WITNESS_ADDRESS, 10000, 2],
+    [
+      'Nova MemeCross',
+      'MEMECROSS',
+      'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/MemeCross-test/0',
+      process.env.WITNESS_ADDRESS,
+      10000,
+    ],
   );
 }

@@ -78,16 +78,4 @@ contract NovaMemeAxisNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
     function setURI(uint256 tokenId, string memory newURI) external onlyOwner {
         _setURI(tokenId, newURI);
     }
- 
-
-    // delete
-    function mintTemporarily(
-        address to,
-        uint256 tokenId,
-        uint256 amount,
-        uint256 mintType
-        ) external {
-        _mint(to, tokenId, amount, "");
-        mintNoncesMap[mintType][to] += 1;
-    }
 }
