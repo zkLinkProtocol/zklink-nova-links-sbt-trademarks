@@ -52,13 +52,17 @@ describe('NovaChadNFT', function () {
     NovaInfinityStonesNFT = await ethers.getContractFactory('NovaInfinityStonesNFT');
     const signers: Signer[] = await ethers.getSigners();
     [owner, alice, tom] = signers as Wallet[];
-    NovaInfinityStones = await upgrades.deployProxy(NovaInfinityStonesNFT, ['InfinityStones NFT', 'InfinityStones', owner.address], {
-      kind: 'uups',
-      initializer: 'initialize',
-      unsafeAllow: ['constructor'],
-    });
+    NovaInfinityStones = await upgrades.deployProxy(
+      NovaInfinityStonesNFT,
+      ['InfinityStones NFT', 'InfinityStones', owner.address],
+      {
+        kind: 'uups',
+        initializer: 'initialize',
+        unsafeAllow: ['constructor'],
+      },
+    );
     InfinityStonesAddr = await NovaInfinityStones.getAddress();
-    NovaChad = await upgrades.deployProxy(NovaChadNFT, ['Chad NFT', 'Chad', '', owner.address, 2], {
+    NovaChad = await upgrades.deployProxy(NovaChadNFT, ['Chad NFT', 'Chad', '', owner.address, 3], {
       kind: 'uups',
       initializer: 'initialize',
       constructorArgs: [InfinityStonesAddr],
@@ -67,6 +71,12 @@ describe('NovaChadNFT', function () {
     ChadAddr = await NovaChad.getAddress();
     console.log('NovaChad deployed to:', ChadAddr);
     console.log('owner addr', owner.address);
+
+    NovaChad.setLevels(3);
+    NovaChad.setLevels(5);
+    NovaChad.setLevels(8);
+    NovaChad.setBurnCount(3, 2);
+    NovaChad.setBurnCount(5, 3);
 
     aliceChad = new ethers.Contract(await NovaChad.getAddress(), NovaChad.interface, alice);
     ownerChad = new ethers.Contract(await NovaChad.getAddress(), NovaChad.interface, owner);
@@ -97,7 +107,7 @@ describe('NovaChadNFT', function () {
     );
     expect(await NovaChad.balanceOf(alice.address)).to.equal(1);
     expect(await NovaChad.mintNoncesMap(1, alice.address)).to.equal(1);
-    console.log("tokenid:",await NovaChad._tokenIdTracker())
+    console.log('tokenid:', await NovaChad._tokenIdTracker());
     expect(await NovaChad._tokenIdTracker()).to.equal(1);
   });
 
@@ -135,7 +145,11 @@ describe('NovaChadNFT', function () {
     );
     expect(await NovaInfinityStones.balanceOf(alice.address, 1)).to.equal(2);
 
-    aliceInfinityStones = new ethers.Contract(await NovaInfinityStones.getAddress(), NovaInfinityStones.interface, alice);
+    aliceInfinityStones = new ethers.Contract(
+      await NovaInfinityStones.getAddress(),
+      NovaInfinityStones.interface,
+      alice,
+    );
     await aliceInfinityStones.setApprovalForAll(NovaChad.getAddress(), true);
 
     // mint cross by burn
@@ -158,20 +172,50 @@ describe('NovaChadNFT', function () {
     signature = await owner.signTypedData(crossDomain, CompositeType, compositeMessage);
 
     expect(
-      await NovaChad.isCompositeAuthorized(
-        alice.address,
-        1,
-        burnIdList,
-        burnAmountList,
-        1742630631000,
-        1,
-        signature,
-      ),
+      await NovaChad.isCompositeAuthorized(alice.address, 1, burnIdList, burnAmountList, 1742630631000, 1, signature),
     ).equals(true);
     await aliceChad.compositeWithAuth(alice.address, 1, burnIdList, burnAmountList, 1742630631000, 1, signature);
     expect(await NovaInfinityStones.balanceOf(alice.address, 1)).to.equal(1);
     expect(await NovaInfinityStones.balanceOf(alice.address, 2)).to.equal(1);
     expect(await NovaChad.balanceOf(alice.address)).to.equal(2);
+  });
+
+  it("test 'Invalid tokenIds'", async function () {
+    InfinityStonesAddr = await NovaInfinityStones.getAddress();
+    ChadAddr = await NovaChad.getAddress();
+
+    aliceInfinityStones = new ethers.Contract(
+      await NovaInfinityStones.getAddress(),
+      NovaInfinityStones.interface,
+      alice,
+    );
+    await aliceInfinityStones.setApprovalForAll(NovaChad.getAddress(), true);
+
+    // mint cross by burn
+    let burnIdList: number[] = [1];
+    let burnAmountList: number[] = [1];
+    const crossDomain = {
+      name: 'Chad NFT',
+      version: '0',
+      chainId: 31337,
+      verifyingContract: ChadAddr,
+    };
+    let compositeMessage = {
+      to: alice.address,
+      nonce: 2,
+      tokenIds: burnIdList,
+      amounts: burnAmountList,
+      expiry: 1742630631000,
+      mintType: 1,
+    };
+    signature = await owner.signTypedData(crossDomain, CompositeType, compositeMessage);
+
+    expect(
+      await NovaChad.isCompositeAuthorized(alice.address, 2, burnIdList, burnAmountList, 1742630631000, 1, signature),
+    ).equals(true);
+    await expect(
+      aliceChad.compositeWithAuth(alice.address, 2, burnIdList, burnAmountList, 1742630631000, 1, signature),
+    ).to.be.revertedWith('Invalid tokenIds');
   });
 
   it("test 'Exceeds max supply' success", async function () {

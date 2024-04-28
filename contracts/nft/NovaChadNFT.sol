@@ -9,6 +9,10 @@ contract NovaChadNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
     ERC1155BurnableUpgradeable public immutable NOVA_INFINITY_STONES;
     uint256 public maxSupply;
 
+    mapping(uint256 => uint256) public burnCountMapping;
+
+    uint256[] public levels;
+
     constructor(ERC1155BurnableUpgradeable _infinityStones) {
         _disableInitializers();
 
@@ -33,6 +37,14 @@ contract NovaChadNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
 
     function setMaxSupply(uint256 _maxSupply) public onlyOwner {
         maxSupply = _maxSupply;
+    }
+
+    function setBurnCount(uint256 level, uint256 burnCount) public onlyOwner {
+        burnCountMapping[level] = burnCount;
+    }
+
+    function setLevels(uint256 level) public onlyOwner {
+        levels.push(level);
     }
 
     function safeMintWithAuth(
@@ -61,7 +73,13 @@ contract NovaChadNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         bytes calldata signature
     ) external {
         require(totalSupply() + 1 <= maxSupply, "Exceeds max supply");
-        require(tokenIds.length == amounts.length, "Invalid tokenIds and amounts");
+        uint256 currentTokenId = _tokenIdTracker._value;
+        for (uint i = 0; i < levels.length; i++) {
+            if (currentTokenId + 1 <= levels[i]) {
+                require(tokenIds.length == burnCountMapping[levels[i]], "Invalid tokenIds");
+                break;
+            }
+        }
 
         _compositeMint(to, nonce, tokenIds, amounts, expiry, mintType, signature);
 

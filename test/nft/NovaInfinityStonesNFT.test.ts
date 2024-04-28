@@ -37,11 +37,15 @@ describe('NovaInfinityStones', function () {
     NovaInfinityStonesNFT = await ethers.getContractFactory('NovaInfinityStonesNFT');
     const signers: Signer[] = await ethers.getSigners();
     [owner, alice, tom] = signers as Wallet[];
-    NovaInfinityStones = await upgrades.deployProxy(NovaInfinityStonesNFT, ['InfinityStones NFT', 'InfinityStones', owner.address], {
-      kind: 'uups',
-      initializer: 'initialize',
-      unsafeAllow: ['constructor'],
-    });
+    NovaInfinityStones = await upgrades.deployProxy(
+      NovaInfinityStonesNFT,
+      ['InfinityStones NFT', 'InfinityStones', owner.address],
+      {
+        kind: 'uups',
+        initializer: 'initialize',
+        unsafeAllow: ['constructor'],
+      },
+    );
     InfinityStonesAddr = await NovaInfinityStones.getAddress();
     console.log('NovaInfinityStones deployed to:', InfinityStonesAddr);
     console.log('owner addr', owner.address);
@@ -149,21 +153,37 @@ describe('NovaInfinityStones', function () {
   });
 
   it('transfer nft success', async function () {
-    const aliceInfinityStones = new ethers.Contract(await NovaInfinityStones.getAddress(), NovaInfinityStones.interface, alice);
+    const aliceInfinityStones = new ethers.Contract(
+      await NovaInfinityStones.getAddress(),
+      NovaInfinityStones.interface,
+      alice,
+    );
     await aliceInfinityStones.safeTransferFrom(alice.address, tom.address, 1, 1, '0x');
     expect(await NovaInfinityStones.balanceOf(alice.address, 1)).to.equal(0);
     expect(await NovaInfinityStones.balanceOf(tom.address, 1)).to.equal(1);
   });
 
   it('burn nft success', async function () {
-    const tomInfinityStones = new ethers.Contract(await NovaInfinityStones.getAddress(), NovaInfinityStones.interface, tom);
+    const tomInfinityStones = new ethers.Contract(
+      await NovaInfinityStones.getAddress(),
+      NovaInfinityStones.interface,
+      tom,
+    );
     await tomInfinityStones.burn(tom.address, 1, 1);
     expect(await NovaInfinityStones.balanceOf(tom.address, 1)).to.equal(0);
   });
 
   it('approve nft burn success', async function () {
-    const aliceInfinityStones = new ethers.Contract(await NovaInfinityStones.getAddress(), NovaInfinityStones.interface, alice);
-    const tomInfinityStones = new ethers.Contract(await NovaInfinityStones.getAddress(), NovaInfinityStones.interface, tom);
+    const aliceInfinityStones = new ethers.Contract(
+      await NovaInfinityStones.getAddress(),
+      NovaInfinityStones.interface,
+      alice,
+    );
+    const tomInfinityStones = new ethers.Contract(
+      await NovaInfinityStones.getAddress(),
+      NovaInfinityStones.interface,
+      tom,
+    );
     await aliceInfinityStones.setApprovalForAll(tom.address, true);
     await tomInfinityStones.burn(alice.address, 2, 1);
     expect(await NovaInfinityStones.balanceOf(alice.address, 2)).to.equal(1);
