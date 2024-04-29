@@ -13,7 +13,7 @@ export default async function () {
     [
       'Nova Chad',
       'CHAD',
-      'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/Chad-test/0',
+      'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/Chad/0',
       process.env.WITNESS_ADDRESS,
       10000,
     ],
