@@ -78,9 +78,4 @@ contract NovaInfinityStonesNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradea
     function setURI(uint256 tokenId, string memory newURI) external onlyOwner {
         _setURI(tokenId, newURI);
     }
-
-    // delete
-    function mintDelete(uint256 id,uint256 amount) public{
-        _mint(msg.sender, id, amount,'');
-    }
 }
