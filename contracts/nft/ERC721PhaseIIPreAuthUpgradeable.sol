@@ -213,9 +213,8 @@ contract ERC721PhaseIIPreAuthUpgradeable is
         super._burn(tokenId);
     }
 
-    function setTokenRoyalty(uint256 tokenId, address receiver, uint96 feeNumerator) public {
-        require(msg.sender == ownerOf(tokenId), "ERC721RoyaltyUpgradeable: only the nft owner could set token royalty");
-        super._setTokenRoyalty(tokenId, receiver, feeNumerator);
+    function setDefaultRoyalty(address receiver, uint96 feeNumerator) public onlyOwner{
+        super._setDefaultRoyalty(receiver, feeNumerator);
     }
 
     /**
