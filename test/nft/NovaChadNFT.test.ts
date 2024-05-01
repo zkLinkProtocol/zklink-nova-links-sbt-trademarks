@@ -247,7 +247,6 @@ describe('NovaChadNFT', function () {
   });
 
   it('test transfer success', async function () {
-    await aliceChad.safeTransferFrom(alice.address, tom.address, 0);
-    expect(await NovaChad.ownerOf(0)).to.equal(tom.address);
+    await expect(aliceChad.safeTransferFrom(alice.address, tom.address, 0)).to.be.revertedWith('unable transfer');
   });
 });

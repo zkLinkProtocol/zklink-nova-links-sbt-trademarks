@@ -13,7 +13,6 @@ import {ERC721RoyaltyUpgradeable} from "@openzeppelin/contracts-upgradeable/toke
 import {ECDSAUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
-import {console} from "hardhat/console.sol";
 
 contract ERC721PhaseIIPreAuthUpgradeable is
     Initializable,
@@ -212,6 +211,11 @@ contract ERC721PhaseIIPreAuthUpgradeable is
 
     function _burn(uint256 tokenId) internal virtual override(ERC721Upgradeable, ERC721RoyaltyUpgradeable) {
         super._burn(tokenId);
+    }
+
+    function setTokenRoyalty(uint256 tokenId, address receiver, uint96 feeNumerator) public {
+        require(msg.sender == ownerOf(tokenId), "ERC721RoyaltyUpgradeable: only the nft owner could set token royalty");
+        super._setTokenRoyalty(tokenId, receiver, feeNumerator);
     }
 
     /**

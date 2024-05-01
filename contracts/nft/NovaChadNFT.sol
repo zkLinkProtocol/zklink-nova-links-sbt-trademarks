@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {ERC721PhaseIIPreAuthUpgradeable} from "./ERC721PhaseIIPreAuthUpgradeable.sol";
 import {ERC1155BurnableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
-import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 
 contract NovaChadNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
     ERC1155BurnableUpgradeable public immutable NOVA_INFINITY_STONES;
@@ -98,15 +96,14 @@ contract NovaChadNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         return _baseURI();
     }
 
-    function transferFrom(address from, address to, uint256 tokenId) public pure override(ERC721Upgradeable, IERC721Upgradeable){
-       revert("unable transfer");
-    }
-
-    function safeTransferFrom(address from, address to, uint256 tokenId) public pure override(ERC721Upgradeable, IERC721Upgradeable) {
-        revert("unable transfer");
-    }
-
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public pure override(ERC721Upgradeable, IERC721Upgradeable) {
-        revert("unable transfer");
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 firstTokenId,
+        uint256 batchSize
+    ) internal virtual override {
+        if (from != address(0) && to != address(0)) {
+            revert("unable transfer");
+        }
     }
 }
