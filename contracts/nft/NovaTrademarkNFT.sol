@@ -16,7 +16,6 @@ contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
 
     mapping(address => uint256) public numMintNonces;
 
-
     constructor() {
         _disableInitializers();
     }
@@ -112,8 +111,8 @@ contract NovaTrademarkNFT is ERC1155PreAuthUpgradeable, UUPSUpgradeable {
     }
 
     function getMintNonceOne(address user) public view returns (uint256) {
-       uint256 nonceOne = mintNonces[user];
-        if (uint256(nonceOne) == 0){
+        uint256 nonceOne = mintNonces[user];
+        if (uint256(nonceOne) == 0) {
             return nonceOne;
         }
 
