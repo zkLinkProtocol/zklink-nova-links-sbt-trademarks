@@ -14,7 +14,7 @@ export default async function () {
       'Nova Chad',
       'CHAD',
       'ipfs://QmRCwyATFhU8De99BaxmYBTyTe42VKMx3weSFgL1ktyxpg',
-      process.env.WITNESS_ADDRESS,
+      process.env.MEME_WITNESS_ADDRESS,
       10000,
     ],
   );
