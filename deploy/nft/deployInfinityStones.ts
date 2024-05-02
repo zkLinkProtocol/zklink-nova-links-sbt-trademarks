@@ -10,6 +10,6 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova Infinity Stones', '', process.env.WITNESS_ADDRESS],
+    ['Nova Infinity Stones', '', process.env.MEME_WITNESS_ADDRESS],
   );
 }

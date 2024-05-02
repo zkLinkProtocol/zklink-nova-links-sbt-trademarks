@@ -119,3 +119,26 @@ Use the following scripts for interactions:
 
 1. Get the Goerli Testnet ETH
 2. Run `npx hardhat test` to deploy the script and run all test cases
+
+## deploy PhaseII nft 
+1. .env add  PHASEII_WITNESS_ADDRESS
+2. `npm run compile`
+4. `npm run deploy:mysteryBoxII`
+5. `npm run deploy:boosterII`
+6. .env add PHASEII_BOOSTER_CONTRACT_ADDRESS
+7. `npm run compile`
+8. `npm run setURLPhaseII:ERC1155`
+
+## deploy meme nft
+1. .env add MEME_WITNESS_ADDRESS
+2. `npm run compile` 
+3. `npm run deploy:InfinityStones` 
+4. .env add INFINITY_STONES_ADDRESS
+5. `npm run deploy:Chad` 
+6. .env add CHAD_ADDRESS
+7. set InfinityStones picture url:  `npm run setInfinityStonesURI` 
+8. set levels: `npm run setLevels` 
+9. set burn count: `npm run setBurnCount` 
+
+
+

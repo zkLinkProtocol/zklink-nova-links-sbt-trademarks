@@ -5,7 +5,7 @@ dotenv.config();
 
 const tokenInfos = {
   NovaBoosterkNFT: {
-    contractAddress: process.env.BOOSTER_CONTRACT_ADDRESS,
+    contractAddress: process.env.PHASEII_BOOSTER_CONTRACT_ADDRESS,
     tokenIds: [50, 100, 200, 500, 1000],
     tokenURIs: [
       'ipfs://QmRuc1E8udyBzihcubiezSEZ4YPbP5z8skauc6KfPfDfUG/50.json',
