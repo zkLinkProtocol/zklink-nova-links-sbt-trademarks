@@ -14,7 +14,7 @@ export default async function () {
       'Nova Mystery Box - Phase II',
       'MYSTERYBOX II',
       'ipfs://QmYywhGaPuJmoYw7ab7rxBaFiMn8sYmbkDwWsGYKArx2RN',
-      process.env.WITNESS_ADDRESS,
+      process.env.PHASEII_WITNESS_ADDRESS,
     ],
   );
 }
