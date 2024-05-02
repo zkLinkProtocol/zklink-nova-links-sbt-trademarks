@@ -32,7 +32,7 @@ contract NovaInfinityStonesNFT is ERC1155PhaseIIPreAuthUpgradeable, UUPSUpgradea
         uint256 mintType,
         bytes calldata signature
     ) public nonReentrant whenNotPaused {
-        require(mintRecord[to][tokenId] == false, "TokenId already minted");
+        require(!mintRecord[to][tokenId], "TokenId already minted");
         mintRecord[to][tokenId] = true;
         _safeMint(to, nonce, tokenId, amount, expiry, mintType, signature);
     }
