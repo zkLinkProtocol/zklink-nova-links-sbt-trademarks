@@ -62,7 +62,7 @@ describe('NovaChadNFT', function () {
       },
     );
     InfinityStonesAddr = await NovaInfinityStones.getAddress();
-    NovaChad = await upgrades.deployProxy(NovaChadNFT, ['Chad NFT', 'Chad', '', owner.address, 3], {
+    NovaChad = await upgrades.deployProxy(NovaChadNFT, ['Chad NFT', 'Chad', '', owner.address, 2], {
       kind: 'uups',
       initializer: 'initialize',
       constructorArgs: [InfinityStonesAddr],
@@ -180,7 +180,37 @@ describe('NovaChadNFT', function () {
     expect(await NovaChad.balanceOf(alice.address)).to.equal(2);
   });
 
+
+  it("test 'Exceeds max supply' success", async function () {
+    ChadAddr = await NovaChad.getAddress();
+
+    let domain = {
+      name: 'Chad NFT',
+      version: '0',
+      chainId: 31337,
+      verifyingContract: ChadAddr,
+    };
+
+    let signMessage = {
+      to: alice.address,
+      nonce: 2,
+      expiry: 2675420294000,
+      mintType: 1,
+    };
+    signature = await owner.signTypedData(domain, types, signMessage);
+    await expect(
+      NovaChad['safeMintWithAuth(address,uint256,uint256,uint256,bytes)'](
+        alice.address,
+        2,
+        2675420294000,
+        1,
+        signature,
+      ),
+    ).to.be.revertedWith('Exceeds max supply');
+  });
+
   it("test 'Invalid tokenIds'", async function () {
+    await NovaChad.setMaxSupply(3);
     InfinityStonesAddr = await NovaInfinityStones.getAddress();
     ChadAddr = await NovaChad.getAddress();
 
@@ -216,34 +246,6 @@ describe('NovaChadNFT', function () {
     await expect(
       aliceChad.compositeWithAuth(alice.address, 2, burnIdList, burnAmountList, 1742630631000, 1, signature),
     ).to.be.revertedWith('Invalid tokenIds');
-  });
-
-  it("test 'Exceeds max supply' success", async function () {
-    ChadAddr = await NovaChad.getAddress();
-
-    let domain = {
-      name: 'Chad NFT',
-      version: '0',
-      chainId: 31337,
-      verifyingContract: ChadAddr,
-    };
-
-    let signMessage = {
-      to: alice.address,
-      nonce: 2,
-      expiry: 2675420294000,
-      mintType: 1,
-    };
-    signature = await owner.signTypedData(domain, types, signMessage);
-    await expect(
-      NovaChad['safeMintWithAuth(address,uint256,uint256,uint256,bytes)'](
-        alice.address,
-        2,
-        2675420294000,
-        1,
-        signature,
-      ),
-    ).to.be.revertedWith('Exceeds max supply');
   });
 
   it('test transfer success', async function () {

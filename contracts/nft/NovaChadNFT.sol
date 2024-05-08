@@ -105,5 +105,6 @@ contract NovaChadNFT is ERC721PhaseIIPreAuthUpgradeable, UUPSUpgradeable {
         if (from != address(0) && to != address(0)) {
             revert("unable transfer");
         }
+        super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 }
