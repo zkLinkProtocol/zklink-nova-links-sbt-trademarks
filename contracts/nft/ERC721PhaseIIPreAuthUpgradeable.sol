@@ -213,7 +213,7 @@ contract ERC721PhaseIIPreAuthUpgradeable is
         super._burn(tokenId);
     }
 
-    function setDefaultRoyalty(address receiver, uint96 feeNumerator) public onlyOwner{
+    function setDefaultRoyalty(address receiver, uint96 feeNumerator) public onlyOwner {
         super._setDefaultRoyalty(receiver, feeNumerator);
     }
 

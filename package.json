@@ -11,6 +11,7 @@
     "upgradeBoosterPhaseII": "npx hardhat deploy-zksync --script nft/upgradeBoosterPhaseIIContract.ts",
     "upgradeInfinityStones": "npx hardhat deploy-zksync --script nft/upgradeInfinityStones.ts",
     "upgradeChad": "npx hardhat deploy-zksync --script nft/upgradeChad.ts",
+    "upgradeLynks": "npx hardhat deploy-zksync --script nft/upgradeLynks.ts",
     "deploy:trademark": "npx hardhat deploy-zksync --script nft/deployTrademark.ts",
     "verify": "npx hardhat deploy-zksync --script nft/verifyContract.ts",
     "deploy:mysteryBox": "npx hardhat deploy-zksync --script nft/deployNovaMysteryBox.ts",
