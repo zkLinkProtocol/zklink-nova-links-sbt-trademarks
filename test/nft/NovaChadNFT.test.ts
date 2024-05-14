@@ -180,7 +180,6 @@ describe('NovaChadNFT', function () {
     expect(await NovaChad.balanceOf(alice.address)).to.equal(2);
   });
 
-
   it("test 'Exceeds max supply' success", async function () {
     ChadAddr = await NovaChad.getAddress();
 
