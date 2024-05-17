@@ -5,6 +5,8 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ERC721PreAuthUpgradeable} from "./ERC721PreAuthUpgradeable.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {ERC1155BurnableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
+import {EnumerableSetUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol";
+
 
 contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
     IERC721 public immutable NOVA_SBT;
@@ -12,6 +14,9 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
 
     // The tokenId of the trademark NFT that needs to be burned
     uint256[4] public trademarkTokenIds;
+
+    using EnumerableSetUpgradeable for EnumerableSetUpgradeable.AddressSet;
+    EnumerableSetUpgradeable.AddressSet private blackList;
 
     constructor(IERC721 _sbt, ERC1155BurnableUpgradeable _trademark) {
         _disableInitializers();
@@ -79,9 +84,25 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
         uint256 firstTokenId,
         uint256 batchSize
     ) internal virtual override {
-        if (from != address(0) && to != address(0) && balanceOf(from) >= 10) {
-            revert("Accounts with a balance greater than 10 cannot be transferred out");
+        if (from != address(0) && to != address(0)) {
+            if (blackList.contains(from)) {
+                revert("Accounts in the blacklist cannot be transferred");
+            } else if (balanceOf(from) >= 10) {
+                revert("Accounts with a balance greater than 10 cannot be transferred out");
+            }
         }
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+    }
+
+    function addToBlackList(address account) external onlyOwner {
+        require(blackList.add(account), "Failed to add account to blackList");
+    }
+
+    function removeFromBlackList(address account) external onlyOwner {
+        require(blackList.remove(account), "Failed to remove account from blackList");
+    }
+
+    function getBlackList() public view returns (address[] memory) {
+        return blackList.values();
     }
 }

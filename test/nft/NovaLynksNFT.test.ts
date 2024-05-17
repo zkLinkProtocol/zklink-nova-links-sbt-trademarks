@@ -182,14 +182,33 @@ describe('NovaLynksNFT', function () {
     };
 
     let message = {
-      to: addr1.address,
+      to: addr2.address,
       nonce: 1,
       expiry: 1742630631000,
     };
     signature = await owner.signTypedData(domain, types, message);
-    await Lynk['safeMintWithAuth(address,uint256,uint256,bytes)'](addr1.address, 1, 1742630631000, signature);
-    const balance = await Lynk.balanceOf(addr1.address);
+    await Lynk['safeMintWithAuth(address,uint256,uint256,bytes)'](addr2.address, 1, 1742630631000, signature);
+    const balance = await Lynk.balanceOf(addr2.address);
     console.log('Lynk balance Auth:', balance);
-    expect(balance).to.equal(2);
+    expect(balance).to.equal(1);
   });
+
+  it('test blackList', async function () {
+    const ownerLynk = new ethers.Contract(await Lynk.getAddress(), Lynk.interface, owner);
+    ownerLynk.addToBlackList(addr2.address);
+    const addr2Lynk = new ethers.Contract(await Lynk.getAddress(), Lynk.interface, addr2);
+    await expect(addr2Lynk.transferFrom(addr2.address, addr1.address, 1)).to.be.revertedWith(
+      'Accounts in the blacklist cannot be transferred',
+    );
+    const blackList = await ownerLynk.getBlackList();
+    console.log('blackList:', blackList);
+  });
+
+  it('test balance >= 1', async function () {
+    const addr1Lynk = new ethers.Contract(await Lynk.getAddress(), Lynk.interface, addr1);
+    await expect(addr1Lynk.transferFrom(addr1.address, addr2.address, 0)).to.be.revertedWith(
+      'Accounts with a balance greater than 10 cannot be transferred out',
+    );
+  });
+
 });
