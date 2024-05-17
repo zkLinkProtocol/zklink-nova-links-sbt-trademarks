@@ -153,7 +153,7 @@ describe('NovaLynksNFT', function () {
     for (let i = 0; i < 10; i++) {
       await addr1Lynk['safeMint(address)'](addr1);
     }
-  
+
     const balance = await Lynk.balanceOf(addr1.address);
     expect(balance).to.equal(10);
 
