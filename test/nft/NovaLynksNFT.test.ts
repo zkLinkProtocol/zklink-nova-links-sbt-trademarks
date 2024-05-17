@@ -100,7 +100,7 @@ describe('NovaLynksNFT', function () {
     tradeAddr = await TradeMark.getAddress();
 
     let tokenIdList: number[] = [1, 2, 3, 4];
-    let amountList: number[] = [2, 2, 2, 2];
+    let amountList: number[] = [10, 10, 10, 10];
     const domain = {
       name: 'TradeMark',
       version: '0',
@@ -134,7 +134,7 @@ describe('NovaLynksNFT', function () {
       signature,
     );
     let token1Bal = await TradeMark.balanceOf(addr1.address, 1);
-    expect(token1Bal).to.equal(2);
+    expect(token1Bal).to.equal(10);
   });
 
   it('mint Lynk success', async function () {
@@ -150,19 +150,21 @@ describe('NovaLynksNFT', function () {
 
     // mint Lynk
     const addr1Lynk = new ethers.Contract(await Lynk.getAddress(), Lynk.interface, addr1);
-    await addr1Lynk['safeMint(address)'](addr1);
+    for (let i = 0; i < 10; i++) {
+      await addr1Lynk['safeMint(address)'](addr1);
+    }
 
     const balance = await Lynk.balanceOf(addr1.address);
-    expect(balance).to.equal(1);
+    expect(balance).to.equal(10);
 
     let token1Bal = await TradeMark.balanceOf(addr1.address, 1);
     let token2Bal = await TradeMark.balanceOf(addr1.address, 2);
     let token3Bal = await TradeMark.balanceOf(addr1.address, 3);
     let token4Bal = await TradeMark.balanceOf(addr1.address, 4);
-    expect(token1Bal).to.equal(1);
-    expect(token2Bal).to.equal(1);
-    expect(token3Bal).to.equal(1);
-    expect(token4Bal).to.equal(1);
+    expect(token1Bal).to.equal(0);
+    expect(token2Bal).to.equal(0);
+    expect(token3Bal).to.equal(0);
+    expect(token4Bal).to.equal(0);
   });
 
   it('mint Lynk with Auth success', async function () {
@@ -182,14 +184,32 @@ describe('NovaLynksNFT', function () {
     };
 
     let message = {
-      to: addr1.address,
+      to: addr2.address,
       nonce: 1,
       expiry: 1742630631000,
     };
     signature = await owner.signTypedData(domain, types, message);
-    await Lynk['safeMintWithAuth(address,uint256,uint256,bytes)'](addr1.address, 1, 1742630631000, signature);
-    const balance = await Lynk.balanceOf(addr1.address);
+    await Lynk['safeMintWithAuth(address,uint256,uint256,bytes)'](addr2.address, 1, 1742630631000, signature);
+    const balance = await Lynk.balanceOf(addr2.address);
     console.log('Lynk balance Auth:', balance);
-    expect(balance).to.equal(2);
+    expect(balance).to.equal(1);
+  });
+
+  it('test blackList', async function () {
+    const ownerLynk = new ethers.Contract(await Lynk.getAddress(), Lynk.interface, owner);
+    ownerLynk.addToBlackList(addr2.address);
+    const addr2Lynk = new ethers.Contract(await Lynk.getAddress(), Lynk.interface, addr2);
+    await expect(addr2Lynk.transferFrom(addr2.address, addr1.address, 10)).to.be.revertedWith(
+      'Accounts in the blacklist cannot be transferred',
+    );
+    const blackList = await ownerLynk.getBlackList();
+    console.log('blackList:', blackList);
+  });
+
+  it('test balance >= 10', async function () {
+    const addr1Lynk = new ethers.Contract(await Lynk.getAddress(), Lynk.interface, addr1);
+    await expect(addr1Lynk.transferFrom(addr1.address, addr2.address, 0)).to.be.revertedWith(
+      'Accounts with a balance greater than 10 cannot be transferred out',
+    );
   });
 });
