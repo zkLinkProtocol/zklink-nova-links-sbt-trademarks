@@ -7,7 +7,6 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {ERC1155BurnableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 import {EnumerableSetUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol";
 
-
 contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
     IERC721 public immutable NOVA_SBT;
     ERC1155BurnableUpgradeable public immutable NOVA_TRADEMARK;
@@ -98,8 +97,20 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
         require(blackList.add(account), "Failed to add account to blackList");
     }
 
+    function batchAddToBlackList(address[] memory accounts) external onlyOwner {
+        for (uint i = 0; i < accounts.length; i++) {
+            blackList.add(accounts[i]);
+        }
+    }
+
     function removeFromBlackList(address account) external onlyOwner {
         require(blackList.remove(account), "Failed to remove account from blackList");
+    }
+
+    function batchRemoveFromBlackList(address[] memory accounts) external onlyOwner {
+        for (uint i = 0; i < accounts.length; i++) {
+            blackList.remove(accounts[i]);
+        }
     }
 
     function getBlackList() public view returns (address[] memory) {
