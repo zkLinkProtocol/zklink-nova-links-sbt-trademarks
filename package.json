@@ -29,6 +29,8 @@
     "setInfinityStonesURI": "npx hardhat run scripts/setInfinityStonesURI.ts",
     "setBurnCount": "npx hardhat run scripts/setBurnCount.ts",
     "setLevels": "npx hardhat run scripts/setLevels.ts",
+    "addBlackList": "npx hardhat run scripts/addBlackList.ts",
+    "removeBlackList": "npx hardhat run scripts/removeBlackList.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "export-abi": "npx hardhat export-abi",
