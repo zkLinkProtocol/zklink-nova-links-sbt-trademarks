@@ -23,6 +23,7 @@
     "deploy:nova_nft": "npx hardhat deploy-zksync --script nft/deployNovaNFT.ts",
     "deploy:InfinityStones": "npx hardhat deploy-zksync --script nft/deployInfinityStones.ts",
     "deploy:Chad": "npx hardhat deploy-zksync --script nft/deployChad.ts",
+    "deploy:GenesisPassPhaseII": "npx hardhat deploy-zksync --script nft/deployGenesisPassPhaseII.ts",
     "interact": "hardhat deploy-zksync --script interact.ts",
     "setURI:ERC1155": "npx hardhat run scripts/setURI.ts",
     "setURLPhaseII:ERC1155": "npx hardhat run scripts/setURLPhaseII.ts",
