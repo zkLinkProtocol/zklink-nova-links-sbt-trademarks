@@ -10,6 +10,6 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Nova Genesis Pass NFT', 'NGP', '', 150000, process.env.GENESISPASS_PHASEII_WITNESS_ADDRESS],
+    ['Cubo the Block', 'CUBO', '', 150000, process.env.GENESISPASS_PHASEII_WITNESS_ADDRESS],
   );
 }
