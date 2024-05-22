@@ -10,6 +10,12 @@ export default async function () {
       kind: 'uups',
       unsafeAllow: ['constructor'],
     },
-    ['Cubo the Block', 'CUBO', '', 150000, process.env.GENESISPASS_PHASEII_WITNESS_ADDRESS],
+    [
+      'Cubo the Block',
+      'CUBO',
+      'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com//cubonft/',
+      150001,
+      process.env.GENESISPASS_PHASEII_WITNESS_ADDRESS,
+    ],
   );
 }

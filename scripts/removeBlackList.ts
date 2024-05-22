@@ -6,20 +6,20 @@ import * as path from 'path';
 dotenv.config();
 
 function readFileToArray(filePath: string): string[] {
-    // Read file synchronously
-    const fileContents = fs.readFileSync(filePath, 'utf-8');
-    
-    // Split the file contents by new line and assign to an array
-    const linesArray = fileContents.split('\n');
-    
-    // Remove any trailing empty lines
-    return linesArray.filter(line => line.trim() !== '');
+  // Read file synchronously
+  const fileContents = fs.readFileSync(filePath, 'utf-8');
+
+  // Split the file contents by new line and assign to an array
+  const linesArray = fileContents.split('\n');
+
+  // Remove any trailing empty lines
+  return linesArray.filter(line => line.trim() !== '');
 }
 
 const filePath = path.join('./', 'whitelist.txt');
 
 const tokenInfos = {
-    NovaLynksNFT: {
+  NovaLynksNFT: {
     contractAddress: process.env.LYNKS_ADDRESS,
     blackList: readFileToArray(filePath),
   },
@@ -36,18 +36,18 @@ async function main() {
       tokenInfo.contractAddress,
       [
         {
-            inputs: [
-              {
-                internalType: "address[]",
-                name: "accounts",
-                type: "address[]"
-              }
-            ],
-            name: "batchRemoveFromBlackList",
-            outputs: [],
-            stateMutability: "nonpayable",
-            type: "function"
-          },
+          inputs: [
+            {
+              internalType: 'address[]',
+              name: 'accounts',
+              type: 'address[]',
+            },
+          ],
+          name: 'batchRemoveFromBlackList',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
       ],
       wallet,
     );
