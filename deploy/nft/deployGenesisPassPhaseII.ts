@@ -11,7 +11,7 @@ export default async function () {
       unsafeAllow: ['constructor'],
     },
     [
-      'Cubo the Block',
+      'Cubo the Block', 
       'CUBO',
       'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com//cubonft/',
       150001,
