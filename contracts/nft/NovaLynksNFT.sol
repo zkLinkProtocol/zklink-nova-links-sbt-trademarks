@@ -116,4 +116,8 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
     function getBlackList() public view returns (address[] memory) {
         return blackList.values();
     }
+
+    function isBlackListed(address account) public view returns (bool) {
+        return blackList.contains(account);
+    }
 }

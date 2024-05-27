@@ -204,6 +204,7 @@ describe('NovaLynksNFT', function () {
     );
     const blackList = await ownerLynk.getBlackList();
     console.log('blackList:', blackList);
+    expect(await ownerLynk.isBlackListed(addr2.address)).to.equal(true);
   });
 
   it('test balance >= 10', async function () {
