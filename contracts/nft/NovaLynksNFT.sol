@@ -84,11 +84,7 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
         uint256 batchSize
     ) internal virtual override {
         if (from != address(0) && to != address(0)) {
-            if (blackList.contains(from)) {
-                revert("Accounts in the blacklist cannot be transferred");
-            } else if (balanceOf(from) >= 10) {
-                revert("Accounts with a balance greater than 10 cannot be transferred out");
-            }
+            revert("unable transfer");
         }
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
