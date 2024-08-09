@@ -147,6 +147,10 @@ contract ERC721PreAuthUpgradeable is
         super._burn(tokenId);
     }
 
+    function getNextTokenId() public view returns (uint256) {
+        return _tokenIdTracker.current();
+    }
+
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.

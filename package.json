@@ -32,6 +32,7 @@
     "setLevels": "npx hardhat run scripts/setLevels.ts",
     "addBlackList": "npx hardhat run scripts/addBlackList.ts",
     "removeBlackList": "npx hardhat run scripts/removeBlackList.ts",
+    "setMaxSupply": "npx hardhat run scripts/setMaxSupply.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "export-abi": "npx hardhat export-abi",

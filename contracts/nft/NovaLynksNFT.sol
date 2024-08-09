@@ -17,6 +17,8 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
     using EnumerableSetUpgradeable for EnumerableSetUpgradeable.AddressSet;
     EnumerableSetUpgradeable.AddressSet private blackList;
 
+    uint256 public maxSupply;
+
     constructor(IERC721 _sbt, ERC1155BurnableUpgradeable _trademark) {
         _disableInitializers();
 
@@ -42,6 +44,7 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
         uint256 expiry,
         bytes calldata signature
     ) public nonReentrant whenNotPaused {
+        require(getNextTokenId() < maxSupply, "Max supply reached");
         _safeMint(to, nonce, expiry, signature);
     }
 
@@ -54,6 +57,7 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
     }
 
     function safeMint(address to) public nonReentrant whenNotPaused {
+        require(getNextTokenId() < maxSupply, "Max supply reached");
         require(NOVA_SBT.balanceOf(msg.sender) > 0, "Only nova SBT holders can mint");
         uint256[] memory _burnAmounts = new uint256[](trademarkTokenIds.length);
         uint256[] memory _burnTokenIds = new uint256[](trademarkTokenIds.length);
@@ -115,5 +119,9 @@ contract NovaLynksNFT is ERC721PreAuthUpgradeable, UUPSUpgradeable {
 
     function isBlackListed(address account) public view returns (bool) {
         return blackList.contains(account);
+    }
+
+    function setMaxSupply(uint256 _maxSupply) external onlyOwner {
+        maxSupply = _maxSupply;
     }
 }
