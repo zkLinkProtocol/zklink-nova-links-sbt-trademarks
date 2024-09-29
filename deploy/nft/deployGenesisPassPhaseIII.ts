@@ -14,9 +14,9 @@ export default async function () {
       'Cubo the Block',
       'CUBO',
       'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/cubonft/',
-      100001,
-      process.env.GENESISPASS_PHASEII_WITNESS_ADDRESS,
-      2000000,
+      process.env.GENESISPASS_PHASEIII_HARDTOP_LIMIT,
+      process.env.GENESISPASS_PHASEIII_WITNESS_ADDRESS,
+      process.env.GENESISPASS_PHASEII_MINTPRICE,
     ],
   );
 }
