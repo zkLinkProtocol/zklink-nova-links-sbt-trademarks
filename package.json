@@ -10,6 +10,7 @@
     "upgradeTrademark": "npx hardhat deploy-zksync --script nft/upgradeTrademarkNFTContract.ts",
     "upgradeBoosterPhaseII": "npx hardhat deploy-zksync --script nft/upgradeBoosterPhaseIIContract.ts",
     "upgradeBoosterPhaseIII": "npx hardhat deploy-zksync --script nft/upgradeBoosterPhaseIIIContract.ts",
+    "upgradeGenesisPassPhaseIII": "npx hardhat deploy-zksync --script nft/upgradeGenesisPassPhaseIII.ts",
     "upgradeInfinityStones": "npx hardhat deploy-zksync --script nft/upgradeInfinityStones.ts",
     "upgradeChad": "npx hardhat deploy-zksync --script nft/upgradeChad.ts",
     "upgradeLynks": "npx hardhat deploy-zksync --script nft/upgradeLynks.ts",

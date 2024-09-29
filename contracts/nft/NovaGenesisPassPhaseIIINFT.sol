@@ -7,6 +7,7 @@ import {ERC721PhaseIIIPreAuthUpgradeable} from "./ERC721PhaseIIIPreAuthUpgradeab
 contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpgradeable {
     uint256 public hardtopLimit;
     mapping(address => bool) public isMinted;
+    uint256 public mintPrice;
 
     event HardtopLimitChanged(uint256 newHardtopLimit);
 
@@ -21,13 +22,16 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         string memory _symbol,
         string memory _baseTokenURI,
         uint256 _hardtopLimit,
-        address _defaultWitness
+        address _defaultWitness,
+        uint256 _mintPrice
     ) external initializer {
         __UUPSUpgradeable_init_unchained();
 
         __ERC721PreAuth_init_unchained(_name, _symbol, _baseTokenURI, _defaultWitness);
 
         _setHardtopLimit(_hardtopLimit);
+
+        _setMintPrice(_mintPrice);
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
@@ -39,10 +43,10 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         uint256 nonce,
         uint256 expiry,
         bytes calldata signature
-    ) public nonReentrant whenNotPaused payable{
+    ) public payable nonReentrant whenNotPaused {
         require(totalSupply() < hardtopLimit, "Hardtop limit reached");
         require(!isMinted[to], "Has Minted");
-        require(msg.value > 0.0001 ether, "Need to pay 0.0001ETH");
+        require(msg.value >= mintPrice * 1 gwei, "Not enough ETH sent");
         isMinted[to] = true;
         _safeMint(to, tokenId, amount, nonce, expiry, signature);
     }
@@ -60,5 +64,13 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
 
     function baseTokenURI() public view returns (string memory) {
         return _baseURI();
+    }
+
+    function setMintPrice(uint256 _mintPrice) external onlyOwner {
+        _setMintPrice(_mintPrice);
+    }
+
+    function _setMintPrice(uint256 _mintPrice) internal {
+        mintPrice = _mintPrice;
     }
 }

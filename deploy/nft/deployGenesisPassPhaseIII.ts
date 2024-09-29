@@ -16,6 +16,7 @@ export default async function () {
       'https://zklink-nova-nft.s3.ap-northeast-1.amazonaws.com/cubonft/',
       100001,
       process.env.GENESISPASS_PHASEII_WITNESS_ADDRESS,
+      2000000,
     ],
   );
 }
