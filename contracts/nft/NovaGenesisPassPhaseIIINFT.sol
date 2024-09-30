@@ -81,7 +81,7 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         require(amount > 0, "Invalid amount");
         require(amount <= address(this).balance, "Insufficient balance");
 
-        (bool success, ) = account.call{value: amount}("");
+        (bool success, ) = payable(account).call{value: amount}("");
         require(success, "Transfer failed");
         emit Withdraw(account, amount); 
     }
@@ -91,7 +91,7 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         uint256 balance = address(this).balance;
         require(balance > 0, "No balance to withdraw");
 
-        (bool success, ) = account.call{value: balance}("");
+        (bool success, ) = payable(account).call{value: balance}("");
         require(success, "Transfer failed");
         emit WithdrawAll(account, balance); 
     }
