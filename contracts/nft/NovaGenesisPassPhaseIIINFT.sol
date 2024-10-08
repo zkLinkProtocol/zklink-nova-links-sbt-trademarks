@@ -76,23 +76,23 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         mintPrice = _mintPrice;
     }
 
-    function withdraw(address account, uint256 amount) external onlyOwner nonReentrant whenNotPaused{
+    function withdraw(address account, uint256 amount) external onlyOwner nonReentrant whenNotPaused {
         require(account != address(0), "Invalid address");
         require(amount > 0, "Invalid amount");
         require(amount <= address(this).balance, "Insufficient balance");
 
         (bool success, ) = payable(account).call{value: amount}("");
         require(success, "Transfer failed");
-        emit Withdraw(account, amount); 
+        emit Withdraw(account, amount);
     }
 
-    function withdrawAll(address account) external onlyOwner nonReentrant whenNotPaused{
+    function withdrawAll(address account) external onlyOwner nonReentrant whenNotPaused {
         require(account != address(0), "Invalid address");
         uint256 balance = address(this).balance;
         require(balance > 0, "No balance to withdraw");
 
         (bool success, ) = payable(account).call{value: balance}("");
         require(success, "Transfer failed");
-        emit WithdrawAll(account, balance); 
+        emit WithdrawAll(account, balance);
     }
 }
