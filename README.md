@@ -142,7 +142,7 @@ Use the following scripts for interactions:
 
 
 ## deploy GenesisPassPhaseIII nft
-1. .env add GENESISPASS_PHASEIII_WITNESS_ADDRESS、GENESISPASS_PHASEII_MINTPRICE、GENESISPASS_PHASEIII_HARDTOP_LIMIT and set values
+1. .env add GENESISPASS_PHASEIII_WITNESS_ADDRESS、GENESISPASS_PHASEIII_MINTPRICE、PHASEIII_MINT_LIMIT、GENESISPASS_PHASEIII_HARDTOP_LIMIT and set values
 2. `npm run compile` 
 3. `npm run deploy:GenesisPassPhaseIII`
 

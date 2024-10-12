@@ -6,8 +6,9 @@ import {ERC721PhaseIIIPreAuthUpgradeable} from "./ERC721PhaseIIIPreAuthUpgradeab
 
 contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpgradeable {
     uint256 public hardtopLimit;
-    mapping(address => bool) public isMinted;
+    mapping(address => uint256) public userMintedCount;
     uint256 public mintPrice;
+    uint256 public mintLimit;
 
     event HardtopLimitChanged(uint256 newHardtopLimit);
     event Withdraw(address indexed to, uint256 amount);
@@ -25,7 +26,8 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         string memory _baseTokenURI,
         uint256 _hardtopLimit,
         address _defaultWitness,
-        uint256 _mintPrice
+        uint256 _mintPrice,
+        uint256 _mintLimit
     ) external initializer {
         __UUPSUpgradeable_init_unchained();
 
@@ -34,6 +36,8 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         _setHardtopLimit(_hardtopLimit);
 
         _setMintPrice(_mintPrice);
+
+        _setMintLimit(_mintLimit);
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
@@ -47,10 +51,14 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
         bytes calldata signature
     ) public payable nonReentrant whenNotPaused {
         require(totalSupply() < hardtopLimit, "Hardtop limit reached");
-        require(!isMinted[to], "Has Minted");
+        require(userMintedCount[to] < mintLimit, "User exceeded mint limit");
         require(msg.value >= mintPrice * 1 gwei, "Not enough ETH sent");
-        isMinted[to] = true;
+        userMintedCount[to] ++;
         _safeMint(to, tokenId, amount, nonce, expiry, signature);
+    }
+
+    function getUserMintedCount(address user) public view returns (uint256) {
+        return userMintedCount[user];
     }
 
     function setHardtopLimit(uint256 _newHardtopLimit) external onlyOwner {
@@ -74,6 +82,14 @@ contract NovaGenesisPassPhaseIIINFT is ERC721PhaseIIIPreAuthUpgradeable, UUPSUpg
 
     function _setMintPrice(uint256 _mintPrice) internal {
         mintPrice = _mintPrice;
+    }
+
+     function setMintLimit(uint256 _mintLimit) external onlyOwner {
+        _setMintLimit(_mintLimit);
+    }
+
+    function _setMintLimit(uint256 _mintLimit) internal {
+        mintLimit = _mintLimit;
     }
 
     function withdraw(address account, uint256 amount) external onlyOwner nonReentrant whenNotPaused {
