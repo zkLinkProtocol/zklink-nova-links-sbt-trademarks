@@ -28,7 +28,7 @@ export default async function () {
           price: ethers.parseEther('0.00001'),
           paymentToken: '0x0000000000000000000000000000000000000000',
           payeeAddress: process.env.CUBO_PAYEE_ADDRESS,
-          allowListMerkleRoot: process.env.CUBO_ALLOWLIST_MERKLEROOT, 
+          allowListMerkleRoot: process.env.CUBO_ALLOWLIST_MERKLEROOT,
           stage: 'Allowlist',
           mintType: 1,
         },

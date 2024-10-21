@@ -131,11 +131,25 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
         _handleMint(mintparams.to, mintparams.amount, stage);
     }
 
+    function validateActive(string calldata stage) public view {
+        _validateActive(stageToMint[stage].startTime, stageToMint[stage].endTime);
+    }
+
     function _validateActive(uint256 startTime, uint256 endTime) internal view {
         if (_cast(block.timestamp < startTime) | _cast(block.timestamp > endTime) == 1) {
             // Revert if the stage is not active.
             revert NotActive();
         }
+    }
+
+    function validateAmount(uint256 amount, address to, string calldata stage) public view {
+        _validateAmount(
+            amount,
+            mintRecordAllStage[to],
+            allStageLimitationForAddress,
+            stageToMint[stage].maxSupplyForStage,
+            stageToTotalSupply[stage]
+        );
     }
 
     function _validateAmount(
