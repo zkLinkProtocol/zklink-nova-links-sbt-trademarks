@@ -83,7 +83,7 @@ abstract contract MultiMintUtils is
 
         //Must be greater than the quantity already mint in the stage
         //After new stage supply update, _totalStageSupply must less than global maxSupply
-        if (maxSupplyForStage < stageToTotalSupply[stage] || updatedTotalStageSupply > globalInfo.maxSupply) {
+        if (maxSupplyForStage > 0 && maxSupplyForStage < stageToTotalSupply[stage] || updatedTotalStageSupply > globalInfo.maxSupply) {
             revert InvalidConfig();
         }
 

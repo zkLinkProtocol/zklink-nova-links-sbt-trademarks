@@ -35,6 +35,7 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
     function initialize(
         uint32 maxSupply,
         uint32 allStageLimitationForAddress_,
+        uint256 tokenIdCounter_,
         string calldata name_,
         string calldata symbol_,
         string calldata baseUri,
@@ -70,6 +71,7 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
             maxSupply: maxSupply
         });
         allStageLimitationForAddress = allStageLimitationForAddress_;
+        _tokenIdCounter = tokenIdCounter_;
     }
 
     function mint(
