@@ -105,13 +105,13 @@ describe('NovaCuboNFT', function () {
       const stage = 'Allowlist';
       const expiry = Math.floor(Date.now() / 1000) + 3600;
       const signature = await getSignature(owner, 31337, cuboAddr, addr1.address, 2, 1, 0, expiry, stage);
-      const proof = getMerkleProof([owner.address, addr1.address, addr2.address], addr1.address); 
+      const proof = getMerkleProof([owner.address, addr1.address, addr2.address], addr1.address);
       const mintParams = {
         to: addr1.address,
         amount: 2,
         tokenId: 1,
         nonce: 0,
-        expiry: expiry, 
+        expiry: expiry,
       };
 
       await novaCuboNFT.mint(stage, signature, proof, mintParams, { value: ethers.parseEther('0.00002') });
@@ -155,21 +155,21 @@ describe('NovaCuboNFT', function () {
     });
 
     it('public stage should allow minting', async function () {
-        const stage = 'Public';
-        const expiry = Math.floor(Date.now() / 1000) + 3600;
-        const signature = await getSignature(owner, 31337, cuboAddr, addr2.address, 1, 3, 2, expiry, stage);
-        const proof = [0x00]; 
-        const mintParams = {
-          to: addr2.address,
-          amount: 1,
-          tokenId: 3,
-          nonce: 2,
-          expiry: expiry,
-        };
-          
-        await novaCuboNFT.mint(stage, signature, proof, mintParams, { value: ethers.parseEther('0.00001') })
-        expect(await novaCuboNFT.balanceOf(addr2.address)).to.equal(1);
-      });
+      const stage = 'Public';
+      const expiry = Math.floor(Date.now() / 1000) + 3600;
+      const signature = await getSignature(owner, 31337, cuboAddr, addr2.address, 1, 3, 2, expiry, stage);
+      const proof = [0x00];
+      const mintParams = {
+        to: addr2.address,
+        amount: 1,
+        tokenId: 3,
+        nonce: 2,
+        expiry: expiry,
+      };
+
+      await novaCuboNFT.mint(stage, signature, proof, mintParams, { value: ethers.parseEther('0.00001') });
+      expect(await novaCuboNFT.balanceOf(addr2.address)).to.equal(1);
+    });
   });
 
   const getSignature = async function (

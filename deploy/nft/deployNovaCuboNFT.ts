@@ -21,7 +21,7 @@ export default async function () {
       [
         {
           enableSig: true,
-          limitationForAddress: 1000,
+          limitationForAddress: 100,
           maxSupplyForStage: 20000,
           startTime: process.env.CUBO_STARTTIME,
           endTime: process.env.CUBO_ENDTIME,
@@ -34,7 +34,7 @@ export default async function () {
         },
         {
           enableSig: true,
-          limitationForAddress: 1000,
+          limitationForAddress: 100,
           maxSupplyForStage: 80000,
           startTime: process.env.CUBO_STARTTIME,
           endTime: process.env.CUBO_ENDTIME,
