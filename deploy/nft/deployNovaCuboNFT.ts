@@ -13,7 +13,6 @@ export default async function () {
     },
     [
       100000,
-      2,
       50169,
       'Cubo the Block',
       'CUBO',
@@ -21,7 +20,7 @@ export default async function () {
       [
         {
           enableSig: true,
-          limitationForAddress: 100,
+          limitationForAddress: 2,
           maxSupplyForStage: 20000,
           startTime: process.env.CUBO_STARTTIME,
           endTime: process.env.CUBO_ENDTIME,
@@ -34,7 +33,7 @@ export default async function () {
         },
         {
           enableSig: true,
-          limitationForAddress: 100,
+          limitationForAddress: 2,
           maxSupplyForStage: 80000,
           startTime: process.env.CUBO_STARTTIME,
           endTime: process.env.CUBO_ENDTIME,

@@ -12,13 +12,8 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
     /// @dev Record the tokenID,self increase from zero.
     uint256 private _tokenIdCounter;
 
-    uint256 public allStageLimitationForAddress;
-
     /// @dev Address mint record in each stage.
     mapping(address => mapping(string => uint256)) public mintRecord;
-
-    /// @dev Address mint record in all stage.
-    mapping(address => uint256) public mintRecordAllStage;
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
@@ -34,7 +29,6 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
 
     function initialize(
         uint32 maxSupply,
-        uint32 allStageLimitationForAddress_,
         uint256 tokenIdCounter_,
         string calldata name_,
         string calldata symbol_,
@@ -70,7 +64,6 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
             baseUri: baseUri,
             maxSupply: maxSupply
         });
-        allStageLimitationForAddress = allStageLimitationForAddress_;
         _tokenIdCounter = tokenIdCounter_;
     }
 
@@ -86,11 +79,11 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
         _validateActive(stageMintInfo.startTime, stageMintInfo.endTime);
 
         //validate mint amount
-        uint256 mintedAmount = mintRecordAllStage[mintparams.to];
+        uint256 mintedAmount = mintRecord[mintparams.to][stage];
         _validateAmount(
             mintparams.amount,
             mintedAmount,
-            allStageLimitationForAddress,
+            stageMintInfo.limitationForAddress,
             stageMintInfo.maxSupplyForStage,
             stageToTotalSupply[stage]
         );
@@ -143,10 +136,11 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
     }
 
     function validateAmount(uint256 amount, address to, string calldata stage) public view {
+        StageMintInfo memory stageMintInfo = stageToMint[stage];
         _validateAmount(
             amount,
-            mintRecordAllStage[to],
-            allStageLimitationForAddress,
+            mintRecord[to][stage],
+            stageMintInfo.limitationForAddress,
             stageToMint[stage].maxSupplyForStage,
             stageToTotalSupply[stage]
         );
@@ -226,7 +220,6 @@ contract NovaCuboNFT is MultiMintUtils, ReentrancyGuardUpgradeable {
 
         stageToTotalSupply[stage] += amount;
         mintRecord[to][stage] += amount;
-        mintRecordAllStage[to] += amount;
         _tokenIdCounter += amount;
         totalSupply += amount;
 
