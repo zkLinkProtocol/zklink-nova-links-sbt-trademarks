@@ -9,9 +9,12 @@
     "upgrade": "npx hardhat deploy-zksync --script nft/upgradeNFTContract.ts",
     "upgradeTrademark": "npx hardhat deploy-zksync --script nft/upgradeTrademarkNFTContract.ts",
     "upgradeBoosterPhaseII": "npx hardhat deploy-zksync --script nft/upgradeBoosterPhaseIIContract.ts",
+    "upgradeBoosterPhaseIII": "npx hardhat deploy-zksync --script nft/upgradeBoosterPhaseIIIContract.ts",
+    "upgradeGenesisPassPhaseII": "npx hardhat deploy-zksync --script nft/upgradeGenesisPassPhaseII.ts",
     "upgradeInfinityStones": "npx hardhat deploy-zksync --script nft/upgradeInfinityStones.ts",
     "upgradeChad": "npx hardhat deploy-zksync --script nft/upgradeChad.ts",
     "upgradeLynks": "npx hardhat deploy-zksync --script nft/upgradeLynks.ts",
+    "upgradeCubo": "npx hardhat deploy-zksync --script nft/upgradeCubo.ts",
     "deploy:trademark": "npx hardhat deploy-zksync --script nft/deployTrademark.ts",
     "verify": "npx hardhat deploy-zksync --script nft/verifyContract.ts",
     "deploy:mysteryBox": "npx hardhat deploy-zksync --script nft/deployNovaMysteryBox.ts",
@@ -24,6 +27,7 @@
     "deploy:InfinityStones": "npx hardhat deploy-zksync --script nft/deployInfinityStones.ts",
     "deploy:Chad": "npx hardhat deploy-zksync --script nft/deployChad.ts",
     "deploy:GenesisPassPhaseII": "npx hardhat deploy-zksync --script nft/deployGenesisPassPhaseII.ts",
+    "deploy:deployNovaCuboNFT": "npx hardhat deploy-zksync --script nft/deployNovaCuboNFT.ts",
     "interact": "hardhat deploy-zksync --script interact.ts",
     "setURI:ERC1155": "npx hardhat run scripts/setURI.ts",
     "setURLPhaseII:ERC1155": "npx hardhat run scripts/setURLPhaseII.ts",
@@ -33,6 +37,7 @@
     "addBlackList": "npx hardhat run scripts/addBlackList.ts",
     "removeBlackList": "npx hardhat run scripts/removeBlackList.ts",
     "setMaxSupply": "npx hardhat run scripts/setMaxSupply.ts",
+    "setCuboMultiMint": "npx hardhat run scripts/setCuboMultiMint.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "export-abi": "npx hardhat export-abi",
@@ -49,8 +54,8 @@
     "@matterlabs/hardhat-zksync-deploy": "^1.1.2",
     "@matterlabs/hardhat-zksync-node": "^1.0.1",
     "@matterlabs/hardhat-zksync-solc": "^1.0.6",
-    "@matterlabs/hardhat-zksync-verify": "^1.2.2",
     "@matterlabs/hardhat-zksync-upgradable": "^1.2.1",
+    "@matterlabs/hardhat-zksync-verify": "^1.2.2",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "dotenv": "^16.4.5",
     "eslint": "^8.30.0",
@@ -62,11 +67,13 @@
     "prettier-plugin-solidity": "^1.1.0",
     "solhint": "^4.1.1",
     "solidity-coverage": "^0.8.11",
+    "solmate": "^6.2.0",
     "zksync-ethers": "^6.0.0"
   },
   "dependencies": {
     "@openzeppelin/contracts": "4.9.5",
     "@openzeppelin/contracts-upgradeable": "^4.9.5",
-    "@openzeppelin/hardhat-upgrades": "^3.0.5"
+    "@openzeppelin/hardhat-upgrades": "^3.0.5",
+    "merkletreejs": "^0.4.0"
   }
 }

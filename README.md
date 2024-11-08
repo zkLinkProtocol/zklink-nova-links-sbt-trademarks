@@ -141,4 +141,12 @@ Use the following scripts for interactions:
 9. set burn count: `npm run setBurnCount` 
 
 
+## deploy Cubo nft
+1. .env add CUBO_WITNESS_ADDRESS、CUBO_PAYEE_ADDRESS、CUBO_ALLOWLIST_MERKLEROOTCUBO_ALLOWLIST_STARTTIME、
+CUBO_ALLOWLIST_ENDTIME、CUBO_PUBLIC_STARTTIME、CUBO_PUBLIC_ENDTIME and set values
+2. `npm run compile` 
+3. `npm run deploy:deployNovaCuboNFT`
+4. .env add CUBO_ADDRESS
+5. `npm run setCuboMultiMint` 
+
 
