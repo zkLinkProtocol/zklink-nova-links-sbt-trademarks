@@ -115,9 +115,9 @@ abstract contract MultiMintUtils is
             revert InvalidConfig();
         }
 
-        if (payeeAddress == address(0) || price == 0) {
-            revert InvalidConfig();
-        }
+        // if (payeeAddress == address(0) || price == 0) {
+        //     revert InvalidConfig();
+        // }
 
         stageToMint[stage].payeeAddress = payeeAddress;
         stageToMint[stage].paymentToken = paymentToken;
