@@ -141,7 +141,7 @@ abstract contract MultiMintUtils is
         //new total stage supply that be configure
         uint256 updatedTotalStageSupply = _totalStageSupply + maxSupply - stageToMint[stage].maxSupplyForStage;
 
-        if (maxSupply <= stageToTotalSupply[stage] || updatedTotalStageSupply > globalInfo.maxSupply) {
+        if (maxSupply < stageToTotalSupply[stage] || updatedTotalStageSupply > globalInfo.maxSupply) {
             revert InvalidConfig();
         }
 
